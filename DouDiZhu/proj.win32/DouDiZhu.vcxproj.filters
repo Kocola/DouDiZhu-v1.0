@@ -10,6 +10,21 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\游戏">
+      <UniqueIdentifier>{83e63a29-6f71-4cec-a87a-325962761214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\全局">
+      <UniqueIdentifier>{4daf7c8f-c17a-49ca-962d-834fbad0aec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\游戏\扑克管理器">
+      <UniqueIdentifier>{6186571e-ec85-4d85-a03f-06bd72a5b8e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\游戏\扑克管理器\扑克">
+      <UniqueIdentifier>{6518b5a0-7f14-49a6-af88-b726a9d80332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\游戏\玩家">
+      <UniqueIdentifier>{5dac270c-5d13-4d56-8412-0f247595c508}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -18,8 +33,20 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\Classes\Poker.cpp">
+      <Filter>src\游戏\扑克管理器\扑克</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameScene.cpp">
+      <Filter>src\游戏</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PokerController.cpp">
+      <Filter>src\游戏\扑克管理器</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Player.cpp">
+      <Filter>src\游戏\玩家</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GlobalFunc.cpp">
+      <Filter>src\全局</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -29,8 +56,23 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\Classes\Poker.h">
+      <Filter>src\游戏\扑克管理器\扑克</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameScene.h">
+      <Filter>src\游戏</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PokerController.h">
+      <Filter>src\游戏\扑克管理器</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GlobalDefine.h">
+      <Filter>src\全局</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Player.h">
+      <Filter>src\游戏\玩家</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GlobalFunc.h">
+      <Filter>src\全局</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
