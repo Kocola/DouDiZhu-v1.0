@@ -222,3 +222,12 @@ void GameScene::dealCard(){
 	}
 	dealCard(computerPlayer_two, _pokers);
 }
+
+void GameScene::outCard(int order){
+	switch (order){
+	case 0:break;
+	case 1:break;
+	case 2:break;
+	default:break;
+	}
+}

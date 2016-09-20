@@ -24,8 +24,9 @@ private:
 	bool shuffleCards();
 	bool initButton();	/* 创建出牌和不出按钮 */
 private:
-	void dealCard();
+	void dealCard();	/* 发牌 */
 	void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);
+	void outCard(int order);
 public:
 	CC_SYNTHESIZE(Vector<Poker*>, arrWaitPlayOut, ArrWaitPlayOut);
 public:
