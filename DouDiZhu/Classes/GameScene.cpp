@@ -214,7 +214,7 @@ void GameScene::dealCard(){
 	for (int i = 1; i < TOTAL_POKER_NUM - 3; i += 3){
 		_pokers.pushBack(pokers.at(i));
 	}
-	dealCard(computerPlayer_one, _pokers);	/* 对电脑1发牌 */
+	dealCard(computerPlayer_one, _pokers);	/* 对电脑1发牌 */ 
 
 	_pokers.clear();
 	for (int i = 2; i < TOTAL_POKER_NUM - 3; i += 3){

@@ -29,8 +29,4 @@ enum GAMESTATE{
 	WIN		/* Ê¤Àû */
 };
 
-enum PokerValueType{
-
-};
-
 #endif

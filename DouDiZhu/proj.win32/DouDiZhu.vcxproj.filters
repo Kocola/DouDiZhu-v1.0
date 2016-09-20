@@ -25,6 +25,12 @@
     <Filter Include="src\游戏\玩家">
       <UniqueIdentifier>{5dac270c-5d13-4d56-8412-0f247595c508}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\游戏\扑克管理器\规则">
+      <UniqueIdentifier>{745c3cf4-d934-42ee-a9fc-87d1b7edd016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\游戏\扑克管理器\规则\牌值类型">
+      <UniqueIdentifier>{6dae00af-70b7-4ddb-abcd-63dc08cf5184}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -47,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\GlobalFunc.cpp">
       <Filter>src\全局</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameRules.cpp">
+      <Filter>src\游戏\扑克管理器\规则</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\GlobalFunc.h">
       <Filter>src\全局</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameRules.h">
+      <Filter>src\游戏\扑克管理器\规则</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PokerValueType.h">
+      <Filter>src\游戏\扑克管理器\规则\牌值类型</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
