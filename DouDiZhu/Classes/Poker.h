@@ -14,6 +14,8 @@ private:
 public:
 	virtual bool init();
 	static Poker* create(GameScene* _gameScene, PokerType type, int value = 0);
+	/* 克隆一个当前类的实例 */
+	Poker* clone() const;
 public:
 	void showFront();		/* 显示正面 */
 	void showBack();		/* 显示背面 */

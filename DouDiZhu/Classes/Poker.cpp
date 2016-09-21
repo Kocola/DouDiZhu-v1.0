@@ -26,6 +26,10 @@ Poker* Poker::create(GameScene* _gameScene, PokerType type, int value /* = 0 */)
 	}
 }
 
+Poker *Poker::clone() const{
+	return create(gameScene, pokerType, value);
+}
+
 void Poker::createSprite(){
 	auto sprite = PokerController::getInstance()->getPokerWithValue(pokerType, value);
 	this->setPoker(sprite);

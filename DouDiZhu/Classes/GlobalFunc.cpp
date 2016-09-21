@@ -30,4 +30,25 @@ namespace GlobalFunc{
 	void sort(Vector<Poker*>& var){
 		std::sort(var.begin(), var.end(), &cmp_sort);
 	}
+
+	Poker* getGreaterPoker(const Poker* _poker, int increaseValue /* = 1 */){
+
+		CCASSERT(increaseValue >= 0, "不允许查找的牌比当前小！");
+
+		Poker* tmp = _poker->clone();
+		int curValue = _poker->getValue();
+		int neededValue = curValue + increaseValue;
+		if (neededValue >= 3 && neededValue <= 13){
+			tmp->setValue(neededValue);
+			return tmp;
+		}
+		switch (neededValue){
+		case 14:tmp->setValue(1); break;
+		case 15:tmp->setValue(2); break;
+		case 16:tmp->setPokerType(BLACKJOKER); tmp->setValue(0); break;
+		case 17:tmp->setPokerType(REDJOKER); tmp->setValue(0); break;
+		default:tmp = nullptr;	/* 大于17表示没有找到现有的大于当前_poker的牌，置tmp为nullptr即可 */
+		}
+		return tmp;
+	}
 }
