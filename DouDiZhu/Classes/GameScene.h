@@ -7,6 +7,7 @@
 using namespace cocos2d;
 
 class Player;
+class GameRules;
 
 class GameScene : public Layer{
 public:
@@ -27,6 +28,7 @@ private:
 	void dealCard();	/* ·¢ÅÆ */
 	void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);
 	void outCard(int order);
+	void test();	/* ²âÊÔÄ£¿é */
 public:
 	CC_SYNTHESIZE(Vector<Poker*>, arrWaitPlayOut, ArrWaitPlayOut);
 public:
@@ -39,7 +41,7 @@ public:
 private:
 	/* discarded */
 	//bool cmp_sort(const Poker* a, const Poker* b);		/* ÆË¿ËÅÅĞòÒÀÀµµÄº¯Êı */
-	void updatePokerPos(Ref* data);
+	void updatePokerPosAndRemovePoker(Ref* data);
 	int randomInt(int begin, int end);
 	//void Knuth_Durstenfeld_Shuffle();		/* Ï´ÅÆËã·¨ */
 private:

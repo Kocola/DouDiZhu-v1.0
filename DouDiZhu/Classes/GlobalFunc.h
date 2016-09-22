@@ -7,7 +7,12 @@
 
 namespace GlobalFunc{
 
-	bool cmp_sort(const Poker* a, const Poker* b);
+	/* 比较函数，根据withType选择是否将牌的花色参与排序，这里是 > 时返回true */
+	bool cmpPoker(const Poker* a, const Poker* b, bool withType);
+
+	bool cmpPokerWithType(const Poker* a, const Poker* b);
+
+	bool cmpPokerWithoutType(const Poker* a, const Poker* b);
 
 	void sort(Vector<Poker*>& var);
 

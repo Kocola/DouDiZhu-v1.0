@@ -2,8 +2,27 @@
 #include "GlobalDefine.h"
 #include "GlobalFunc.h"
 
-#define COMPARE_GREATER(a, b) GlobalFunc::cmp_sort(a, b)
-#define COMPATE_EQUAL(a, b) (!GlobalFunc::cmp_sort(a, b) && !GlobalFunc::cmp_sort(b, a))
+#define COMPARE_GREATER(a, b) GlobalFunc::cmpPokerWithoutType(a, b)
+#define COMPATE_EQUAL(a, b) (!GlobalFunc::cmpPokerWithoutType(a, b) && !GlobalFunc::cmpPokerWithoutType(b, a))
+
+GameRules* GameRules::gameRules = nullptr;
+
+GameRules* GameRules::getInstance(){
+	if (gameRules == nullptr){
+		gameRules = new GameRules();
+		if (gameRules != nullptr && gameRules->init()){
+			gameRules->autorelease();
+			gameRules->retain();	/* 单例为了防止被内存管理器回收，需要主动retaiin防止回收 */
+		}else{
+			CC_SAFE_DELETE(gameRules);
+		}
+	}
+	return gameRules;
+}
+
+bool GameRules::init(){
+	return true;
+}
 
 PokerValueType GameRules::analysePokerValueType(Vector<Poker*> _pokers){
 	if (_pokers.size() == 0) return NONE;
@@ -78,18 +97,22 @@ Vector<Poker*> GameRules::searchSingle(Vector<Poker*> _pokers, const Poker* _pok
 									index = index - 4;
 									continue;
 								}
+								tmp.popBack();	/* 如果不是炸弹，那么要当前最后一张popBack */
 							}
 							index = index - 3;
 							continue;
 						}
+						tmp.popBack();/* 如果不是三张，那么要当前最后一张popBack  */
 					}
 					index = index - 2;
 					continue;
 				}
+				tmp.popBack();	/* 如果不是对子，那么要当前最后一张popBack  */
 			}
 			return tmp;
 		}
 		index = index - 1;
+		tmp.clear();
 	}
 	/* 存在的一个问题，为了不拆牌，可能出现333444555这种情况时，不会出单张 */
 	return Vector<Poker*>();
@@ -114,10 +137,12 @@ Vector<Poker*> GameRules::searchPair(Vector<Poker*> _pokers, const Poker* _poker
 							index = index - 4;
 							continue;
 						}
+						tmp.popBack();	/* 如果不是炸弹，那么要当前最后一张popBack */
 					}
 					index = index - 3;
 					continue;
 				}
+				tmp.popBack(); /* 如果不是三张，那么要当前最后一张popBack */
 			}
 			return tmp;
 		}
@@ -143,6 +168,7 @@ Vector<Poker*> GameRules::searchTriple(Vector<Poker*> _pokers, const Poker* _pok
 					index = index - 4;
 					continue;
 				}
+				tmp.popBack();/* 如果不是炸弹，那么要当前最后一张popBack */
 			}
 			return tmp;
 		}
@@ -166,6 +192,8 @@ Vector<Poker*> GameRules::searchBomb(Vector<Poker*> _pokers, const Poker* _poker
 		}
 		index = index - 1;
 	}
+	/* 如果没有找到炸弹，尝试查找王炸 */
+	return searchKingBomb(_pokers);
 }
 
 Vector<Poker*> GameRules::searchKingBomb(Vector<Poker*> _pokers){
@@ -240,6 +268,8 @@ Vector<Poker*> GameRules::searchSpecifiedTriple(Vector<Poker*> _pokers, const Po
 Vector<Poker*> GameRules::searchSingleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker){
 	/* 如果length参数出错，或者扑克的张数不足所需的length，那么直接返回空 */
 	if (length < 5 || length > 12 || _pokers.size() < length) return Vector<Poker*>();
+	/*CCASSERT(length < 5 || length > 12, "顺子的长度必须在5~12之前");
+	CCASSERT(_pokers.size() < length, "剩余的扑克数不够组成符合条件的顺子");*/
 	
 	/* 如果查找的顺子的最小的牌面值是1或者2，以及所需顺子牌面最低值+顺子长度（此时就是顺子牌面的最大值）> A（14）,那么直接返回空 */
 	int pokerValue = _poker->getValue();
@@ -293,7 +323,7 @@ Vector<Poker*> GameRules::searchPairStraight(Vector<Poker*> _pokers, int length,
 
 /* length这里是顺子的不同牌的个数 */
 Vector<Poker*> GameRules::searchTripleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker){
-	if (length < 3 || length > 12 || _pokers.size() < length * 3) return Vector<Poker*>();
+	if (length < 2 || length > 12 || _pokers.size() < length * 3) return Vector<Poker*>();
 	int pokerValue = _poker->getValue();
 	if (pokerValue == 0 || pokerValue == 1 || pokerValue == 2 || (pokerValue + length > 14)) return Vector<Poker*>();
 
@@ -302,7 +332,7 @@ Vector<Poker*> GameRules::searchTripleStraight(Vector<Poker*> _pokers, int lengt
 	while (index <= (14 - length + 1)){
 		for (int i = 0; i < length; ++i, ++index){
 			auto tmpPoker = GlobalFunc::getGreaterPoker(_poker, index - pokerValue);
-			Vector<Poker*> tmp = searchSpecifiedPair(_pokers, tmpPoker);
+			Vector<Poker*> tmp = searchSpecifiedTriple(_pokers, tmpPoker);
 			if (tmp.size() != 0){
 				ret.pushBack(tmp.at(0));
 				ret.pushBack(tmp.at(1));
@@ -325,7 +355,7 @@ bool GameRules::isSingle(Vector<Poker*> _pokers){
 
 bool GameRules::isPair(Vector<Poker*> _pokers){
 	if (_pokers.size() != 2) return false;
-	return _pokers.at(0) == _pokers.at(1);
+	return _pokers.at(0)->getValue() == _pokers.at(1)->getValue();
 }
 
 bool GameRules::isTriple(Vector<Poker*> _pokers){

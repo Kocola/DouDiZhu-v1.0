@@ -26,7 +26,8 @@ enum PlayerType{
 enum GAMESTATE{
 	DEAL,	/* 发牌 */
 	OUTCARD, /* 出牌 */
-	WIN		/* 胜利 */
+	WIN,		/* 胜利 */
+	END /* 测试用 */
 };
 
 #endif

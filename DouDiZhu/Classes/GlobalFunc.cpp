@@ -1,7 +1,7 @@
 #include "GlobalFunc.h"
 
 namespace GlobalFunc{
-	bool cmp_sort(const Poker* a, const Poker* b){
+	bool cmpPoker(const Poker* a, const Poker* b, bool withType){
 		/* 如果是大小王，那么直接判断并返回比较结果 */
 		if (a->getPokerType() == REDJOKER) return true;
 		else if (b->getPokerType() == REDJOKER) return false;
@@ -13,7 +13,8 @@ namespace GlobalFunc{
 		int bValue = b->getValue() % SINGLETYPECARDNUM;
 		/* 如果扑克的牌面值相同，那么直接根据花色排序 */
 		if (aValue == bValue){
-			return a->getPokerType() > b->getPokerType();
+			if(withType == true) return a->getPokerType() > b->getPokerType();
+			else if(withType == false) return false;	/* 相等就不是 >,因此返回false */
 		}
 		else{
 			/* 如果扑克的牌面值不等，那么首先将A和2的情况排序，然后根据牌面值大小排序即可 */
@@ -27,8 +28,16 @@ namespace GlobalFunc{
 		}
 	}
 
+	bool cmpPokerWithType(const Poker* a, const Poker* b){
+		return cmpPoker(a, b, true);
+	}
+
+	bool cmpPokerWithoutType(const Poker* a, const Poker* b){
+		return cmpPoker(a, b, false);
+	}
+
 	void sort(Vector<Poker*>& var){
-		std::sort(var.begin(), var.end(), &cmp_sort);
+		std::sort(var.begin(), var.end(), &cmpPokerWithType);
 	}
 
 	Poker* getGreaterPoker(const Poker* _poker, int increaseValue /* = 1 */){

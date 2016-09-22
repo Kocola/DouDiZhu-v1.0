@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <ctime>
+#include "GameRules.h"
 #include "GameScene.h"
 #include "GlobalFunc.h"
 #include "Player.h"
@@ -36,7 +37,7 @@ bool GameScene::init(){
 		CC_BREAK_IF(!initButton());	/* 初始化按钮 */
 
 		NotificationCenter::getInstance()->addObserver(this,
-			callfuncO_selector(GameScene::updatePokerPos), "UpdatePokerPos", nullptr);
+			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker), "UpdatePokerPosAndRemovePoker", nullptr);
 
 		this->scheduleUpdate();
 
@@ -47,12 +48,11 @@ bool GameScene::init(){
 }
 
 void GameScene::update(float delta){
-	switch (gameState)
-	{
+	switch (gameState){
 	case DEAL: dealCard(); gameState = OUTCARD; break;
-	case OUTCARD:log("OutCard!!!");
-		break;
+	case OUTCARD:log("OutCard!!!"); test(); gameState = END; break;
 	case WIN: break;
+	case END:log("End!!!"); this->unscheduleUpdate(); break;
 	default: break;
 	}
 }
@@ -129,10 +129,11 @@ void GameScene::sort(){
 	GlobalFunc::sort(arrWaitPlayOut);
 }
 
-void GameScene::updatePokerPos(Ref* data){
+void GameScene::updatePokerPosAndRemovePoker(Ref* data){
 	Poker* poker = dynamic_cast<Poker*>(data);
 	auto player = dynamic_cast<Player*>(poker->getParent());	/* 这里Poker和Player过度耦合 */
 	player->removePoker(poker);
+	player->updatePokerPos();
 }
 
 int GameScene::randomInt(int begin, int end){	/* 左闭右开区间 */
@@ -226,5 +227,29 @@ void GameScene::outCard(int order){
 	case 1:break;
 	case 2:break;
 	default:break;
+	}
+}
+
+void GameScene::test(){
+	for (int i = 0; i < player->getPoker().size(); ++i){
+		auto _poker = player->getPoker().at(i);
+		log("%d %d", _poker->getPokerType(), _poker->getValue());
+	}
+	log("print poker end!");
+
+	auto gameRules = GameRules::getInstance();
+	auto poker = Poker::create(this, SPADE, 3);
+	auto ret = gameRules->calcPokerWithValueType(player->getPoker(), TRIPLESTRAIGHT, GlobalFunc::getGreaterPoker(poker, 0), 2);
+	if (ret.size() == 0){
+		log("Not Find!!!");
+		return;
+	}
+	for (int i = 0; i < ret.size(); ++i){
+		log("%d : %d", ret.at(i)->getPokerType(), ret.at(i)->getValue());
+	}
+
+	for (int i = 0; i < ret.size(); ++i){
+		auto _poker = ret.at(i);
+		NotificationCenter::getInstance()->postNotification("UpdatePokerPosAndRemovePoker", _poker);
 	}
 }

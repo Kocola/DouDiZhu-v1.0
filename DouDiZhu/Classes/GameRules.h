@@ -7,7 +7,10 @@
 
 using namespace cocos2d;
 
-class GameRules{
+class GameRules : public Ref{
+public:
+	static GameRules* getInstance();
+	virtual bool init();
 public:
 	PokerValueType analysePokerValueType(Vector<Poker*> _pokers);	/* 分析给定扑克的牌型 */
 	bool isPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType);	/* 给定的扑克是否是某种牌型 */
@@ -45,6 +48,8 @@ private:
 	bool isTripleStraight(Vector<Poker*> _pokers);	/* 是否是三顺 */
 	bool isBomb(Vector<Poker*> _pokers);		/* 是否是炸弹 */
 	bool isKingBomb(Vector<Poker*> _pokers);	/* 是否是王炸 */
+private:
+	static GameRules* gameRules;
 };
 
 #endif

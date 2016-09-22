@@ -11,6 +11,7 @@ class PokerController : public Layer{
 public:
 	static PokerController* getInstance();
 	virtual bool init();
+public:
 	static int calcPokerValue(PokerType type, int order = 0);
 	static Size getPokerSize() { return getInstance()->getPokerWithValue(BACK)->getContentSize(); } /* 获取扑克的尺寸 */
 	static Sprite* getPokerWithValue(PokerType type, int order = 0);		/* 利用牌值找到对应的牌面精灵 */
