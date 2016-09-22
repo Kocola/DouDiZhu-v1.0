@@ -49,14 +49,11 @@ bool GameScene::init(){
 void GameScene::update(float delta){
 	switch (gameState)
 	{
-	case DEAL: dealCard(); gameState = OUTCARD;
-		break;
+	case DEAL: dealCard(); gameState = OUTCARD; break;
 	case OUTCARD:log("OutCard!!!");
 		break;
-	case WIN:
-		break;
-	default:
-		break;
+	case WIN: break;
+	default: break;
 	}
 }
 

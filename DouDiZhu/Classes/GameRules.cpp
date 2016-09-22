@@ -168,6 +168,16 @@ Vector<Poker*> GameRules::searchBomb(Vector<Poker*> _pokers, const Poker* _poker
 	}
 }
 
+Vector<Poker*> GameRules::searchKingBomb(Vector<Poker*> _pokers){
+	if (_pokers.size() < 2) return Vector<Poker*>();	/* 如果扑克的张数小于2，那么肯定不是王炸 */
+	/* 两张王肯定是整个牌面的第一第二张，因此直接将前两张牌放入一个Vector，调用isKingBomb函数来判断 */
+	Vector<Poker*> tmp;
+	tmp.pushBack(_pokers.at(0));
+	tmp.pushBack(_pokers.at(1));
+	bool isBomb = isKingBomb(tmp);
+	return isBomb == true ? tmp : Vector<Poker*>();
+}
+
 /* 查找固定值的扑克 */
 Vector<Poker*> GameRules::searchSpecifiedSingle(Vector<Poker*> _pokers, const Poker* _poker){
 	if (_pokers.size() < 1 || _poker == nullptr) return Vector<Poker*>();
