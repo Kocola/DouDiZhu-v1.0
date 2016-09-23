@@ -1,6 +1,7 @@
 #include "GameRules.h"
 #include "GlobalDefine.h"
 #include "GlobalFunc.h"
+#include "OutCards.h"
 
 #define COMPARE_GREATER(a, b) GlobalFunc::cmpPokerWithoutType(a, b)
 #define COMPATE_EQUAL(a, b) (!GlobalFunc::cmpPokerWithoutType(a, b) && !GlobalFunc::cmpPokerWithoutType(b, a))
@@ -24,32 +25,73 @@ bool GameRules::init(){
 	return true;
 }
 
+bool  GameRules::canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCards){
+	GlobalFunc::sort(curCards);
+	/* 两者之一是王炸 */
+	if (isKingBomb(curCards) == true) return true;
+	if (lastOutCards->getPokerValueType() == KINGBOMB) return false;
+	/* 两者之一是炸弹 */
+	if (lastOutCards->getPokerValueType() == BOMB){
+		if (isBomb(curCards) == BOMB && COMPARE_GREATER(curCards.at(curCards.size() - 1), lastOutCards->getLowestPoker())){
+			return true;
+		}else{
+			return false;
+		}
+	} else if (isBomb(curCards) == true){
+		return true;
+	}
+	/* 此外，两者类型必须一致 */
+	/* 类型不一致，返回false */
+	if (analysePokerValueType(curCards) != lastOutCards->getPokerValueType()){
+		return false;
+	}
+	/* 两者牌型一致时 */
+	PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
+	/* 如果是某种顺子 */
+	if (_pokerValueType == STRAIGHT || _pokerValueType == PAIRSRAIGHT || _pokerValueType == TRIPLESTRAIGHT){
+		return (lastOutCards->getTotalLength() == curCards.size()) && (COMPARE_GREATER(curCards.at(curCards.size() - 1), lastOutCards->getLowestPoker()));
+	} 
+	/* 单张，对子，三张 可以和上一条合并，暂时不这么做*/
+	return (lastOutCards->getTotalLength() == curCards.size()) && (COMPARE_GREATER(curCards.at(curCards.size() - 1), lastOutCards->getLowestPoker()));
+}
+
 PokerValueType GameRules::analysePokerValueType(Vector<Poker*> _pokers){
 	if (_pokers.size() == 0) return NONE;
+
+	/* 每次排序一次，防止乱序 */
+	GlobalFunc::sort(_pokers);
+
 	if (_pokers.size() < 5){
 		if (isSingle(_pokers) == true) return SINGLE;
 		if (isPair(_pokers) == true) return PAIR;
 		if (isTriple(_pokers) == true) return TRIPLE;
 		if (isBomb(_pokers) == true) return BOMB;
 		if (isKingBomb(_pokers) == true) return KINGBOMB;
+	}else{
+		if (isSingleStraight(_pokers) == true) return STRAIGHT;
+		if (isPairStraight(_pokers) == true) return PAIRSRAIGHT;
+		if (isTripleStraight(_pokers) == true) return TRIPLESTRAIGHT;
 	}
-	if (isStraight(_pokers) == true) return STRAIGHT;
-	if (isPairStraight(_pokers) == true) return PAIRSRAIGHT;
-	if (isTripleStraight(_pokers) == true) return TRIPLESTRAIGHT;
 
 	return NONE;
 }
 
-bool GameRules::isPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType){
-	switch (pokerValueType)
-	{
+bool GameRules::isPokerValueType(Vector<Poker*> _pokers){
+	return !(analysePokerValueType(_pokers) == NONE);
+}
+
+bool GameRules::isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType){
+	/* 每次排序一次，防止乱序 */
+	GlobalFunc::sort(_pokers);
+
+	switch (pokerValueType){
 	case NONE: return false; break;
 	case SINGLE: return isSingle(_pokers); break;
 	case PAIR: return isPair(_pokers); break;
 	case TRIPLE: return isTriple(_pokers); break;
 	case BOMB: return isBomb(_pokers); break;
 	case KINGBOMB: return isKingBomb(_pokers); break;
-	case STRAIGHT: return isStraight(_pokers); break;
+	case STRAIGHT: return isSingleStraight(_pokers); break;
 	case PAIRSRAIGHT: return isPairStraight(_pokers); break;
 	case TRIPLESTRAIGHT: return isTripleStraight(_pokers); break;
 	default: return false; break;
@@ -58,6 +100,9 @@ bool GameRules::isPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerVal
 }
 
 Vector<Poker*> GameRules::calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker /* = nullptr */, int length /* = 0 */){
+	/* 每次排序一次，防止乱序 */
+	GlobalFunc::sort(_pokers);
+
 	switch (pokerValueType){
 	case SINGLE: return searchSingle(_pokers, _poker); break;
 	case PAIR: return searchPair(_pokers, _poker); break;
@@ -379,7 +424,7 @@ bool GameRules::isKingBomb(Vector<Poker*> _pokers){
 		&& (type_2 == REDJOKER || type_2 == BLACKJOKER);
 }
 
-bool GameRules::isStraight(Vector<Poker*> _pokers, int step /* = 1 */){
+bool GameRules::isSingleStraight(Vector<Poker*> _pokers){
 	GlobalFunc::sort(_pokers);	/* 对扑克进行排序 */
 
 	auto _first_poker = _pokers.at(0);
@@ -390,22 +435,20 @@ bool GameRules::isStraight(Vector<Poker*> _pokers, int step /* = 1 */){
 		return false;
 	}
 
-	auto secondpoker_index = 0 + step;	/* 第二张牌的索引，这里的第二张是不同牌值的第二张，例如AAKK，那么第二张是K */
-
 	if (_first_poker->getValue() == 1){
-		if (_pokers.at(secondpoker_index)->getValue() != 13){
+		if (_pokers.at(1)->getValue() != 13){
 			return false;
 		}else{
-			for (int i = secondpoker_index; i < _pokers.size() - step; i += step){
-				if (_pokers.at(i)->getValue() != (_pokers.at(i + step)->getValue() + 1)){
+			for (int i = 1; i < _pokers.size() - 1; i += 1){
+				if (_pokers.at(i)->getValue() != (_pokers.at(i + 1)->getValue() + 1)){
 					return false;
 				}
 			}
 			return true;
 		}
 	}else{
-		for (int i = 0; i < _pokers.size() - step; i += step){
-			if (_pokers.at(i)->getValue() != (_pokers.at(i + step)->getValue() + 1)){
+		for (int i = 0; i < _pokers.size() - 1; i += 1){
+			if (_pokers.at(i)->getValue() != (_pokers.at(i + 1)->getValue() + 1)){
 				return false;
 			}
 		}
@@ -414,9 +457,84 @@ bool GameRules::isStraight(Vector<Poker*> _pokers, int step /* = 1 */){
 }
 
 bool GameRules::isPairStraight(Vector<Poker*> _pokers){
-	return isStraight(_pokers, 2);
+	/* 如果扑克数不是偶数，那么肯定不是双顺 */
+	if (_pokers.size() % 2 != 0) return false;
+
+	GlobalFunc::sort(_pokers);	/* 对扑克进行排序 */
+
+	auto _first_poker = _pokers.at(0);
+	/* 如果第一张是王，或者2，那么肯定不是顺子 */
+	if (_first_poker->getValue() == 2
+		|| _first_poker->getPokerType() == BLACKJOKER
+		|| _first_poker->getPokerType() == REDJOKER){
+		return false;
+	}
+	/* 判断是否都是对子 */
+	for (int i = 0; i <= _pokers.size() - 2; i += 2){
+		if (isPair(GlobalFunc::createVectorPokerWithIndex(_pokers, i, i + 2)) == false){
+			return false;
+		}
+	}
+
+	if (_first_poker->getValue() == 1){
+		if (_pokers.at(2)->getValue() != 13){
+			return false;
+		}
+		else{
+			for (int i = 2; i < _pokers.size() - 2; i += 2){
+				if (_pokers.at(i)->getValue() != (_pokers.at(i + 2)->getValue() + 1)){
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	else{
+		for (int i = 0; i < _pokers.size() - 2; i += 2){
+			if (_pokers.at(i)->getValue() != (_pokers.at(i + 2)->getValue() + 1)){
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 bool GameRules::isTripleStraight(Vector<Poker*> _pokers){
-	return isStraight(_pokers, 3);
+	GlobalFunc::sort(_pokers);	/* 对扑克进行排序 */
+
+	auto _first_poker = _pokers.at(0);
+	/* 如果第一张是王，或者2，那么肯定不是顺子 */
+	if (_first_poker->getValue() == 2
+		|| _first_poker->getPokerType() == BLACKJOKER
+		|| _first_poker->getPokerType() == REDJOKER){
+		return false;
+	}
+	/* 判断是否都是对子 */
+	for (int i = 0; i <= _pokers.size() - 3; i += 3){
+		if (isTriple(GlobalFunc::createVectorPokerWithIndex(_pokers, i, i + 3)) == false){
+			return false;
+		}
+	}
+
+	if (_first_poker->getValue() == 1){
+		if (_pokers.at(3)->getValue() != 13){
+			return false;
+		}
+		else{
+			for (int i = 3; i < _pokers.size() - 3; i += 3){
+				if (_pokers.at(i)->getValue() != (_pokers.at(i + 3)->getValue() + 1)){
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	else{
+		for (int i = 0; i < _pokers.size() - 3; i += 3){
+			if (_pokers.at(i)->getValue() != (_pokers.at(i + 3)->getValue() + 1)){
+				return false;
+			}
+		}
+		return true;
+	}
 }

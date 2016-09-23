@@ -60,4 +60,12 @@ namespace GlobalFunc{
 		}
 		return tmp;
 	}
+
+	Vector<Poker*> createVectorPokerWithIndex(Vector<Poker*> _pokers, size_t start, size_t end){
+		Vector<Poker*> ret;
+		for (int i = start; i < end; ++i){
+			ret.pushBack(_pokers.at(i));
+		}
+		return ret;
+	}
 }

@@ -13,27 +13,4 @@ enum PokerValueType{
 	TRIPLESTRAIGHT	/* 三顺 */
 };
 
-class Poker;
-
-class PokerTypeBase{
-public:
-	virtual Poker* getLowerPoker() const = 0;
-	virtual int getStraightLength() const = 0;
-private:
-	CC_SYNTHESIZE(PokerValueType, pokerValueType, PokerValueType);
-};
-
-class PokerTypeGeneral : public PokerTypeBase{
-public:
-	Poker* getLowestPoker() const { return lowestPoker; }
-	void setLowestPoker(Poker* poker) { this->lowestPoker = poker; }
-	int getStraightLength() const { return 0; }	/* 普通牌型没有顺子长度 */
-private:
-	Poker* lowestPoker;
-};
-
-class PokerTypeStraight : public PokerTypeGeneral{
-public:
-};
-
 #endif

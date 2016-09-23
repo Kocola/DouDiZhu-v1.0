@@ -65,9 +65,10 @@ bool Poker::init(){
 				/* 否则这张牌已经被选择，将其放回 */
 				selectedCardBack();
 			}
-			///* 如果是出牌，就将这张从牌面集合里删除 */
-			//NotificationCenter::getInstance()->postNotification("UpdatePokerPos", this);
-			//this->removeFromParent();
+			
+			/* 检测当前牌是否可以另出牌按钮可按 */
+			updateOutState();
+
 			return true;
 		}
 		return false;		/* 这里返回false，触摸不会被吞掉 */
@@ -107,4 +108,8 @@ void Poker::showFront(){
 void Poker::showBack(){
 	this->poker->setVisible(false);
 	this->backPoker->setVisible(true);
+}
+
+void Poker::updateOutState(){
+	gameScene->updateOutState();
 }

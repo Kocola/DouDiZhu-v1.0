@@ -31,6 +31,9 @@
     <Filter Include="src\游戏\扑克管理器\规则\牌值类型">
       <UniqueIdentifier>{6dae00af-70b7-4ddb-abcd-63dc08cf5184}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\游戏\扑克管理器\扑克\出牌">
+      <UniqueIdentifier>{05d19fb1-3af8-4cce-8ecf-e0bb463b4575}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\GameRules.cpp">
       <Filter>src\游戏\扑克管理器\规则</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\OutCards.cpp">
+      <Filter>src\游戏\扑克管理器\扑克\出牌</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\PokerValueType.h">
       <Filter>src\游戏\扑克管理器\规则\牌值类型</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\OutCards.h">
+      <Filter>src\游戏\扑克管理器\扑克\出牌</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

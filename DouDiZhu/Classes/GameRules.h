@@ -7,13 +7,22 @@
 
 using namespace cocos2d;
 
+class OutCards;
+
 class GameRules : public Ref{
 public:
 	static GameRules* getInstance();
 	virtual bool init();
 public:
+	/* 根据准备出的牌和上一手牌，判断当前牌是否可出 */
+	bool canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCards);
+private:
+	/* 获取当前牌的最小牌 */
+	/*Poker* getLowestPoker(const Vector<Poker*> _pokers);*/
+public:
 	PokerValueType analysePokerValueType(Vector<Poker*> _pokers);	/* 分析给定扑克的牌型 */
-	bool isPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType);	/* 给定的扑克是否是某种牌型 */
+	bool isPokerValueType(Vector<Poker*> _pokers);		/* 是否是扑克类型 */
+	bool isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType);	/* 给定的扑克是否是某种牌型 */
 	/* 获取指定的类型的扑克，返回Vector为空时表示查找失败 
 		第一个参数是玩家拥有的扑克，第三个参数是返回的类型的扑克里最小的牌，如果是nullptr，表明可以出任意值的该类型扑克
 		第四个参数是针对顺子时的长度 */
@@ -43,8 +52,9 @@ private:
 	bool isSingle(Vector<Poker*> _pokers);	/* 是否是单张 */
 	bool isPair(Vector<Poker*> _pokers);	/* 是否是对子 */
 	bool isTriple(Vector<Poker*> _pokers);	/* 是否是三张 */
-	bool isStraight(Vector<Poker*> _pokers, int step = 1);	/* 是否是顺子,第二个参数是让双顺和三顺可以调用这个函数，避免代码冗余 */
+	bool isSingleStraight(Vector<Poker*> _pokers);	/* 是否是单顺子 */
 	bool isPairStraight(Vector<Poker*> _pokers);	/* 是否是双顺 */
+	/* 这里只判断不带单张或者双张的三顺 */
 	bool isTripleStraight(Vector<Poker*> _pokers);	/* 是否是三顺 */
 	bool isBomb(Vector<Poker*> _pokers);		/* 是否是炸弹 */
 	bool isKingBomb(Vector<Poker*> _pokers);	/* 是否是王炸 */

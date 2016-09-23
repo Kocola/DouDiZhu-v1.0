@@ -31,6 +31,7 @@ private:
 private:
 	void createSprite();		/* 创建两个扑克精灵，分别代表正面和反面 */
 	void updateSpritePos();		/* 将精灵的坐标和类实例对象对应的坐标相一致 */
+	void updateOutState();	/* 调用GameScene::updateOutState更新出牌按钮状态 */
 private:
 	//Sprite* poker;	/* 保存该扑克对应的精灵 */
 	Sprite* backPoker;	/* 保存扑克的背面精灵，在需要显示背面时显示 */

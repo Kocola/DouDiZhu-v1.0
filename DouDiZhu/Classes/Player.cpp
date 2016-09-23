@@ -50,7 +50,7 @@ void Player::updatePokerPos(){
 	float maxDisplayWidth = displayWidth * 5 / 6;		/* 卡牌组合最大的显示宽度 */
 	/* 卡牌应该显示的宽度，即可能彼此间会有重叠 */
 	/* MIMIUM_CARDS_OVERLAPWIDTH 是确保卡牌之间始终会有重叠的部分，仅是为了美观 */
-	float interval = maxDisplayWidth < (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH) * cardsNum ? (maxDisplayWidth - cardWidth) / (cardsNum - 1) : (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)   ;
+	float interval = (maxDisplayWidth - cardWidth) < (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH) * (cardsNum - 1) ? (maxDisplayWidth - cardWidth) / (cardsNum - 1) : (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)   ;
 
 	if (interval == (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)){	/* 如果卡牌之间不需要重叠，那么起始位置需要重新计算 */
 		displayLeftStartX = cardsNum % 2 == 0 ?

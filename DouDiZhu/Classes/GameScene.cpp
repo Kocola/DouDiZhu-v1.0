@@ -3,6 +3,7 @@
 #include "GameRules.h"
 #include "GameScene.h"
 #include "GlobalFunc.h"
+#include "OutCards.h"
 #include "Player.h"
 #include "Poker.h"
 #include "PokerController.h"
@@ -49,8 +50,9 @@ bool GameScene::init(){
 
 void GameScene::update(float delta){
 	switch (gameState){
-	case DEAL: dealCard(); gameState = OUTCARD; break;
-	case OUTCARD:log("OutCard!!!"); test(); gameState = END; break;
+		/* 发好牌后，初始化出牌，并转入出牌模式 */
+	case DEAL: dealCard(); initOutCard(); gameState = OUTCARD; break;
+	case OUTCARD: outCardInOrder(); gameState = END; break;
 	case WIN: break;
 	case END:log("End!!!"); this->unscheduleUpdate(); break;
 	default: break;
@@ -159,12 +161,14 @@ bool GameScene::initButton(){
 	auto _pass = Sprite::create("Image/btn_pass.png");
 	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* 利用精灵帧来复制创建一个精灵 */
 	auto _pass_disabled = Sprite::create("Image/btn_pass.png");
-	pass = MenuItemSprite::create(_pass, _pass_pressed, nullptr); 
+	pass = MenuItemSprite::create(_pass, _pass_pressed, CC_CALLBACK_1(GameScene::pass_callback, this));
+	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* 这样写会出错，为什么？*/ 
 
 	auto _out = Sprite::create("Image/btn_out.png");
 	auto _out_pressed = Sprite::create("Image/btn_out_selected.png");
 	auto _out_disabled = Sprite::create("Image/btn_out_disabled.png");
-	out = MenuItemSprite::create(_out, _out_pressed, _out_disabled);
+	out = MenuItemSprite::create(_out, _out_pressed, CC_CALLBACK_1(GameScene::out_callback, this));
+	out->setDisabledImage(_out_disabled);
 	out->setEnabled(false);		/* 初始化时设置 出牌 按钮不可按下*/
 
 	pass->setVisible(false);
@@ -221,12 +225,167 @@ void GameScene::dealCard(){
 	dealCard(computerPlayer_two, _pokers);
 }
 
-void GameScene::outCard(int order){
+bool GameScene::isCurAndManualPlayer() const { 
+	return this->player == lastOutCards->getPokerOwner(); 
+}
+
+void GameScene::updateOutState(){
+	/* 如果当前出牌玩家不是player，那么不需要更新出牌按钮的可按性 */
+	if (players.at(order % 3) != player) return;
+	if (lastOutCards->getPokerValueType() == NONE || lastOutCards->getPokerOwner() == player){
+		/* 如果上一次的出牌是NONE（表示刚开始）或者 上一次出牌的持有者还是player，
+			那么判断当前待出的牌是不是正确的牌型，如果是，就令出牌按钮可按，否则不可按 */
+		if (GameRules::getInstance()->isPokerValueType(arrWaitPlayOut) == true){
+			out->setEnabled(true);
+		}else{
+			out->setEnabled(false);
+		}
+		return;
+	} else{
+		PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(arrWaitPlayOut);
+		if (_pokerValueType == NONE){	/* 如果当前不是任何牌型 */
+			out->setEnabled(false);
+		} else{
+			out->setEnabled(GameRules::getInstance()->canOutCards(arrWaitPlayOut, lastOutCards));
+		}
+	}
+}
+
+void GameScene::pass_callback(Ref*){
+	pass->setVisible(false);
+	out->setVisible(false);
+	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+}
+
+void GameScene::out_callback(Ref*){
+	pass->setVisible(false);
+	out->setVisible(false);
+	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	lastOutCards = OutCards::create(player, GameRules::getInstance()->analysePokerValueType(arrWaitPlayOut),
+		arrWaitPlayOut.size(), arrWaitPlayOut.at(arrWaitPlayOut.size() - 1));
+	lastOutCards->retain();		/* 防止被内存管理器回收 */
+
+	cardsInScene = arrWaitPlayOut;	/* 将出的牌放到出牌的容器里，待在出牌区域显示 */
+
+	for (int i = 0; i < arrWaitPlayOut.size(); ++i){
+		arrWaitPlayOut.at(i)->removeFromParent();
+		player->removePoker(arrWaitPlayOut.at(i));
+		player->updatePokerPos();
+	}
+
+	/* 如果玩家已经出完牌，则获胜 */
+	if (player->getPoker().size() == 0){
+		this->gameState = WIN;
+		return;
+	}
+
+	this->order = (this->order + 1) % 3;
+
+	outCardInScene();
+}
+
+void GameScene::initOutCard(){
+	this->order = 0;
+	/* 如果是地主就插入到Vector首位，这样就不需考虑顺序问题了，只要按照1，2，3的顺序来出牌即可 */
+	if (player->getLandlord() == true){
+		this->players.insert(0, player);
+	}else{
+		this->players.pushBack(player);
+	}
+
+	if (computerPlayer_one->getLandlord() == true){
+		this->players.insert(0, computerPlayer_one);
+	}else{
+		this->players.pushBack(computerPlayer_one);
+	}
+
+	if (computerPlayer_two->getLandlord() == true){
+		this->players.insert(0, computerPlayer_two);
+	}else{
+		this->players.pushBack(computerPlayer_two);
+	}
+	/* 初始化outCards */
+	this->lastOutCards = OutCards::create(this->players.at(0), NONE, 0, nullptr);
+	lastOutCards->retain();
+}
+
+void GameScene::outCardForPlayer(Player* _player){
+	/* 让不出和出牌按钮显示出来，出牌按钮不可按由出牌和不出按钮的触发事件控制 */
+	pass->setVisible(true);
+	out->setVisible(true);
+}
+
+void GameScene::outCardForComputer(Player* _computer){
+	Vector<Poker*> _pokers;
+	if (lastOutCards->getPokerOwner() == _computer){
+		_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);
+	} else{
+		PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
+		if (_pokerValueType != KINGBOMB){
+			if (_pokerValueType == BOMB){
+				_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), BOMB, lastOutCards->getLowestPoker());
+			}else{
+				_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), lastOutCards->getPokerValueType(), lastOutCards->getLowestPoker(), lastOutCards->getTotalLength());
+				if (_pokers.size() == 0){ /* 如果找不到对应的牌，就找炸弹 */
+					_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), BOMB, nullptr);
+					if (_pokers.size() == 0){	/* 如果找不到普通的炸，就找王炸 */
+						_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), KINGBOMB);
+					}
+				}
+			}
+		}
+	}
+	if (_pokers.size() != 0){
+		lastOutCards = OutCards::create(_computer, GameRules::getInstance()->analysePokerValueType(_pokers), _pokers.size(), _pokers.at(_pokers.size() - 1));
+		lastOutCards->retain();
+	}
+
+	for (int i = 0; i < _pokers.size(); ++i){
+		_pokers.at(i)->removeFromParent();
+		_computer->getPoker().eraseObject(_pokers.at(i));
+	}
+	 
+	if (_computer->getPoker().size() == 0){
+		this->gameState = LOSE;
+		return;
+	}
+
+	this->order = (this->order + 1) % 3;
+}
+
+void GameScene::outCardInOrder(){
 	switch (order){
-	case 0:break;
-	case 1:break;
-	case 2:break;
+	case 0: outCardForPlayer(player); break;
+	case 1: outCardForComputer(computerPlayer_one); break;
+	case 2: outCardForComputer(computerPlayer_two); break;
 	default:break;
+	}
+}
+
+/* 出的牌放在高度和电脑的牌高度一致，最大宽度是1/2屏幕宽度 */
+/* 出的牌放在一个容器里，然后放在这个里面 */
+void GameScene::outCardInScene(){
+	if (cardsInScene.size() == 0) return;
+
+	int _height = computerPlayer_one->getPosition().y;
+	float _middleWidth = Director::getInstance()->getVisibleSize().width / 2;
+	float _maxWidth = Director::getInstance()->getVisibleSize().width / 2;
+
+	int _cardsNum = cardsInScene.size();	/* 卡牌数量 */
+	float _cardWidth = cardsInScene.at(0)->getContentSize().width;	/* 卡牌宽度 */
+	float interval = (_maxWidth - _cardWidth) < (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH) * (_cardsNum - 1) ? (_maxWidth - _cardWidth) / (_cardsNum - 1) : (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH);
+
+	float startPosX = _middleWidth - _maxWidth / 2; /* 如果所有出的牌的宽度加起来大于能够显示的区域，计算出牌的开始位置 */
+	if (interval == (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)){
+		startPosX = _cardsNum % 2 == 0 ?
+			_middleWidth - (_cardsNum / 2) *  interval :
+			_middleWidth - (_cardsNum / 2 + 0.5) * interval;
+	}
+
+	for (int i = 0; i < cardsInScene.size(); ++i){
+		this->addChild(cardsInScene.at(i));
+		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height);
 	}
 }
 
