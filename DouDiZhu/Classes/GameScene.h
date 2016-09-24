@@ -29,7 +29,7 @@ private:
 	void dealCard();	/* 发牌 */
 	void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);
 	void initOutCard();
-	void outCardInOrder();
+	void outCardInOrder(float delta);
 	void outCardForPlayer(Player* _player);	/* 轮到玩家出牌 */
 	void outCardForComputer(Player* _computer);	/* 轮到电脑出牌 */
 	void test();	/* 测试模块 */
@@ -51,6 +51,10 @@ public:
 public:
 	/* 出牌，将牌放在场景上 */
 	void outCardInScene();
+	/* 当前玩家出牌时，删除留在场景中的上一手扑克 */
+	void deleteCardInScene();
+	/* 游戏结束 */
+	void gameOver();
 public:
 	/* 手动玩家，这里值的是持有设备的玩家自己 */
 	Player* getManualPlayer() const { return player; }

@@ -52,8 +52,9 @@ void GameScene::update(float delta){
 	switch (gameState){
 		/* 发好牌后，初始化出牌，并转入出牌模式 */
 	case DEAL: dealCard(); initOutCard(); gameState = OUTCARD; break;
-	case OUTCARD: outCardInOrder(); gameState = END; break;
-	case WIN: break;
+	case OUTCARD: this->scheduleOnce(schedule_selector(GameScene::outCardInOrder), 3.0f); /*gameState = END*/; break;
+	case WIN: log("You Win"); this->unscheduleUpdate(); break;
+	case LOSE:log("You Lose"); this->unscheduleUpdate(); break;
 	case END:log("End!!!"); this->unscheduleUpdate(); break;
 	default: break;
 	}
@@ -255,6 +256,8 @@ void GameScene::pass_callback(Ref*){
 	pass->setVisible(false);
 	out->setVisible(false);
 	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	this->order = (this->order + 1) % 3;
 }
 
 void GameScene::out_callback(Ref*){
@@ -266,6 +269,8 @@ void GameScene::out_callback(Ref*){
 		arrWaitPlayOut.size(), arrWaitPlayOut.at(arrWaitPlayOut.size() - 1));
 	lastOutCards->retain();		/* 防止被内存管理器回收 */
 
+	deleteCardInScene();		/* 在将cardInScene存放新的扑克时，先将以前的在Scene的扑克删除 */
+
 	cardsInScene = arrWaitPlayOut;	/* 将出的牌放到出牌的容器里，待在出牌区域显示 */
 
 	for (int i = 0; i < arrWaitPlayOut.size(); ++i){
@@ -274,15 +279,22 @@ void GameScene::out_callback(Ref*){
 		player->updatePokerPos();
 	}
 
+	arrWaitPlayOut.clear();	/* 待出的牌出了，就要将待出牌容器清空，不然和下次的重复在一起会导致错误 */
+
+	outCardInScene();
+
 	/* 如果玩家已经出完牌，则获胜 */
 	if (player->getPoker().size() == 0){
-		this->gameState = WIN;
+		this->gameState = WIN;    
+		log("You Win!");
+		this->gameOver();
 		return;
 	}
 
-	this->order = (this->order + 1) % 3;
+	this->gameState = WIN;
+	this->gameOver();
 
-	outCardInScene();
+	this->order = (this->order + 1) % 3;
 }
 
 void GameScene::initOutCard(){
@@ -314,12 +326,16 @@ void GameScene::outCardForPlayer(Player* _player){
 	/* 让不出和出牌按钮显示出来，出牌按钮不可按由出牌和不出按钮的触发事件控制 */
 	pass->setVisible(true);
 	out->setVisible(true);
+	/* 轮到玩家出牌时，玩家可能已经准备好要出的牌，因此轮到玩家出牌时，需要对此做一次更新 */
+	this->updateOutState();
 }
 
 void GameScene::outCardForComputer(Player* _computer){
-	Vector<Poker*> _pokers;
-	if (lastOutCards->getPokerOwner() == _computer){
-		_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);
+  	Vector<Poker*> _pokers;
+	                                                                                /* 如果上一手牌也是自己的 */
+	if (lastOutCards->getPokerOwner() == _computer || lastOutCards->getPokerValueType() == NONE){
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* 这样写会导致电脑在找不到单张后一直卡在这个地方 */ 
+		_pokers = GameRules::getInstance()->searchProperPokers(_computer->getPoker());
 	} else{
 		PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
 		if (_pokerValueType != KINGBOMB){
@@ -343,18 +359,26 @@ void GameScene::outCardForComputer(Player* _computer){
 
 	for (int i = 0; i < _pokers.size(); ++i){
 		_pokers.at(i)->removeFromParent();
-		_computer->getPoker().eraseObject(_pokers.at(i));
+		_computer->removePoker(_pokers.at(i));
+	}
+
+	if (_pokers.size() != 0){
+		deleteCardInScene();
+		cardsInScene = _pokers;	/* 如果电脑出牌了，那么将出的牌放入待显示在Scene中的容器 */
+		outCardInScene();
 	}
 	 
 	if (_computer->getPoker().size() == 0){
 		this->gameState = LOSE;
+		log("You Lose!");
+		this->gameOver();
 		return;
 	}
 
 	this->order = (this->order + 1) % 3;
 }
 
-void GameScene::outCardInOrder(){
+void GameScene::outCardInOrder(float delta){
 	switch (order){
 	case 0: outCardForPlayer(player); break;
 	case 1: outCardForComputer(computerPlayer_one); break;
@@ -386,7 +410,19 @@ void GameScene::outCardInScene(){
 	for (int i = 0; i < cardsInScene.size(); ++i){
 		this->addChild(cardsInScene.at(i));
 		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height);
+		cardsInScene.at(i)->showFront();
 	}
+}
+
+void GameScene::deleteCardInScene(){
+	for (int i = 0; i < cardsInScene.size(); ++i){
+		cardsInScene.at(i)->removeFromParent();
+	}
+	cardsInScene.clear();
+}
+
+void GameScene::gameOver(){
+	this->unscheduleUpdate();
 }
 
 void GameScene::test(){

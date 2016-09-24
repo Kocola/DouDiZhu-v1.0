@@ -16,6 +16,8 @@ public:
 public:
 	/* 根据准备出的牌和上一手牌，判断当前牌是否可出 */
 	bool canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCards);
+	/* 电脑在自己可以任意出牌时，找到一张合适的牌（这里为了赶时间，只是简单地由单张，对子，三张，顺子，炸弹） */
+	Vector<Poker*> searchProperPokers(Vector<Poker*> _pokers);
 private:
 	/* 获取当前牌的最小牌 */
 	/*Poker* getLowestPoker(const Vector<Poker*> _pokers);*/

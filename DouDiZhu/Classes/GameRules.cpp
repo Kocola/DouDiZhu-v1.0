@@ -25,6 +25,22 @@ bool GameRules::init(){
 	return true;
 }
 
+Vector<Poker*> GameRules::searchProperPokers(Vector<Poker*> _pokers){
+	Vector<Poker*> ret;
+	/* 先找单张 */
+	ret = calcPokerWithValueType(_pokers, SINGLE);
+	if (ret.size() == 0){	/* 没找到单张 */
+		ret = calcPokerWithValueType(_pokers, PAIR);
+		if (ret.size() == 0){
+			ret = calcPokerWithValueType(_pokers, TRIPLE);
+			if (ret.size() == 0){
+				ret = calcPokerWithValueType(_pokers, BOMB);
+			}
+		}
+	}
+	return ret;
+}
+
 bool  GameRules::canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCards){
 	GlobalFunc::sort(curCards);
 	/* 两者之一是王炸 */
@@ -63,10 +79,10 @@ PokerValueType GameRules::analysePokerValueType(Vector<Poker*> _pokers){
 
 	if (_pokers.size() < 5){
 		if (isSingle(_pokers) == true) return SINGLE;
+		if (isKingBomb(_pokers) == true) return KINGBOMB;		/* 双王的value值是0，因此如果先判断对子会造成判断错误 */
 		if (isPair(_pokers) == true) return PAIR;
 		if (isTriple(_pokers) == true) return TRIPLE;
 		if (isBomb(_pokers) == true) return BOMB;
-		if (isKingBomb(_pokers) == true) return KINGBOMB;
 	}else{
 		if (isSingleStraight(_pokers) == true) return STRAIGHT;
 		if (isPairStraight(_pokers) == true) return PAIRSRAIGHT;
@@ -399,7 +415,8 @@ bool GameRules::isSingle(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isPair(Vector<Poker*> _pokers){
-	if (_pokers.size() != 2) return false;
+	/* 如果扑克的value值小于1，说明是王，直接返回false */
+	if (_pokers.size() != 2 || _pokers.at(0)->getValue() <= 0) return false;
 	return _pokers.at(0)->getValue() == _pokers.at(1)->getValue();
 }
 
