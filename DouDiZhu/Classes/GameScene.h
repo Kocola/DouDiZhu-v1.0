@@ -68,6 +68,8 @@ private:
 	void updatePokerPosAndRemovePoker(Ref* data);
 	int randomInt(int begin, int end);
 	//void Knuth_Durstenfeld_Shuffle();		/* 洗牌算法 */
+	void runWinAnimation();
+	void runLostAnimation();
 private:
 	Player* player;	/* 手动玩家 */
 	Player* computerPlayer_one;	/* 电脑玩家1 */
@@ -81,6 +83,8 @@ private:
 	GAMESTATE gameState;
 	OutCards* lastOutCards;	/* 上一次的出牌信息 */
 	Vector<Poker*> cardsInScene;	/* 出在Scene的牌集合 */
+	Sprite* winSprite;
+	Sprite* lostSprite;
 };
 
 #endif

@@ -34,6 +34,9 @@
     <Filter Include="src\游戏\扑克管理器\扑克\出牌">
       <UniqueIdentifier>{05d19fb1-3af8-4cce-8ecf-e0bb463b4575}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\动画">
+      <UniqueIdentifier>{069f4e44-5eae-4fb4-b3cb-77dc9eddeb2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\OutCards.cpp">
       <Filter>src\游戏\扑克管理器\扑克\出牌</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameAnimation.cpp">
+      <Filter>src\动画</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\OutCards.h">
       <Filter>src\游戏\扑克管理器\扑克\出牌</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameAnimation.h">
+      <Filter>src\动画</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <ctime>
+#include "GameAnimation.h"
 #include "GameRules.h"
 #include "GameScene.h"
 #include "GlobalFunc.h"
@@ -12,6 +13,8 @@ using namespace std;
 
 GameScene::GameScene(){
 	gameState = DEAL;	/* 初始状态是发牌 */
+	winSprite = nullptr;
+	lostSprite = nullptr;
 }
 
 GameScene::~GameScene(){
@@ -420,6 +423,27 @@ void GameScene::deleteCardInScene(){
 	cardsInScene.clear();
 }
 
+void GameScene::runWinAnimation(){
+	if (winSprite == nullptr){
+		winSprite = Sprite::create();
+		winSprite->setPosition(Director::getInstance()->getVisibleSize() / 2);
+		this->addChild(winSprite);
+	}
+	auto fadeOut = FadeOut::create(2);
+	winSprite->setVisible(true);
+	winSprite->runAction(Sequence::create(GameAnimation::getInstance()->getWinAnimation(), fadeOut, nullptr));
+}
+
+void GameScene::runLostAnimation(){
+	if (lostSprite == nullptr){
+		lostSprite = Sprite::create();
+		lostSprite->setPosition(Director::getInstance()->getVisibleSize() / 2);
+		this->addChild(lostSprite);
+	}
+	auto fadeOut = FadeOut::create(2);
+	lostSprite->runAction(Sequence::create(GameAnimation::getInstance()->getLostAnimation(), fadeOut, nullptr));
+}
+
 void GameScene::gameStart(float delta){
 	initPoker();	/* 卡牌初始化 */
 	shuffleCards();	/* 洗牌 */
@@ -435,8 +459,10 @@ void GameScene::gameOver(){
 	/* 后面增加代码 */
 	if (player->getPoker().size() == 0){
 		log("You Win!");
+		this->runWinAnimation();
 	}else{
 		log("You Lose!");
+		this->runLostAnimation();
 	}
 
 	/* 游戏结束后，一些资源处理操作 */
