@@ -53,6 +53,8 @@ public:
 	void outCardInScene();
 	/* 当前玩家出牌时，删除留在场景中的上一手扑克 */
 	void deleteCardInScene();
+	/* 游戏开始，或者重新开始 */
+	void gameStart(float delta);
 	/* 游戏结束 */
 	void gameOver();
 public:

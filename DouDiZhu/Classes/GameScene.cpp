@@ -32,16 +32,16 @@ bool GameScene::init(){
 	bool tRet = false;
 	do {
 		CC_BREAK_IF(!initBackground());	/* 初始化背景 */
-		CC_BREAK_IF(!initPoker());		/* 创建扑克 */
-		CC_BREAK_IF(!shuffleCards());		/* 洗牌 */
-		CC_BREAK_IF(!initPlayer());		/* 初始化玩家，包括电脑 */
+		//CC_BREAK_IF(!initPoker());		/* 创建扑克 */
+		//CC_BREAK_IF(!shuffleCards());		/* 洗牌 */
+		//CC_BREAK_IF(!initPlayer());		/* 初始化玩家，包括电脑 */
 		CC_BREAK_IF(!initButton());	/* 初始化按钮 */
 
 		NotificationCenter::getInstance()->addObserver(this,
-			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker), "UpdatePokerPosAndRemovePoker", nullptr);
-
-		this->schedule(schedule_selector(GameScene::update));
-
+			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker),
+			"UpdatePokerPosAndRemovePoker", nullptr);
+		//this->schedule(schedule_selector(GameScene::update));
+		this->scheduleOnce(schedule_selector(GameScene::gameStart), 0.0f);
 		tRet = true;
 	} while (0);
 
@@ -59,9 +59,7 @@ void GameScene::update(float delta){
 	/* 发好牌后，初始化出牌，并转入出牌模式 */
 	case DEAL: dealCard(); initOutCard(); gameState = OUTCARD; break;
 	case OUTCARD: outCardInOrder(delta); break;
-	case WIN: log("You Win"); this->unschedule(schedule_selector(GameScene::update)); break;
-	case LOSE:log("You Lose"); this->unschedule(schedule_selector(GameScene::update)); break;
-	case END:log("End!!!"); this->unscheduleUpdate(); break;
+	case END: this->unschedule(schedule_selector(GameScene::update)); this->gameOver(); break;
 	default: break;
 	}
 }
@@ -202,6 +200,7 @@ void GameScene::dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayF
 		_player->addChild(it);
 		it->setCanClick(isCanClick);
 		if(displayFront == true) it->showFront();
+		else it->showBack();
 	}
 }
 
@@ -290,8 +289,7 @@ void GameScene::out_callback(Ref*){
 
 	/* 如果玩家已经出完牌，则获胜 */
 	if (player->getPoker().size() == 0){
-		this->gameState = WIN;    
-		this->gameOver();
+		this->gameState = END;
 		return;
 	}
 
@@ -370,8 +368,7 @@ void GameScene::outCardForComputer(Player* _computer){
 	}
 	 
 	if (_computer->getPoker().size() == 0){
-		this->gameState = LOSE;
-		this->gameOver();
+		this->gameState = END;
 		return;
 	}
 
@@ -379,7 +376,6 @@ void GameScene::outCardForComputer(Player* _computer){
 }
 
 void GameScene::outCardInOrder(float delta){
-	GAMESTATE state = gameState;
 	switch (order){
 	case 0: outCardForPlayer(player); break;
 	case 1: outCardForComputer(computerPlayer_one); break;
@@ -424,8 +420,41 @@ void GameScene::deleteCardInScene(){
 	cardsInScene.clear();
 }
 
+void GameScene::gameStart(float delta){
+	initPoker();	/* 卡牌初始化 */
+	shuffleCards();	/* 洗牌 */
+	initPlayer();	/* 初始化多个玩家 */
+
+	log("computer_one : %f, %f", computerPlayer_one->getPosition().x, this->getPosition().y);
+
+	this->gameState = DEAL;
+	this->schedule(schedule_selector(GameScene::update), 2.0f);
+}
+
 void GameScene::gameOver(){
 	/* 后面增加代码 */
+	if (player->getPoker().size() == 0){
+		log("You Win!");
+	}else{
+		log("You Lose!");
+	}
+
+	/* 游戏结束后，一些资源处理操作 */
+	pokers.clear();	/* 卡牌置空 */
+	/* 删除玩家和电脑的所有卡牌 */
+	player->removeAllPoker();
+	computerPlayer_one->removeAllPoker();
+	computerPlayer_two->removeAllPoker();
+	/* 删除玩家和电脑端的指针 */
+	this->removeChild(player);
+	this->removeChild(computerPlayer_one);
+	this->removeChild(computerPlayer_two);
+	players.clear();	/* 删除玩家容器里的所有玩家指针，如果没有这一步，
+						新的一局开始时，玩家无法出牌*/
+
+	deleteCardInScene();	/* 删除在Scene的扑克 */
+
+	this->scheduleOnce(schedule_selector(GameScene::gameStart), 10.0f);
 }
 
 void GameScene::test(){
