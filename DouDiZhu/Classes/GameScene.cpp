@@ -40,7 +40,7 @@ bool GameScene::init(){
 		NotificationCenter::getInstance()->addObserver(this,
 			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker), "UpdatePokerPosAndRemovePoker", nullptr);
 
-		this->scheduleUpdate();
+		this->schedule(schedule_selector(GameScene::update));
 
 		tRet = true;
 	} while (0);
@@ -49,12 +49,18 @@ bool GameScene::init(){
 }
 
 void GameScene::update(float delta){
+	static float deltaCount = 0;
+	deltaCount += delta;
+	if (deltaCount < 3.0f && gameState == OUTCARD){
+		return;
+	}
+	deltaCount = 0;
 	switch (gameState){
-		/* 发好牌后，初始化出牌，并转入出牌模式 */
+	/* 发好牌后，初始化出牌，并转入出牌模式 */
 	case DEAL: dealCard(); initOutCard(); gameState = OUTCARD; break;
-	case OUTCARD: this->scheduleOnce(schedule_selector(GameScene::outCardInOrder), 3.0f); /*gameState = END*/; break;
-	case WIN: log("You Win"); this->unscheduleUpdate(); break;
-	case LOSE:log("You Lose"); this->unscheduleUpdate(); break;
+	case OUTCARD: outCardInOrder(delta); break;
+	case WIN: log("You Win"); this->unschedule(schedule_selector(GameScene::update)); break;
+	case LOSE:log("You Lose"); this->unschedule(schedule_selector(GameScene::update)); break;
 	case END:log("End!!!"); this->unscheduleUpdate(); break;
 	default: break;
 	}
@@ -128,7 +134,6 @@ bool GameScene::initPoker(){
 }
 
 void GameScene::sort(){
-	//std::sort(arrWaitPlayOut.begin(), arrWaitPlayOut.end(), cmp_sort);
 	GlobalFunc::sort(arrWaitPlayOut);
 }
 
@@ -286,13 +291,9 @@ void GameScene::out_callback(Ref*){
 	/* 如果玩家已经出完牌，则获胜 */
 	if (player->getPoker().size() == 0){
 		this->gameState = WIN;    
-		log("You Win!");
 		this->gameOver();
 		return;
 	}
-
-	this->gameState = WIN;
-	this->gameOver();
 
 	this->order = (this->order + 1) % 3;
 }
@@ -370,7 +371,6 @@ void GameScene::outCardForComputer(Player* _computer){
 	 
 	if (_computer->getPoker().size() == 0){
 		this->gameState = LOSE;
-		log("You Lose!");
 		this->gameOver();
 		return;
 	}
@@ -379,6 +379,7 @@ void GameScene::outCardForComputer(Player* _computer){
 }
 
 void GameScene::outCardInOrder(float delta){
+	GAMESTATE state = gameState;
 	switch (order){
 	case 0: outCardForPlayer(player); break;
 	case 1: outCardForComputer(computerPlayer_one); break;
@@ -411,6 +412,8 @@ void GameScene::outCardInScene(){
 		this->addChild(cardsInScene.at(i));
 		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height);
 		cardsInScene.at(i)->showFront();
+		/* 出的牌令其canClick属性设置为false，使其不可点击 */
+		cardsInScene.at(i)->setCanClick(false);
 	}
 }
 
@@ -422,7 +425,7 @@ void GameScene::deleteCardInScene(){
 }
 
 void GameScene::gameOver(){
-	this->unscheduleUpdate();
+	/* 后面增加代码 */
 }
 
 void GameScene::test(){

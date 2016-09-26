@@ -350,7 +350,10 @@ Vector<Poker*> GameRules::searchSingleStraight(Vector<Poker*> _pokers, int lengt
 				break;
 			}
 		}
-		if (ret.size() == length) return ret;
+		if (ret.size() == length){	/* 查询所得的结果，是递增的，和规定的递减相反，因此这里排序一次 */
+			GlobalFunc::sort(ret);
+			return ret;
+		}
 		index++; /* 当前已经查找失败，将index+1，从下一个开始查找 */
 	}
 	return Vector<Poker*>();
@@ -376,7 +379,10 @@ Vector<Poker*> GameRules::searchPairStraight(Vector<Poker*> _pokers, int length,
 				break;
 			}
 		}
-		if (ret.size() == length * 2) return ret;
+		if (ret.size() == length * 2){
+			GlobalFunc::sort(ret);
+			return ret;
+		}
 		index++; /* 当前已经查找失败，将index+1，从下一个开始查找 */
 	}
 	return Vector<Poker*>();
@@ -404,7 +410,10 @@ Vector<Poker*> GameRules::searchTripleStraight(Vector<Poker*> _pokers, int lengt
 				break;
 			}
 		}
-		if (ret.size() == length * 3) return ret;
+		if (ret.size() == length * 2){
+			GlobalFunc::sort(ret);
+			return ret;
+		}
 		index++; /* 当前已经查找失败，将index+1，从下一个开始查找 */
 	}
 	return Vector<Poker*>();
@@ -517,6 +526,11 @@ bool GameRules::isPairStraight(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isTripleStraight(Vector<Poker*> _pokers){
+	/* 如果扑克数不是3的倍数，那么肯定不是三顺，
+		这里需要注意的是，本预备这里判断三顺带一张的情况，但是放在一起判断又会导致各种case之间
+		错综复杂导致很难发现的BUG，故放弃*/
+	if (_pokers.size() % 3 != 0) return false;
+
 	GlobalFunc::sort(_pokers);	/* 对扑克进行排序 */
 
 	auto _first_poker = _pokers.at(0);
@@ -526,7 +540,7 @@ bool GameRules::isTripleStraight(Vector<Poker*> _pokers){
 		|| _first_poker->getPokerType() == REDJOKER){
 		return false;
 	}
-	/* 判断是否都是对子 */
+	/* 判断是否都是三张 */
 	for (int i = 0; i <= _pokers.size() - 3; i += 3){
 		if (isTriple(GlobalFunc::createVectorPokerWithIndex(_pokers, i, i + 3)) == false){
 			return false;
