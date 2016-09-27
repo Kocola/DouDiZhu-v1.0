@@ -7,6 +7,7 @@
 #define TOTAL_POKER_NUM 54	/* 扑克牌的总个数 */
 #define POKER_WIDTH 108	/* 扑克宽度 */
 #define POKER_HEIGHT 149	/* 扑克高度 */
+#define HEIGHTDISTANCE_HEADIMAGEANDPLAYER 0		/* 玩家和头像之间高度 */
 
 enum PokerType{
 	DIAMOND = 0,		/* 方块 */
@@ -27,6 +28,21 @@ enum GAMESTATE{
 	DEAL,	/* 发牌 */
 	OUTCARD, /* 出牌 */
 	END /* 结束 */
+};
+
+enum HeadImageType{	/* 头像类型 */
+	LANDLORD,	/* 地主 */
+	FARMER	/* 农民 */
+};
+
+enum HeadImageOrientation{	/* 头像朝向 */
+	LEFT, /* 向左 */
+	RIGHT  /* 向右 */
+};
+
+enum PlayerSexuality{
+	MALE,		/* 男性 */
+	FEMALE	/* 女性 */
 };
 
 #endif

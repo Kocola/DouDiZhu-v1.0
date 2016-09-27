@@ -37,6 +37,9 @@
     <Filter Include="src\动画">
       <UniqueIdentifier>{069f4e44-5eae-4fb4-b3cb-77dc9eddeb2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\游戏\玩家\玩家头像">
+      <UniqueIdentifier>{f6a455f7-0f87-466d-8621-36ff02a4af7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\GameAnimation.cpp">
       <Filter>src\动画</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HeadImage.cpp">
+      <Filter>src\游戏\玩家\玩家头像</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\GameAnimation.h">
       <Filter>src\动画</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HeadImage.h">
+      <Filter>src\游戏\玩家\玩家头像</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

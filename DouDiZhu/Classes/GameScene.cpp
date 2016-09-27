@@ -4,6 +4,7 @@
 #include "GameRules.h"
 #include "GameScene.h"
 #include "GlobalFunc.h"
+#include "HeadImage.h"
 #include "OutCards.h"
 #include "Player.h"
 #include "Poker.h"
@@ -38,6 +39,7 @@ bool GameScene::init(){
 		//CC_BREAK_IF(!initPoker());		/* 创建扑克 */
 		//CC_BREAK_IF(!shuffleCards());		/* 洗牌 */
 		//CC_BREAK_IF(!initPlayer());		/* 初始化玩家，包括电脑 */
+		//CC_BREAK_IF(!initHeadImage());
 		CC_BREAK_IF(!initButton());	/* 初始化按钮 */
 
 		NotificationCenter::getInstance()->addObserver(this,
@@ -95,7 +97,7 @@ bool GameScene::initPlayer(){
 	this->addChild(computerPlayer_one);
 	computerPlayer_one->setPlayerType(COMPUTER);
 	computerPlayer_two = Player::create();
-	computerPlayer_two->setPlayerType(COMPUTER);
+	computerPlayer_two->setPlayerType(COMPUTER); 
 	this->addChild(computerPlayer_two);
 
 	/* 设置玩家和电脑的坐标 */
@@ -190,6 +192,33 @@ bool GameScene::initButton(){
 	_menu->addChild(pass);
 	_menu->addChild(out);
 	this->addChild(_menu);	/* MenuItemSprite对象必须存放在Menu中才能正常使用 */
+
+	return true;
+}
+
+bool GameScene::initHeadImage(){
+	auto playerPos = player->getPosition();
+	auto computerOne_pos = computerPlayer_one->getPosition();
+	auto computerTwo_pos = computerPlayer_two->getPosition();
+	auto cardSize = PokerController::getInstance()->getPokerSize();
+	auto headBoxSize = HeadImage::create()->getHeadBoxSize();	/* 获取头像框的大小 */
+
+	auto playerHeadImagePos = Point(computerOne_pos.x, playerPos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
+	auto computerOneHeadImagePos = Point(computerOne_pos.x, computerOne_pos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
+	auto computerTwoHeadImagePos = Point(computerTwo_pos.x, computerTwo_pos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
+
+	playerHeadImage = HeadImage::create();		/* 玩家头像 */
+	playerHeadImage->setPosition(playerHeadImagePos);
+	this->addChild(playerHeadImage);
+	//playerHeadImage->setHeadImageType(LANDLORD, RIGHT);
+	computerPlayer_one_headImage = HeadImage::create();	/* 电脑端头像 */
+	computerPlayer_one_headImage->setPosition(computerOneHeadImagePos);
+	this->addChild(computerPlayer_one_headImage);
+	//computerPlayer_one_headImage->setHeadImageType(FARMER, RIGHT);
+	computerPlayer_two_headImage = HeadImage::create();	/* 电脑端头像 */
+	computerPlayer_two_headImage->setPosition(computerTwoHeadImagePos);
+	this->addChild(computerPlayer_two_headImage);
+	//computerPlayer_two_headImage->setHeadImageType(FARMER, LEFT);
 
 	return true;
 }
@@ -448,8 +477,7 @@ void GameScene::gameStart(float delta){
 	initPoker();	/* 卡牌初始化 */
 	shuffleCards();	/* 洗牌 */
 	initPlayer();	/* 初始化多个玩家 */
-
-	log("computer_one : %f, %f", computerPlayer_one->getPosition().x, this->getPosition().y);
+	initHeadImage();	/* 初始化多个玩家的头像 */
 
 	this->gameState = DEAL;
 	this->schedule(schedule_selector(GameScene::update), 2.0f);
@@ -477,6 +505,9 @@ void GameScene::gameOver(){
 	this->removeChild(computerPlayer_two);
 	players.clear();	/* 删除玩家容器里的所有玩家指针，如果没有这一步，
 						新的一局开始时，玩家无法出牌*/
+	this->removeChild(playerHeadImage);
+	this->removeChild(computerPlayer_one_headImage);
+	this->removeChild(computerPlayer_two_headImage);
 
 	deleteCardInScene();	/* 删除在Scene的扑克 */
 

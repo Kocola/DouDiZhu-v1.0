@@ -1,22 +1,6 @@
 #include "GlobalFunc.h"
 #include "Player.h"
 
-Player::Player(){
-	isCall = false;
-	callPoint = 0;
-	isLandlord = false;
-	isOutPoker = false;
-
-	displayMiddleX = 0;
-	displayLeftStartX = displayMiddleX - 5.0 / 12 * Director::getInstance()->getVisibleSize().width;
-
-	this->retain();
-}
-
-Player::~Player(){
-	this->release();
-}
-
 bool Player::init(){
 	isCall = false;
 	callPoint = 0;

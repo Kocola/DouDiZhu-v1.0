@@ -9,6 +9,7 @@ using namespace cocos2d;
 class Player;
 class GameRules;
 class OutCards;
+class HeadImage;
 
 class GameScene : public Layer{
 public:
@@ -25,6 +26,7 @@ private:
 	bool initPoker();
 	bool shuffleCards();
 	bool initButton();	/* 创建出牌和不出按钮 */
+	bool initHeadImage();	/* 初始化头像，包含头像和头像框 */
 private:
 	void dealCard();	/* 发牌 */
 	void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);
@@ -72,8 +74,11 @@ private:
 	void runLostAnimation();
 private:
 	Player* player;	/* 手动玩家 */
+	HeadImage* playerHeadImage;		/* 手动玩家头像 */
 	Player* computerPlayer_one;	/* 电脑玩家1 */
+	HeadImage* computerPlayer_one_headImage;		/* 电脑玩家1头像 */
 	Player* computerPlayer_two;	/* 电脑玩家2 */
+	HeadImage* computerPlayer_two_headImage;		/* 电脑玩家2头像 */
 	Vector<Player*> players;	/* 存放当前所有的三位玩家，其中第一个是地主 */
 	int order; /* 当前应该出牌的玩家，和players协作 */
 	Vector<Poker*> pokers;	/* 扑克 */
