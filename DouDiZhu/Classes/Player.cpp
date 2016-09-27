@@ -3,7 +3,7 @@
 
 bool Player::init(){
 	isCall = false;
-	callPoint = 0;
+	callLandlordScore = 0; /* 初始化叫地主的分数是0 */
 	isLandlord = false;
 	isOutPoker = false;
 
@@ -29,6 +29,21 @@ void Player::removePoker(Poker* _poker){
 void Player::removeAllPoker(){
 	this->removeAllChildren();
 	pokers.clear();
+}
+
+void Player::insertCards(const Vector<Poker*>& _pokers){
+	this->removeAllChildren();	/* 删除所有已有的扑克，现在可以正常使用，如果以后添加其它种类孩子，可能会造成误删除 */
+	for (auto it : _pokers){	/* 将新的扑克插入 */
+		pokers.pushBack(it);
+	}
+	GlobalFunc::sort(pokers);	/* 对所有扑克进行排序 */
+	for (auto it : pokers){
+		if (playerType == PLAYER){	/* 如果是手动玩家，那么显示正面，且可以点击 */
+			it->showFront();	/* 扑克显示正面 */
+			it->setCanClick(true);  /* 扑克可以点击 */
+		}
+		this->addChild(it);		/* 添加到结点树中 */
+	}
 }
 
 void Player::updatePokerPos(){

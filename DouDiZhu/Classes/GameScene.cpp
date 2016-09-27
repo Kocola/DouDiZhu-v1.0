@@ -16,6 +16,7 @@ GameScene::GameScene(){
 	gameState = DEAL;	/* 初始状态是发牌 */
 	winSprite = nullptr;
 	lostSprite = nullptr;
+	landlordPlayer = nullptr;
 }
 
 GameScene::~GameScene(){
@@ -62,7 +63,9 @@ void GameScene::update(float delta){
 	deltaCount = 0;
 	switch (gameState){
 	/* 发好牌后，初始化出牌，并转入出牌模式 */
-	case DEAL: dealCard(); initOutCard(); gameState = OUTCARD; break;
+	case DEAL: dealCard(); initLandlordCard(); displayLandlordCard(); gameState = CALLLANDLORD; break;
+	case CALLLANDLORD: callLandlord(); break;
+	case CHOOSELANDLORD: chooseLandlord(); updateHeadImage();  outCardForLandlord(); initOutCardOrder(); gameState = OUTCARD; break;
 	case OUTCARD: outCardInOrder(delta); break;
 	case END: this->unschedule(schedule_selector(GameScene::update)); this->gameOver(); break;
 	default: break;
@@ -166,6 +169,7 @@ bool GameScene::initButton(){
 	auto visibleSize = Director::getInstance()->getVisibleSize();	/* 屏幕尺寸 */
 
 	auto _menu = Menu::create();
+	_menu->setPosition(Point(0, 0));	/* Menu创建时需要将其位置默认变为0 */
 
 	auto _pass = Sprite::create("Image/btn_pass.png");
 	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* 利用精灵帧来复制创建一个精灵 */
@@ -180,17 +184,65 @@ bool GameScene::initButton(){
 	out->setDisabledImage(_out_disabled);
 	out->setEnabled(false);		/* 初始化时设置 出牌 按钮不可按下*/
 
+	/* 不叫菜单 */
+	auto _nocall = Sprite::create("Image/btn_nocall.png");
+	auto _nocall_pressed = Sprite::create("Image/btn_nocall_selected.png");
+	nocall = MenuItemSprite::create(_nocall, _nocall_pressed, CC_CALLBACK_1(GameScene::nocall_callback, this));
+
+	/* 一分菜单 */
+	auto _call_one = Sprite::create("Image/btn_one.png");
+	auto _call_one_selected = Sprite::create("Image/btn_one_selected.png");
+	call_one = MenuItemSprite::create(_call_one, _call_one_selected, CC_CALLBACK_1(GameScene::callone_callback, this));
+
+	/* 二分菜单 */
+	auto _call_two = Sprite::create("Image/btn_two.png");
+	auto _call_two_selected = Sprite::create("Image/btn_two_selected.png");
+	call_two = MenuItemSprite::create(_call_two, _call_two_selected, CC_CALLBACK_1(GameScene::calltwo_callback, this));
+
+	/* 三分菜单 */
+	auto _call_three = Sprite::create("Image/btn_three.png");
+	auto _call_three_selected = Sprite::create("Image/btn_three_selected.png");
+	call_three = MenuItemSprite::create(_call_three, _call_three_selected, CC_CALLBACK_1(GameScene::callthree_callback, this));
+
 	pass->setVisible(false);
 	out->setVisible(false);/* 初始化时设置 两个按钮 不可见 */
 
-	auto _pass_pos = Point(visibleSize.width / 2 - _pass->getContentSize().width / 2 - 10, POKER_HEIGHT + DISPLAYCARDHEIGHT + _pass->getContentSize().height / 2 + 15);
+	/* 设置按钮位置 */
+	auto _pass_pos = Point(visibleSize.width / 2 - _pass->getContentSize().width / 2 - 10, POKER_HEIGHT + DISPLAYCARDHEIGHT + pass->getContentSize().height / 2 + 15);
 	auto _out_pos = Point(visibleSize.width / 2 + _pass->getContentSize().width / 2 + 10, POKER_HEIGHT + DISPLAYCARDHEIGHT + out->getContentSize().height / 2 + 15);
 	pass->setPosition(_pass_pos);
 	out->setPosition(_out_pos);
-	_menu->setPosition(Point(0, 0));
 
+	/* 将MenuItemSprite添加到Menu里显示 */
 	_menu->addChild(pass);
 	_menu->addChild(out);
+
+	/* 叫分按钮全部设置位不可见 */
+	nocall->setVisible(false);
+	call_one->setVisible(false);
+	call_two->setVisible(false);
+	call_three->setVisible(false);
+
+	/* 设置按钮位置 */
+	auto _nocall_pos = Point(visibleSize.width / 2 - call_one->getContentSize().width - BUTTON_INTERVAL - nocall->getContentSize().width / 2 - BUTTON_INTERVAL / 2, 
+		POKER_HEIGHT + DISPLAYCARDHEIGHT + nocall->getContentSize().height / 2 + 15);
+	nocall->setPosition(_nocall_pos);
+	auto _call_one_pos = Point(visibleSize.width / 2 - call_one->getContentSize().width / 2 - BUTTON_INTERVAL / 2, 
+		POKER_HEIGHT + DISPLAYCARDHEIGHT + call_one->getContentSize().height / 2 + 15);
+	call_one->setPosition(_call_one_pos);
+	auto _call_two_pos = Point(visibleSize.width / 2 + call_two->getContentSize().width / 2 + BUTTON_INTERVAL / 2, 
+		POKER_HEIGHT + DISPLAYCARDHEIGHT + call_two->getContentSize().height / 2 + 15);
+	call_two->setPosition(_call_two_pos);
+	auto _call_three_pos = Point(visibleSize.width / 2 + BUTTON_INTERVAL / 2 + call_two->getContentSize().width + BUTTON_INTERVAL + call_three->getContentSize().width / 2, 
+		POKER_HEIGHT + DISPLAYCARDHEIGHT + call_three->getContentSize().height / 2 + 15);
+	call_three->setPosition(_call_three_pos);
+
+	/* 将MenuItemSprite添加到Menu里显示 */
+	_menu->addChild(nocall);
+	_menu->addChild(call_one);
+	_menu->addChild(call_two);
+	_menu->addChild(call_three);
+
 	this->addChild(_menu);	/* MenuItemSprite对象必须存放在Menu中才能正常使用 */
 
 	return true;
@@ -223,16 +275,72 @@ bool GameScene::initHeadImage(){
 	return true;
 }
 
-void GameScene::dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront /* = false */){
-	GlobalFunc::sort(_pokers);
-	_player->setPoker(_pokers);	/* 这里必须将扑克进行排序后再添加，不然会因为添加顺序的原因导致覆盖的顺序不对 */
+bool GameScene::initCallLandlord(){
+	callLandlordOrder = 0;
 
-	bool isCanClick = displayFront;
-	for (auto it : _pokers){
-		_player->addChild(it);
-		it->setCanClick(isCanClick);
-		if(displayFront == true) it->showFront();
-		else it->showBack();
+	return true;
+}
+
+void GameScene::chooseLandlord(){
+	int maxlandlordscore = 0;
+	if (player->getCallLandlordScore() > maxlandlordscore){
+		maxlandlordscore = player->getCallLandlordScore();
+		landlordPlayer = player;
+	}
+	if (computerPlayer_one->getCallLandlordScore() > maxlandlordscore){
+		maxlandlordscore = computerPlayer_one->getCallLandlordScore();
+		landlordPlayer = computerPlayer_one;
+	}
+	if (computerPlayer_two->getCallLandlordScore() > maxlandlordscore){
+		maxlandlordscore = computerPlayer_two->getCallLandlordScore();
+		landlordPlayer = computerPlayer_two;
+	}
+	/* 设置分数最高的人是地主，如果都没有叫，那么这里让手动玩家成为地主 */
+	landlordPlayer = landlordPlayer == nullptr ? player : landlordPlayer;
+	landlordPlayer->setLandlord(true);
+}
+
+void GameScene::playerCallLandlord(){
+	/* 显示所有叫分按钮 */
+	nocall->setVisible(true);
+	call_one->setVisible(true);
+	call_two->setVisible(true);
+	call_three->setVisible(true);
+	/* 等待叫分 */
+}
+
+void GameScene::computerCallLandlord(Player* _computer){
+	log("Call Landlord!!!");
+
+	int score = automaticCallLandlord();
+	_computer->setCallLandlordScore(score);
+	isMaxCallLandlordScore(_computer);
+	updateCallLandlordOrder();	/* 更新叫下一个叫地主的ID */
+}
+
+void GameScene::callLandlord(){
+	switch (callLandlordOrder){
+	case 0: playerCallLandlord(); break;
+	case 1: computerCallLandlord(computerPlayer_one);
+	case 2: computerCallLandlord(computerPlayer_two);
+	default:  this->gameState = CHOOSELANDLORD; break;
+	}
+}
+
+int GameScene::automaticCallLandlord(){
+	srand((unsigned)time(0));	/* 开启随机种子 */
+	int score = rand() % 4;	/* 叫分一共有不叫，1，2，3四种情况，其中0表示不叫 */
+	return score;
+}
+
+void GameScene::updateCallLandlordOrder(){ 
+	this->callLandlordOrder = this->callLandlordOrder + 1; 
+}
+
+void GameScene::isMaxCallLandlordScore(Player* _player){
+	/* 如果该玩家是最高叫分，那么直接进入决定地主阶段 */
+	if (_player->getCallLandlordScore() == 3){
+		this->gameState = CHOOSELANDLORD;
 	}
 }
 
@@ -243,23 +351,53 @@ void GameScene::dealCard(){
 		_pokers.pushBack(pokers.at(i));
 	}
 
-	for (int i = TOTAL_POKER_NUM - 3; i < TOTAL_POKER_NUM; ++i){
+	/* 这是属于地主的三张牌 */
+	/*for (int i = TOTAL_POKER_NUM - 3; i < TOTAL_POKER_NUM; ++i){
 		_pokers.pushBack(pokers.at(i));
-	}
-	dealCard(player, _pokers, true);		/* 对玩家发牌 */
+	}*/
+	player->insertCards(_pokers);/* 对玩家发牌 */
 	player->updatePokerPos();	/* 初始化时对玩家的牌的位置进行更新，防止只显示一张牌 */
 
 	_pokers.clear();
 	for (int i = 1; i < TOTAL_POKER_NUM - 3; i += 3){
 		_pokers.pushBack(pokers.at(i));
 	}
-	dealCard(computerPlayer_one, _pokers);	/* 对电脑1发牌 */ 
+	computerPlayer_one->insertCards(_pokers);
 
 	_pokers.clear();
 	for (int i = 2; i < TOTAL_POKER_NUM - 3; i += 3){
 		_pokers.pushBack(pokers.at(i));
 	}
-	dealCard(computerPlayer_two, _pokers);
+	computerPlayer_two->insertCards(_pokers);
+}
+
+void GameScene::initLandlordCard(){
+	for (int i = TOTAL_POKER_NUM - 3; i < TOTAL_POKER_NUM; ++i){
+		cardForLandlord.pushBack(pokers.at(i));
+	}
+}
+
+void GameScene::displayLandlordCard(){
+	CC_ASSERT(cardForLandlord.size() > 0);
+	/* 复制属于地主的三张牌 */
+	for (int i = 0; i < cardForLandlord.size(); ++i){
+		cardDisplayInTop.pushBack(cardForLandlord.at(i)->clone());
+	}
+
+	/* 卡牌是无序的，需要先排序 */
+	GlobalFunc::sort(cardDisplayInTop);
+	/* 显示卡牌 */
+	float cardWidth = POKER_WIDTH;
+	float cardHeight = POKER_HEIGHT;
+	float interval = cardWidth - MIMIUM_CARDS_OVERLAPWIDTH;
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	float startPosX = visibleSize.width / 2 - 1.5 * interval;
+	float cardPosY = visibleSize.height - DISPLAYCARDINTOP_INTERVAL - cardHeight / 2;
+	for (int i = 0; i < cardDisplayInTop.size(); ++i){
+		cardDisplayInTop.at(i)->setPosition(Point(startPosX + cardWidth / 2 + i * interval, cardPosY));
+		cardDisplayInTop.at(i)->showFront();
+		this->addChild(cardDisplayInTop.at(i));
+	}
 }
 
 bool GameScene::isCurAndManualPlayer() const { 
@@ -268,7 +406,7 @@ bool GameScene::isCurAndManualPlayer() const {
 
 void GameScene::updateOutState(){
 	/* 如果当前出牌玩家不是player，那么不需要更新出牌按钮的可按性 */
-	if (players.at(order % 3) != player) return;
+	if (players.at(outcardOrder % 3) != player) return;
 	if (lastOutCards->getPokerValueType() == NONE || lastOutCards->getPokerOwner() == player){
 		/* 如果上一次的出牌是NONE（表示刚开始）或者 上一次出牌的持有者还是player，
 			那么判断当前待出的牌是不是正确的牌型，如果是，就令出牌按钮可按，否则不可按 */
@@ -288,12 +426,20 @@ void GameScene::updateOutState(){
 	}
 }
 
+void GameScene::setCallLandlordButtonUnVisible(){
+	/* 隐藏所有叫分按钮 */
+	nocall->setVisible(false);
+	call_one->setVisible(false);
+	call_two->setVisible(false);
+	call_three->setVisible(false);
+}
+
 void GameScene::pass_callback(Ref*){
 	pass->setVisible(false);
 	out->setVisible(false);
 	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
 
-	this->order = (this->order + 1) % 3;
+	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
 void GameScene::out_callback(Ref*){
@@ -325,11 +471,41 @@ void GameScene::out_callback(Ref*){
 		return;
 	}
 
-	this->order = (this->order + 1) % 3;
+	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
-void GameScene::initOutCard(){
-	this->order = 0;
+void GameScene::nocall_callback(Ref*){
+	log("Call Landlord---0!!!");
+
+	player->setCallLandlordScore(0);
+	updateCallLandlordOrder();	/* 更新叫分的ID，使下一个人叫分 */
+	setCallLandlordButtonUnVisible();
+}
+
+void GameScene::callone_callback(Ref*){
+	log("Call Landlord---1!!!");
+	player->setCallLandlordScore(1);
+	updateCallLandlordOrder();
+	setCallLandlordButtonUnVisible();
+}
+
+void GameScene::calltwo_callback(Ref*){
+	log("Call Landlord---2!!!");
+	player->setCallLandlordScore(2);
+	updateCallLandlordOrder();
+	setCallLandlordButtonUnVisible();
+}
+
+void GameScene::callthree_callback(Ref*){
+	log("Call Landlord---3!!!");
+	player->setCallLandlordScore(3);
+	updateCallLandlordOrder();
+	isMaxCallLandlordScore(player);
+	setCallLandlordButtonUnVisible();
+}
+
+void GameScene::initOutCardOrder(){
+	this->outcardOrder = 0;
 	/* 如果是地主就插入到Vector首位，这样就不需考虑顺序问题了，只要按照1，2，3的顺序来出牌即可 */
 	if (player->getLandlord() == true){
 		this->players.insert(0, player);
@@ -404,16 +580,19 @@ void GameScene::outCardForComputer(Player* _computer){
 		return;
 	}
 
-	this->order = (this->order + 1) % 3;
+	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
 void GameScene::outCardInOrder(float delta){
-	switch (order){
+	/*switch (outcardOrder){
 	case 0: outCardForPlayer(player); break;
 	case 1: outCardForComputer(computerPlayer_one); break;
 	case 2: outCardForComputer(computerPlayer_two); break;
 	default:break;
-	}
+	}*/
+	auto _player = players.at(outcardOrder);
+	if (_player->getPlayerType() == PLAYER) outCardForPlayer(_player);
+	else if (_player->getPlayerType() == COMPUTER) outCardForComputer(_player);
 }
 
 /* 出的牌放在高度和电脑的牌高度一致，最大宽度是1/2屏幕宽度 */
@@ -421,7 +600,8 @@ void GameScene::outCardInOrder(float delta){
 void GameScene::outCardInScene(){
 	if (cardsInScene.size() == 0) return;
 
-	int _height = computerPlayer_one->getPosition().y;
+	//int _height = computerPlayer_one->getPosition().y;
+	int _height = Director::getInstance()->getVisibleSize().height / 2;	/* 高度:屏幕居中位置 */
 	float _middleWidth = Director::getInstance()->getVisibleSize().width / 2;
 	float _maxWidth = Director::getInstance()->getVisibleSize().width / 2;
 
@@ -443,6 +623,13 @@ void GameScene::outCardInScene(){
 		/* 出的牌令其canClick属性设置为false，使其不可点击 */
 		cardsInScene.at(i)->setCanClick(false);
 	}
+}
+
+void GameScene::outCardForLandlord(){
+	landlordPlayer->insertCards(cardForLandlord);
+	landlordPlayer->updatePokerPos();	/* 添加扑克完毕后，重新排序 */
+
+	cardForLandlord.clear();	/* 属于地主的牌发给地主后，置容器为空 */
 }
 
 void GameScene::deleteCardInScene(){
@@ -473,11 +660,33 @@ void GameScene::runLostAnimation(){
 	lostSprite->runAction(Sequence::create(GameAnimation::getInstance()->getLostAnimation(), fadeOut, nullptr));
 }
 
+void GameScene::updateHeadImage(){
+	if (player->getLandlord() == true){
+		playerHeadImage->setHeadImageType(LANDLORD, RIGHT);
+	}else{
+		playerHeadImage->setHeadImageType(FARMER, RIGHT);
+	}
+
+	if (computerPlayer_one->getLandlord() == true){
+		computerPlayer_one_headImage->setHeadImageType(LANDLORD, RIGHT);
+	}else{
+		computerPlayer_one_headImage->setHeadImageType(FARMER, RIGHT);
+	}
+
+	if (computerPlayer_two->getLandlord() == true){
+		computerPlayer_two_headImage->setHeadImageType(LANDLORD, LEFT);
+	}
+	else{
+		computerPlayer_two_headImage->setHeadImageType(FARMER, LEFT);
+	}
+}
+
 void GameScene::gameStart(float delta){
 	initPoker();	/* 卡牌初始化 */
 	shuffleCards();	/* 洗牌 */
 	initPlayer();	/* 初始化多个玩家 */
 	initHeadImage();	/* 初始化多个玩家的头像 */
+	initCallLandlord();	/* 初始化叫地主 */
 
 	this->gameState = DEAL;
 	this->schedule(schedule_selector(GameScene::update), 2.0f);
