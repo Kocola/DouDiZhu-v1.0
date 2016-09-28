@@ -95,6 +95,8 @@ private:
 	void runLostAnimation();
 
 	void updateHeadImage(); /* 更新头像 */
+
+	void deleteCardInTop();		/* 删除显示在屏幕顶部的扑克 */
 private:
 	/* 更新叫分的ID，使下一个人叫分，如果当前顺序是4，那么进入决定地主阶段 */
 	void updateCallLandlordOrder();

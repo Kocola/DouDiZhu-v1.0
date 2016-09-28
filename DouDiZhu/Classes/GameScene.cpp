@@ -681,6 +681,13 @@ void GameScene::updateHeadImage(){
 	}
 }
 
+void GameScene::deleteCardInTop(){
+	for (auto it : cardDisplayInTop){
+		this->removeChild(it);
+	}
+	cardDisplayInTop.clear(); 
+}
+
 void GameScene::gameStart(float delta){
 	initPoker();	/* 卡牌初始化 */
 	shuffleCards();	/* 洗牌 */
@@ -717,6 +724,8 @@ void GameScene::gameOver(){
 	this->removeChild(playerHeadImage);
 	this->removeChild(computerPlayer_one_headImage);
 	this->removeChild(computerPlayer_two_headImage);
+
+	deleteCardInTop();	/* 清空在顶部的地主扑克 */
 
 	deleteCardInScene();	/* 删除在Scene的扑克 */
 
