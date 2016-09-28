@@ -63,4 +63,19 @@ enum PlayerSexuality{
 //	THREE		/* 三分 */
 //};
 
+enum PlayerOrderState{
+	ORDERREADY,		/* 准备 */
+	NOCALL,	/* 不叫 */
+	CALLONE,/* 一分 */
+	CALLTWO,/* 二分 */
+	CALLTHREE, /* 三分 */
+	PASS, /* 不出牌 */
+};
+
+/* 玩家命令状态的位置：左边Or右边 */
+enum PlayerOrderPos{
+	ORDERINLEFT,		/* 左边的 */
+	ORDERINRIGHT	/* 右边的 */
+};
+
 #endif

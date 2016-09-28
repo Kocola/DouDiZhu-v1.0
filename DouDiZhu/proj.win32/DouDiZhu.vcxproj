@@ -154,6 +154,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClCompile Include="..\Classes\HeadImage.cpp" />
     <ClCompile Include="..\Classes\OutCards.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
+    <ClCompile Include="..\Classes\PlayerOrder.cpp" />
     <ClCompile Include="..\Classes\Poker.cpp" />
     <ClCompile Include="..\Classes\PokerController.cpp" />
     <ClCompile Include="main.cpp" />
@@ -167,6 +168,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClInclude Include="..\Classes\HeadImage.h" />
     <ClInclude Include="..\Classes\OutCards.h" />
     <ClInclude Include="..\Classes\Player.h" />
+    <ClInclude Include="..\Classes\PlayerOrder.h" />
     <ClInclude Include="..\Classes\Poker.h" />
     <ClInclude Include="..\Classes\PokerController.h" />
     <ClInclude Include="..\Classes\GameRules.h" />

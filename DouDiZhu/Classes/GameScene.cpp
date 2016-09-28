@@ -7,16 +7,23 @@
 #include "HeadImage.h"
 #include "OutCards.h"
 #include "Player.h"
+#include "PlayerOrder.h"
 #include "Poker.h"
 #include "PokerController.h"
 
 using namespace std;
+
+#define HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER 10	/* 头像和玩家命令之间的水平空隙是10 */
 
 GameScene::GameScene(){
 	gameState = DEAL;	/* 初始状态是发牌 */
 	winSprite = nullptr;
 	lostSprite = nullptr;
 	landlordPlayer = nullptr;
+
+	playerOrder = nullptr;
+	computerPlayer_one_order = nullptr;
+	computerPlayer_two_order = nullptr;
 }
 
 GameScene::~GameScene(){
@@ -47,7 +54,7 @@ bool GameScene::init(){
 			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker),
 			"UpdatePokerPosAndRemovePoker", nullptr);
 		//this->schedule(schedule_selector(GameScene::update));
-		this->scheduleOnce(schedule_selector(GameScene::gameStart), 0.0f);
+		this->scheduleOnce(schedule_selector(GameScene::gameStart), 1.0f);
 		tRet = true;
 	} while (0);
 
@@ -62,7 +69,7 @@ void GameScene::update(float delta){
 	}
 	deltaCount = 0;
 	switch (gameState){
-	/* 发好牌后，初始化出牌，并转入出牌模式 */
+	case READY: 
 	case DEAL: dealCard(); initLandlordCard(); displayLandlordCard(); gameState = CALLLANDLORD; break;
 	case CALLLANDLORD: callLandlord(); break;
 	case CHOOSELANDLORD: chooseLandlord(); updateHeadImage();  outCardForLandlord(); initOutCardOrder(); gameState = OUTCARD; break;
@@ -171,6 +178,10 @@ bool GameScene::initButton(){
 	auto _menu = Menu::create();
 	_menu->setPosition(Point(0, 0));	/* Menu创建时需要将其位置默认变为0 */
 
+	auto _start = Sprite::create("Image/btn_start.png");
+	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
+	btn_start = MenuItemSprite::create(_start, _start_pressed);
+
 	auto _pass = Sprite::create("Image/btn_pass.png");
 	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* 利用精灵帧来复制创建一个精灵 */
 	auto _pass_disabled = Sprite::create("Image/btn_pass.png");
@@ -271,6 +282,28 @@ bool GameScene::initHeadImage(){
 	computerPlayer_two_headImage->setPosition(computerTwoHeadImagePos);
 	this->addChild(computerPlayer_two_headImage);
 	//computerPlayer_two_headImage->setHeadImageType(FARMER, LEFT);
+
+	return true;
+}
+
+bool GameScene::initPlayerOrder(){
+	playerOrder = PlayerOrder::create();	/* 头像默认是在屏幕左边 */
+	auto headImagePos = playerHeadImage->getPosition();	/* 玩家命令是和头像的位置相对的，因此要先获取对应玩家头像的位置 */
+	playerOrder->setPosition(headImagePos.x + (playerHeadImage->getContentSize().width / 2 + 
+		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + playerOrder->getContentSize().width / 2), headImagePos.y);
+	this->addChild(playerOrder);		/* 添加到节点树中 */
+
+	computerPlayer_one_order = PlayerOrder::create();	/* 电脑1头像默认是在屏幕左边 */
+	headImagePos = computerPlayer_one_headImage->getPosition();
+	computerPlayer_one_order->setPosition(headImagePos.x + (playerHeadImage->getContentSize().width / 2 +
+		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + computerPlayer_one_order->getContentSize().width / 2), headImagePos.y);
+	this->addChild(computerPlayer_one_order);
+
+	computerPlayer_two_order = PlayerOrder::create();	/* 电脑2头像默认是在屏幕右边 */
+	headImagePos = computerPlayer_two_headImage->getPosition();
+	computerPlayer_two_order->setPosition(headImagePos.x - (playerHeadImage->getContentSize().width / 2 +
+		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + computerPlayer_two_order->getContentSize().width / 2), headImagePos.y);
+	this->addChild(computerPlayer_two_order);
 
 	return true;
 }
@@ -693,6 +726,7 @@ void GameScene::gameStart(float delta){
 	shuffleCards();	/* 洗牌 */
 	initPlayer();	/* 初始化多个玩家 */
 	initHeadImage();	/* 初始化多个玩家的头像 */
+	initPlayerOrder();	/* 初始化玩家命令 */
 	initCallLandlord();	/* 初始化叫地主 */
 
 	this->gameState = DEAL;
@@ -724,12 +758,16 @@ void GameScene::gameOver(){
 	this->removeChild(playerHeadImage);
 	this->removeChild(computerPlayer_one_headImage);
 	this->removeChild(computerPlayer_two_headImage);
+	/* 删除玩家命令 */
+	this->removeChild(playerOrder);
+	this->removeChild(computerPlayer_one_order);
+	this->removeChild(computerPlayer_two_order);
 
 	deleteCardInTop();	/* 清空在顶部的地主扑克 */
 
 	deleteCardInScene();	/* 删除在Scene的扑克 */
 
-	this->scheduleOnce(schedule_selector(GameScene::gameStart), 10.0f);
+	this->scheduleOnce(schedule_selector(GameScene::gameStart), 5.0f);
 }
 
 void GameScene::test(){

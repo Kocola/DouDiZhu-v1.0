@@ -2,13 +2,17 @@
 
 SpriteFrameCache* HeadImage::spriteFrameCache = nullptr;
 
+#define HEADIMAGE_SCALE 0.7 
+
 bool HeadImage::init(){
 	headBox = Sprite::create("Image/head_box.png");
-	headBox->setScale(0.7);
+	headBox->setScale(HEADIMAGE_SCALE);
 	this->addChild(headBox);
 	curHeadImage = Sprite::create("Image/no_head.png");
-	curHeadImage->setScale(0.7);
+	curHeadImage->setScale(HEADIMAGE_SCALE);
 	this->addChild(curHeadImage);
+
+	this->setContentSize(headBox->getContentSize() * HEADIMAGE_SCALE);
 
 	/* ³õÊ¼»¯¾«ÁéÖ¡»º´æ */
 	spriteFrameCache = SpriteFrameCache::getInstance();

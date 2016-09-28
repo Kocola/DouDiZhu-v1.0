@@ -10,6 +10,7 @@ class Player;
 class GameRules;
 class OutCards;
 class HeadImage;
+class PlayerOrder;
 
 class GameScene : public Layer{
 public:
@@ -25,10 +26,12 @@ private:
 	bool initPlayer();
 	bool initPoker();
 	bool shuffleCards();
-	bool initButton();	/* 创建出牌和不出按钮 */
+	bool initButton();	/* 创建按钮 */
 	bool initHeadImage();	/* 初始化头像，包含头像和头像框 */
+	bool initPlayerOrder();	/* 初始化玩家命令状态，初始化全部为 准备 */
 	bool initCallLandlord();	/* 初始化叫地主 */
 private:
+	/* 准备 */
 	/* 发牌 */
 	void dealCard();	/* 发牌 */
 	//void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);/*Player::insertCards替代 */
@@ -107,13 +110,16 @@ private:
 private:
 	Player* player;	/* 手动玩家 */
 	HeadImage* playerHeadImage;		/* 手动玩家头像 */
+	PlayerOrder* playerOrder;	/* 手动玩家的当前命令状态，包含准备，不出，叫分等 */
 	Player* computerPlayer_one;	/* 电脑玩家1 */
 	HeadImage* computerPlayer_one_headImage;		/* 电脑玩家1头像 */
+	PlayerOrder* computerPlayer_one_order;	/* 电脑玩家1命令状态 */
 	Player* computerPlayer_two;	/* 电脑玩家2 */
+	HeadImage* computerPlayer_two_headImage;		/* 电脑玩家2头像 */
+	PlayerOrder* computerPlayer_two_order;	/* 电脑玩家2命令状态 */
 
 	Player* landlordPlayer;	/* 保存地主指针 */
 
-	HeadImage* computerPlayer_two_headImage;		/* 电脑玩家2头像 */
 	Vector<Player*> players;	/* 存放当前所有的三位玩家，其中第一个是地主 */
 	int outcardOrder; /* 当前应该出牌的玩家，和players协作 */
 	Vector<Poker*> pokers;	/* 扑克 */
@@ -121,10 +127,13 @@ private:
 private:
 	MenuItemSprite* pass;	/* 不出按钮 */
 	MenuItemSprite* out;	/* 出牌按钮 */
+
 	MenuItemSprite* nocall;	/* 不叫按钮 */
 	MenuItemSprite* call_one;	/* 叫一分 */
 	MenuItemSprite* call_two;	/* 叫二分 */
 	MenuItemSprite* call_three;	/* 叫三分 */
+
+	MenuItemSprite* btn_start;	/* 开始游戏按钮 */
 private:
 	GAMESTATE gameState;
 	OutCards* lastOutCards;	/* 上一次的出牌信息 */

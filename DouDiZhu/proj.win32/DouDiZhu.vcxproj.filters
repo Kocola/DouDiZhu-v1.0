@@ -40,6 +40,9 @@
     <Filter Include="src\游戏\玩家\玩家头像">
       <UniqueIdentifier>{f6a455f7-0f87-466d-8621-36ff02a4af7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\游戏\玩家\命令">
+      <UniqueIdentifier>{7673854e-452a-4e0b-b07b-1d0cc5383316}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\HeadImage.cpp">
       <Filter>src\游戏\玩家\玩家头像</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PlayerOrder.cpp">
+      <Filter>src\游戏\玩家\命令</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\HeadImage.h">
       <Filter>src\游戏\玩家\玩家头像</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PlayerOrder.h">
+      <Filter>src\游戏\玩家\命令</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
