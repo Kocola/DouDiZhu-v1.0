@@ -69,7 +69,7 @@ void GameScene::update(float delta){
 	}
 	deltaCount = 0;
 	switch (gameState){
-	case READY: 
+	case READY: ready(); break;
 	case DEAL: dealCard(); initLandlordCard(); displayLandlordCard(); gameState = CALLLANDLORD; break;
 	case CALLLANDLORD: callLandlord(); break;
 	case CHOOSELANDLORD: chooseLandlord(); updateHeadImage();  outCardForLandlord(); initOutCardOrder(); gameState = OUTCARD; break;
@@ -178,9 +178,10 @@ bool GameScene::initButton(){
 	auto _menu = Menu::create();
 	_menu->setPosition(Point(0, 0));	/* Menu创建时需要将其位置默认变为0 */
 
+	/* 开始按钮的菜单 */
 	auto _start = Sprite::create("Image/btn_start.png");
 	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
-	btn_start = MenuItemSprite::create(_start, _start_pressed);
+	btn_start = MenuItemSprite::create(_start, _start_pressed, CC_CALLBACK_1(GameScene::start_callback, this));	
 
 	auto _pass = Sprite::create("Image/btn_pass.png");
 	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* 利用精灵帧来复制创建一个精灵 */
@@ -227,6 +228,17 @@ bool GameScene::initButton(){
 	/* 将MenuItemSprite添加到Menu里显示 */
 	_menu->addChild(pass);
 	_menu->addChild(out);
+
+	/* 设置开始按钮不可见 */
+	btn_start->setVisible(false);
+
+	/* 设置开始按钮位置 ： 宽在屏幕中间，高度和玩家头像对齐*/
+	auto start_pos = Point(visibleSize.width / 2, 
+		DISPLAYCARDHEIGHT + POKER_HEIGHT + 20 + btn_start->getContentSize().height / 2);
+	btn_start->setPosition(start_pos);
+
+	/* 将 开始  MenuItemSprite添加到Menu里显示 */
+	_menu->addChild(btn_start);
 
 	/* 叫分按钮全部设置位不可见 */
 	nocall->setVisible(false);
@@ -291,18 +303,21 @@ bool GameScene::initPlayerOrder(){
 	auto headImagePos = playerHeadImage->getPosition();	/* 玩家命令是和头像的位置相对的，因此要先获取对应玩家头像的位置 */
 	playerOrder->setPosition(headImagePos.x + (playerHeadImage->getContentSize().width / 2 + 
 		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + playerOrder->getContentSize().width / 2), headImagePos.y);
+	playerOrder->setVisible(false);	/* 玩家命令初始化时不可见 */
 	this->addChild(playerOrder);		/* 添加到节点树中 */
 
 	computerPlayer_one_order = PlayerOrder::create();	/* 电脑1头像默认是在屏幕左边 */
 	headImagePos = computerPlayer_one_headImage->getPosition();
 	computerPlayer_one_order->setPosition(headImagePos.x + (playerHeadImage->getContentSize().width / 2 +
 		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + computerPlayer_one_order->getContentSize().width / 2), headImagePos.y);
+	computerPlayer_one_order->setVisible(false);	/* 电脑玩家1的命令初始化时不可见 */
 	this->addChild(computerPlayer_one_order);
 
 	computerPlayer_two_order = PlayerOrder::create();	/* 电脑2头像默认是在屏幕右边 */
 	headImagePos = computerPlayer_two_headImage->getPosition();
 	computerPlayer_two_order->setPosition(headImagePos.x - (playerHeadImage->getContentSize().width / 2 +
 		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + computerPlayer_two_order->getContentSize().width / 2), headImagePos.y);
+	computerPlayer_two_order->setVisible(false);	/* 电脑玩家2的命令初始化时不可见 */
 	this->addChild(computerPlayer_two_order);
 
 	return true;
@@ -331,6 +346,9 @@ void GameScene::chooseLandlord(){
 	/* 设置分数最高的人是地主，如果都没有叫，那么这里让手动玩家成为地主 */
 	landlordPlayer = landlordPlayer == nullptr ? player : landlordPlayer;
 	landlordPlayer->setLandlord(true);
+
+	/* 隐藏所有玩家的叫分命令状态 */
+	this->setPlayerOrderStateUnVisible();
 }
 
 void GameScene::playerCallLandlord(){
@@ -342,11 +360,32 @@ void GameScene::playerCallLandlord(){
 	/* 等待叫分 */
 }
 
-void GameScene::computerCallLandlord(Player* _computer){
-	log("Call Landlord!!!");
+void GameScene::setCallLandlordOrderState(Player* _player, int _score){
+	/* 根据分数找到对应的叫地主状态 */
+	PlayerOrderState _playerOrderState;
+	switch (_score){
+	case 0:_playerOrderState = NOCALL; break;
+	case 1:_playerOrderState = CALLONE; break;
+	case 2:_playerOrderState = CALLTWO; break;
+	case 3:_playerOrderState = CALLTHREE; break;
+	default: _playerOrderState = NOCALL; break;
+	}
+	/* 根据玩家找到对应的命令对象 */
+	PlayerOrder* _playerOrder = nullptr;
+	if (_player == this->player) _playerOrder = this->playerOrder;
+	else if (_player == this->computerPlayer_one) _playerOrder = computerPlayer_one_order;
+	else if (_player == this->computerPlayer_two) _playerOrder = computerPlayer_two_order;
 
+	CC_ASSERT(_playerOrder != nullptr);
+
+	_playerOrder->setPlayerOrderState(_playerOrderState);
+	_playerOrder->setVisible(true);
+}
+
+void GameScene::computerCallLandlord(Player* _computer){
 	int score = automaticCallLandlord();
 	_computer->setCallLandlordScore(score);
+	this->setCallLandlordOrderState(_computer, score);
 	isMaxCallLandlordScore(_computer);
 	updateCallLandlordOrder();	/* 更新叫下一个叫地主的ID */
 }
@@ -354,8 +393,8 @@ void GameScene::computerCallLandlord(Player* _computer){
 void GameScene::callLandlord(){
 	switch (callLandlordOrder){
 	case 0: playerCallLandlord(); break;
-	case 1: computerCallLandlord(computerPlayer_one);
-	case 2: computerCallLandlord(computerPlayer_two);
+	case 1: computerCallLandlord(computerPlayer_one); break;
+	case 2: computerCallLandlord(computerPlayer_two); break;
 	default:  this->gameState = CHOOSELANDLORD; break;
 	}
 }
@@ -375,6 +414,30 @@ void GameScene::isMaxCallLandlordScore(Player* _player){
 	if (_player->getCallLandlordScore() == 3){
 		this->gameState = CHOOSELANDLORD;
 	}
+}
+
+void GameScene::ready(){
+	computerPlayer_one->setReady(true);	/* 电脑端玩家1准备好 */
+	computerPlayer_one_order->setVisible(true);	/* 电脑玩家1的 准备 可见 */
+	computerPlayer_two->setReady(true);	/* 电脑端玩家2准备好 */
+	computerPlayer_two_order->setVisible(true);	/* 电脑玩家2的 准备 可见 */
+
+	btn_start->setVisible(true);
+
+	if (this->checkAllReady()){
+		/* 所有人准备好后，将命令窗口隐藏 */
+		this->setPlayerOrderStateUnVisible();
+
+		btn_start->setVisible(false);	/* 隐藏开始按钮 */
+
+		this->gameState = DEAL;	/* 所有人准备好后，切换游戏状态 */
+	}
+}
+
+bool GameScene::checkAllReady(){
+	return player->isReady() == true
+		&& computerPlayer_one->isReady() == true
+		&& computerPlayer_two->isReady() == true;
 }
 
 void GameScene::dealCard(){
@@ -467,10 +530,28 @@ void GameScene::setCallLandlordButtonUnVisible(){
 	call_three->setVisible(false);
 }
 
+void GameScene::setPlayerOrderStateUnVisible(){
+	/* 隐藏所有命令状态 */
+	playerOrder->setVisible(false);
+	computerPlayer_one_order->setVisible(false);
+	computerPlayer_two_order->setVisible(false);
+}
+
+void GameScene::start_callback(Ref*){
+	playerOrder->setVisible(true);
+
+	btn_start->setVisible(false);
+
+	player->setReady(true);	/* 设置手动玩家已经准备好 */
+}
+
 void GameScene::pass_callback(Ref*){
 	pass->setVisible(false);
 	out->setVisible(false);
 	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	playerOrder->setPlayerOrderState(PASS);	/* 显示不出的状态 */
+	playerOrder->setVisible(true);
 
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
@@ -508,30 +589,29 @@ void GameScene::out_callback(Ref*){
 }
 
 void GameScene::nocall_callback(Ref*){
-	log("Call Landlord---0!!!");
-
 	player->setCallLandlordScore(0);
+	this->setCallLandlordOrderState(player, player->getCallLandlordScore());
 	updateCallLandlordOrder();	/* 更新叫分的ID，使下一个人叫分 */
 	setCallLandlordButtonUnVisible();
 }
 
 void GameScene::callone_callback(Ref*){
-	log("Call Landlord---1!!!");
 	player->setCallLandlordScore(1);
+	this->setCallLandlordOrderState(player, player->getCallLandlordScore());
 	updateCallLandlordOrder();
 	setCallLandlordButtonUnVisible();
 }
 
 void GameScene::calltwo_callback(Ref*){
-	log("Call Landlord---2!!!");
 	player->setCallLandlordScore(2);
+	this->setCallLandlordOrderState(player, player->getCallLandlordScore());
 	updateCallLandlordOrder();
 	setCallLandlordButtonUnVisible();
 }
 
 void GameScene::callthree_callback(Ref*){
-	log("Call Landlord---3!!!");
 	player->setCallLandlordScore(3);
+	this->setCallLandlordOrderState(player, player->getCallLandlordScore());
 	updateCallLandlordOrder();
 	isMaxCallLandlordScore(player);
 	setCallLandlordButtonUnVisible();
@@ -606,6 +686,15 @@ void GameScene::outCardForComputer(Player* _computer){
 		deleteCardInScene();
 		cardsInScene = _pokers;	/* 如果电脑出牌了，那么将出的牌放入待显示在Scene中的容器 */
 		outCardInScene();
+	}else{
+		PlayerOrder* _playerOrder = nullptr;
+		if (_computer == computerPlayer_one){
+			_playerOrder = computerPlayer_one_order;
+		}else if (_computer == computerPlayer_two){
+			_playerOrder = computerPlayer_two_order;
+		}
+		_playerOrder->setPlayerOrderState(PASS);	/* 显示不出的状态 */
+		_playerOrder->setVisible(true);
 	}
 	 
 	if (_computer->getPoker().size() == 0){
@@ -617,12 +706,8 @@ void GameScene::outCardForComputer(Player* _computer){
 }
 
 void GameScene::outCardInOrder(float delta){
-	/*switch (outcardOrder){
-	case 0: outCardForPlayer(player); break;
-	case 1: outCardForComputer(computerPlayer_one); break;
-	case 2: outCardForComputer(computerPlayer_two); break;
-	default:break;
-	}*/
+	this->setPlayerOrderStateUnVisible();	/* 将所有的玩家的状态隐藏 */
+
 	auto _player = players.at(outcardOrder);
 	if (_player->getPlayerType() == PLAYER) outCardForPlayer(_player);
 	else if (_player->getPlayerType() == COMPUTER) outCardForComputer(_player);
@@ -729,7 +814,7 @@ void GameScene::gameStart(float delta){
 	initPlayerOrder();	/* 初始化玩家命令 */
 	initCallLandlord();	/* 初始化叫地主 */
 
-	this->gameState = DEAL;
+	this->gameState = READY;
 	this->schedule(schedule_selector(GameScene::update), 2.0f);
 }
 

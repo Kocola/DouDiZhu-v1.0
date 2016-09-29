@@ -1,9 +1,6 @@
-﻿生成启动时间为 2016/9/28 19:29:37。
+﻿生成启动时间为 2016/9/29 13:58:14。
      1>项目“F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\DouDiZhu.vcxproj”在节点 2 上(Build 个目标)。
-     1>ClCompile:
-         E:\Visual Studio2013\VC\bin\CL.exe /c /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\audio\include" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\external" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\external\chipmunk\include\chipmunk" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\extensions" /I..\Classes /I.. /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\cocos\editor-support" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\cocos" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\cocos\platform" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\cocos\platform\desktop" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\external\glfw3\include\win32" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\external\win32-specific\gles\include\OGLES" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\external\freetype2\include\win32\freetype2" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\external\freetype2\include\win32\\" /I"C:\Cocos\frameworks\cocos2d-x-3.8.1\cocos\2d\..\..\external" /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _VARIADIC_MAX=10 /D _USING_V110_SDK71_ /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc120.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\GameScene.cpp
-         GameScene.cpp
-       PreLinkEvent:
+     1>PreLinkEvent:
          if not exist "F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\" mkdir "F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\"
          xcopy /Y /Q "C:\Cocos\frameworks\cocos2d-x-3.8.1\prebuilt\win32\*.*" "F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\"
          
@@ -23,6 +20,8 @@
          Debug.win32\Poker.obj
          Debug.win32\PokerController.obj
          Debug.win32\main.obj
+     1>AppDelegate.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/SAFESEH”规范)
+            正在创建库 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\DouDiZhu.lib 和对象 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\DouDiZhu.exp
          DouDiZhu.vcxproj -> F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\DouDiZhu.exe
        CustomBuildStep:
          if not exist "F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\" mkdir "F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.win32\Debug.win32\"
@@ -34,4 +33,4 @@
 
 生成成功。
 
-已用时间 00:00:04.93
+已用时间 00:00:01.09

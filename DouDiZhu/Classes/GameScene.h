@@ -32,12 +32,15 @@ private:
 	bool initCallLandlord();	/* 初始化叫地主 */
 private:
 	/* 准备 */
+	void ready();
+	bool checkAllReady();	/* 检查所有人是否都准备好 */
 	/* 发牌 */
 	void dealCard();	/* 发牌 */
 	//void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);/*Player::insertCards替代 */
 	void initLandlordCard();	/* 初始化属于地主的三张牌 */
 	void displayLandlordCard();	/*在某个位置显示属于地主的三张牌 */
 	/* 叫地主 */
+	void setCallLandlordOrderState(Player* _player, int _score);	/* 设置叫地主时玩家的命令状态 */
 	void computerCallLandlord(Player* _computer);
 	void playerCallLandlord();	/* 手动玩家叫地主 */
 	void callLandlord();	/* 叫地主模块 */
@@ -54,6 +57,8 @@ private:
 	void test();	/* 测试模块 */
 private:
 	/* 回调函数 */
+	void start_callback(Ref*);
+
 	void pass_callback(Ref*);
 	void out_callback(Ref*);
 
@@ -74,6 +79,8 @@ public:
 	void setOutState(bool state){ this->out->setEnabled(state); }
 	/* 隐藏叫分按钮 */
 	void setCallLandlordButtonUnVisible();
+	/* 隐藏玩家命令状态 */
+	void setPlayerOrderStateUnVisible();
 public:
 	/* 出牌，将牌放在场景上 */
 	void outCardInScene();
