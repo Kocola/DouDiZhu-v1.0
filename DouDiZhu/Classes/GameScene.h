@@ -22,10 +22,10 @@ public:
 
 	virtual void update(float delta);
 private:
-	bool initBackground();
-	bool initPlayer();
-	bool initPoker();
-	bool shuffleCards();
+	bool initBackground();	/* 初始化背景 */
+	bool initPlayer();	/* 初始化玩家 */
+	bool initPoker();	/* 初始化扑克 */
+	bool shuffleCards();	/* 洗牌程序 */
 	bool initButton();	/* 创建按钮 */
 	bool initHeadImage();	/* 初始化头像，包含头像和头像框 */
 	bool initPlayerOrder();	/* 初始化玩家命令状态，初始化全部为 准备 */
@@ -49,17 +49,17 @@ private:
 	void outLandlordCard();	/* 发放属于地主的三张牌 */
 	/* 出牌 */
 	void initOutCardOrder();
+	Vector<Poker*> searchOutCard(Player* _player);	/* 针对上家的出牌，检查是否有能够出的牌，返回能出的牌的集合 */
 	void outCardInOrder(float delta);
 	void outCardForPlayer(Player* _player);	/* 轮到玩家出牌 */
 	void outCardForComputer(Player* _computer);	/* 轮到电脑出牌 */
 	void outCardForLandlord();	/* 给地主出牌 */
-
-	void test();	/* 测试模块 */
 private:
 	/* 回调函数 */
 	void start_callback(Ref*);
 
 	void pass_callback(Ref*);
+	void hint_callback(Ref*);
 	void out_callback(Ref*);
 
 	void nocall_callback(Ref*);
@@ -130,9 +130,11 @@ private:
 	Vector<Player*> players;	/* 存放当前所有的三位玩家，其中第一个是地主 */
 	int outcardOrder; /* 当前应该出牌的玩家，和players协作 */
 	Vector<Poker*> pokers;	/* 扑克 */
+	Vector<Poker*> hintPokers;		/* 提示要出的牌 */
 	int callLandlordOrder;	/* 叫地主顺序 */
 private:
 	MenuItemSprite* pass;	/* 不出按钮 */
+	MenuItemSprite* hint;	/* 提示按钮 */
 	MenuItemSprite* out;	/* 出牌按钮 */
 
 	MenuItemSprite* nocall;	/* 不叫按钮 */
@@ -149,6 +151,7 @@ private:
 	Vector<Poker*> cardDisplayInTop;	/* 显示在屏幕顶部的属于地主的三张牌 */
 	Sprite* winSprite;
 	Sprite* lostSprite;
+	Sprite* passHint;	/* 没有牌打得过上家的提示 */
 };
 
 #endif

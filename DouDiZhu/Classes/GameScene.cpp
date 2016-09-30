@@ -19,6 +19,7 @@ GameScene::GameScene(){
 	gameState = DEAL;	/* 初始状态是发牌 */
 	winSprite = nullptr;
 	lostSprite = nullptr;
+	passHint = nullptr;
 	landlordPlayer = nullptr;
 
 	playerOrder = nullptr;
@@ -44,11 +45,14 @@ bool GameScene::init(){
 	bool tRet = false;
 	do {
 		CC_BREAK_IF(!initBackground());	/* 初始化背景 */
-		//CC_BREAK_IF(!initPoker());		/* 创建扑克 */
-		//CC_BREAK_IF(!shuffleCards());		/* 洗牌 */
-		//CC_BREAK_IF(!initPlayer());		/* 初始化玩家，包括电脑 */
-		//CC_BREAK_IF(!initHeadImage());
 		CC_BREAK_IF(!initButton());	/* 初始化按钮 */
+
+		passHint = Sprite::create("Image/passhint.png");	/* 无牌打得过上家的提示 精灵 */
+		auto _hint_btn_pos = hint->getPosition();
+		auto _hint_btn_size = hint->getContentSize();
+		passHint->setPosition(Point(_hint_btn_pos.x, _hint_btn_pos.y + _hint_btn_size.height / 2 + 15 + passHint->getContentSize().height / 2));
+		this->addChild(passHint);
+		passHint->setVisible(false);	/* 初始不可见 */
 
 		NotificationCenter::getInstance()->addObserver(this,
 			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker),
@@ -183,12 +187,22 @@ bool GameScene::initButton(){
 	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
 	btn_start = MenuItemSprite::create(_start, _start_pressed, CC_CALLBACK_1(GameScene::start_callback, this));	
 
+	/* 不出按钮 */
 	auto _pass = Sprite::create("Image/btn_pass.png");
 	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* 利用精灵帧来复制创建一个精灵 */
 	auto _pass_disabled = Sprite::create("Image/btn_pass.png");
 	pass = MenuItemSprite::create(_pass, _pass_pressed, CC_CALLBACK_1(GameScene::pass_callback, this));
 	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* 这样写会出错，为什么？*/ 
 
+	/* 提示按钮 */
+	auto _hint = Sprite::create("Image/btn_hint.png");
+	auto _hint_pressed = Sprite::create("Image/btn_hint_selected.png");
+	auto _hint_disabled = Sprite::create("Image/btn_hint_disabled.png");
+	hint = MenuItemSprite::create(_hint, _hint_pressed, CC_CALLBACK_1(GameScene::hint_callback,this));
+	hint->setDisabledImage(_hint_disabled);
+	hint->setEnabled(false);		/* 提示是否可以点击是依据点前是否存在大于上一家的牌 */
+
+	/* 出牌按钮 */
 	auto _out = Sprite::create("Image/btn_out.png");
 	auto _out_pressed = Sprite::create("Image/btn_out_selected.png");
 	auto _out_disabled = Sprite::create("Image/btn_out_disabled.png");
@@ -216,17 +230,23 @@ bool GameScene::initButton(){
 	auto _call_three_selected = Sprite::create("Image/btn_three_selected.png");
 	call_three = MenuItemSprite::create(_call_three, _call_three_selected, CC_CALLBACK_1(GameScene::callthree_callback, this));
 
-	pass->setVisible(false);
+	pass->setVisible(false);  
+	hint->setVisible(false);
 	out->setVisible(false);/* 初始化时设置 两个按钮 不可见 */
 
 	/* 设置按钮位置 */
-	auto _pass_pos = Point(visibleSize.width / 2 - _pass->getContentSize().width / 2 - 10, POKER_HEIGHT + DISPLAYCARDHEIGHT + pass->getContentSize().height / 2 + 15);
-	auto _out_pos = Point(visibleSize.width / 2 + _pass->getContentSize().width / 2 + 10, POKER_HEIGHT + DISPLAYCARDHEIGHT + out->getContentSize().height / 2 + 15);
+	auto _posY = POKER_HEIGHT + DISPLAYCARDHEIGHT + pass->getContentSize().height / 2 + 15;
+	auto _hint_width = hint->getContentSize().width;
+	auto _pass_pos = Point(visibleSize.width / 2 - (_hint_width / 2 + BUTTON_INTERVAL + _pass->getContentSize().width / 2), _posY);
+	auto _hint_pos = Point(visibleSize.width / 2, _posY);
+	auto _out_pos = Point(visibleSize.width / 2 + (_hint_width / 2 + BUTTON_INTERVAL + _out->getContentSize().width / 2), _posY);
 	pass->setPosition(_pass_pos);
+	hint->setPosition(_hint_pos);
 	out->setPosition(_out_pos);
 
 	/* 将MenuItemSprite添加到Menu里显示 */
 	_menu->addChild(pass);
+	_menu->addChild(hint);
 	_menu->addChild(out);
 
 	/* 设置开始按钮不可见 */
@@ -501,6 +521,7 @@ bool GameScene::isCurAndManualPlayer() const {
 }
 
 void GameScene::updateOutState(){
+	if (players.size() == 0) return;	/* 如果players数组还没有初始化，那么直接放回，不然会出现断言 */
 	/* 如果当前出牌玩家不是player，那么不需要更新出牌按钮的可按性 */
 	if (players.at(outcardOrder % 3) != player) return;
 	if (lastOutCards->getPokerValueType() == NONE || lastOutCards->getPokerOwner() == player){
@@ -546,9 +567,13 @@ void GameScene::start_callback(Ref*){
 }
 
 void GameScene::pass_callback(Ref*){
-	pass->setVisible(false);
-	out->setVisible(false);
+	pass->setVisible(false);		/* 不出按钮不可见 */
+	hint->setVisible(false);		/* 提示按钮不可见 */
+	hint->setEnabled(false);	/* 提示按钮不可按下 */
+	out->setVisible(false);		/* 出牌按钮不可见 */
 	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	passHint->setVisible(false);
 
 	playerOrder->setPlayerOrderState(PASS);	/* 显示不出的状态 */
 	playerOrder->setVisible(true);
@@ -556,10 +581,32 @@ void GameScene::pass_callback(Ref*){
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
+void GameScene::hint_callback(Ref*){
+	/* 如果点击提示按钮，那么首先要将自己点击的牌恢复到正常位置 */
+	Vector<Poker*> _pokers = this->arrWaitPlayOut;	/* 不可以直接使用this->arrWaitPlayOut，因为恢复牌时会删除该容器里的内容，这样容易出错 */
+	for (int i = 0; i < _pokers.size(); ++i){
+		auto _poker = _pokers.at(i);
+		_poker->selectedCardBack();		/* 已出的牌恢复位置 */
+	}
+	//this->arrWaitPlayOut.clear();	/* 清空待出按钮 */
+
+	/* 将提示的扑克上移，变成待出的状态 */
+	for (int i = 0; i < this->hintPokers.size(); ++i){
+		auto _poker = this->hintPokers.at(i);
+		_poker->selectedCardOut();	/* 扑克变成待出状态 */
+	}
+	//this->arrWaitPlayOut = this->hintPokers;	/* 将待出扑克置为提示扑克 */
+	this->updateOutState();	/* 提示按钮后，更新出牌按钮的状态，这里直接调用updateOutState，而不是直接置出牌按钮可按 */
+}
+
 void GameScene::out_callback(Ref*){
-	pass->setVisible(false);
-	out->setVisible(false);
+	pass->setVisible(false);		/* 不出按钮不可见 */
+	hint->setVisible(false);		/* 提示按钮不可见 */
+	hint->setEnabled(false);	/* 提示按钮不可按下 */
+	out->setVisible(false);		/* 出牌按钮不可见 */
 	out->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	passHint->setVisible(false);
 
 	lastOutCards = OutCards::create(player, GameRules::getInstance()->analysePokerValueType(arrWaitPlayOut),
 		arrWaitPlayOut.size(), arrWaitPlayOut.at(arrWaitPlayOut.size() - 1));
@@ -643,35 +690,25 @@ void GameScene::initOutCardOrder(){
 }
 
 void GameScene::outCardForPlayer(Player* _player){
-	/* 让不出和出牌按钮显示出来，出牌按钮不可按由出牌和不出按钮的触发事件控制 */
+	/* 让不出，提示和出牌按钮显示出来，出牌按钮不可按由出牌和不出按钮的触发事件控制 */
 	pass->setVisible(true);
+	hint->setVisible(true); 
 	out->setVisible(true);
+	/* 智能检查是否有牌打得过上家，控制提示按钮是否可按下，提示的扑克设计成成员变量，
+		目的是按下提示按钮时，不需要再调用searchOutCard函数 */
+	this->hintPokers = searchOutCard(_player);
+	if (this->hintPokers.size() != 0){
+		hint->setEnabled(true);		/* 如果有可以出的牌，那么提示按钮可按下 */
+	}else{
+		passHint->setVisible(true);
+	}
 	/* 轮到玩家出牌时，玩家可能已经准备好要出的牌，因此轮到玩家出牌时，需要对此做一次更新 */
 	this->updateOutState();
 }
 
 void GameScene::outCardForComputer(Player* _computer){
-  	Vector<Poker*> _pokers;
-	                                                                                /* 如果上一手牌也是自己的 */
-	if (lastOutCards->getPokerOwner() == _computer || lastOutCards->getPokerValueType() == NONE){
-		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* 这样写会导致电脑在找不到单张后一直卡在这个地方 */ 
-		_pokers = GameRules::getInstance()->searchProperPokers(_computer->getPoker());
-	} else{
-		PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
-		if (_pokerValueType != KINGBOMB){
-			if (_pokerValueType == BOMB){
-				_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), BOMB, lastOutCards->getLowestPoker());
-			}else{
-				_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), lastOutCards->getPokerValueType(), lastOutCards->getLowestPoker(), lastOutCards->getTotalLength());
-				if (_pokers.size() == 0){ /* 如果找不到对应的牌，就找炸弹 */
-					_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), BOMB, nullptr);
-					if (_pokers.size() == 0){	/* 如果找不到普通的炸，就找王炸 */
-						_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), KINGBOMB);
-					}
-				}
-			}
-		}
-	}
+	Vector<Poker*> _pokers = searchOutCard(_computer);
+
 	if (_pokers.size() != 0){
 		lastOutCards = OutCards::create(_computer, GameRules::getInstance()->analysePokerValueType(_pokers), _pokers.size(), _pokers.at(_pokers.size() - 1));
 		lastOutCards->retain();
@@ -705,6 +742,33 @@ void GameScene::outCardForComputer(Player* _computer){
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
+Vector<Poker*> GameScene::searchOutCard(Player* _player){
+	Vector<Poker*> _pokers;
+	/* 如果上一手牌也是自己的 */
+	if (lastOutCards->getPokerOwner() == _player || lastOutCards->getPokerValueType() == NONE){
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* 这样写会导致电脑在找不到单张后一直卡在这个地方 */ 
+		_pokers = GameRules::getInstance()->searchProperPokers(_player->getPoker());
+	}
+	else{
+		PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
+		if (_pokerValueType != KINGBOMB){
+			if (_pokerValueType == BOMB){
+				_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), BOMB, lastOutCards->getLowestPoker());
+			}
+			else{
+				_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), lastOutCards->getPokerValueType(), lastOutCards->getLowestPoker(), lastOutCards->getTotalLength());
+				if (_pokers.size() == 0){ /* 如果找不到对应的牌，就找炸弹 */
+					_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), BOMB, nullptr);
+					if (_pokers.size() == 0){	/* 如果找不到普通的炸，就找王炸 */
+						_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), KINGBOMB);
+					}
+				}
+			}
+		}
+	}
+	return _pokers;
+}
+
 void GameScene::outCardInOrder(float delta){
 	this->setPlayerOrderStateUnVisible();	/* 将所有的玩家的状态隐藏 */
 
@@ -736,7 +800,7 @@ void GameScene::outCardInScene(){
 
 	for (int i = 0; i < cardsInScene.size(); ++i){
 		this->addChild(cardsInScene.at(i));
-		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height);
+		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height + 25);
 		cardsInScene.at(i)->showFront();
 		/* 出的牌令其canClick属性设置为false，使其不可点击 */
 		cardsInScene.at(i)->setCanClick(false);
@@ -853,28 +917,4 @@ void GameScene::gameOver(){
 	deleteCardInScene();	/* 删除在Scene的扑克 */
 
 	this->scheduleOnce(schedule_selector(GameScene::gameStart), 5.0f);
-}
-
-void GameScene::test(){
-	for (int i = 0; i < player->getPoker().size(); ++i){
-		auto _poker = player->getPoker().at(i);
-		log("%d %d", _poker->getPokerType(), _poker->getValue());
-	}
-	log("print poker end!");
-
-	auto gameRules = GameRules::getInstance();
-	auto poker = Poker::create(this, SPADE, 3);
-	auto ret = gameRules->calcPokerWithValueType(player->getPoker(), TRIPLESTRAIGHT, GlobalFunc::getGreaterPoker(poker, 0), 2);
-	if (ret.size() == 0){
-		log("Not Find!!!");
-		return;
-	}
-	for (int i = 0; i < ret.size(); ++i){
-		log("%d : %d", ret.at(i)->getPokerType(), ret.at(i)->getValue());
-	}
-
-	for (int i = 0; i < ret.size(); ++i){
-		auto _poker = ret.at(i);
-		NotificationCenter::getInstance()->postNotification("UpdatePokerPosAndRemovePoker", _poker);
-	}
 }
