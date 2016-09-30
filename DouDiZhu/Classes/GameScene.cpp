@@ -5,6 +5,7 @@
 #include "GameScene.h"
 #include "GlobalFunc.h"
 #include "HeadImage.h"
+#include "MusicController.h"
 #include "OutCards.h"
 #include "Player.h"
 #include "PlayerOrder.h"
@@ -367,6 +368,9 @@ void GameScene::chooseLandlord(){
 	landlordPlayer = landlordPlayer == nullptr ? player : landlordPlayer;
 	landlordPlayer->setLandlord(true);
 
+	/* 播放获得地主的音乐 */
+	MusicController::getInstance()->playCallLandlordEffect(LANDLORD_MUSIC);
+
 	/* 隐藏所有玩家的叫分命令状态 */
 	this->setPlayerOrderStateUnVisible();
 }
@@ -383,12 +387,13 @@ void GameScene::playerCallLandlord(){
 void GameScene::setCallLandlordOrderState(Player* _player, int _score){
 	/* 根据分数找到对应的叫地主状态 */
 	PlayerOrderState _playerOrderState;
+	CallLandlordEffect _callLandlordEffect;
 	switch (_score){
-	case 0:_playerOrderState = NOCALL; break;
-	case 1:_playerOrderState = CALLONE; break;
-	case 2:_playerOrderState = CALLTWO; break;
-	case 3:_playerOrderState = CALLTHREE; break;
-	default: _playerOrderState = NOCALL; break;
+	case 0:_playerOrderState = NOCALL; _callLandlordEffect = NOCALL_MUSIC; break;
+	case 1:_playerOrderState = CALLONE; _callLandlordEffect = CALLONE_MUSIC; break;
+	case 2:_playerOrderState = CALLTWO; _callLandlordEffect = CALLTWO_MUSIC; break;
+	case 3:_playerOrderState = CALLTHREE; _callLandlordEffect = CALLTHREE_MUSIC; break;
+	default: _playerOrderState = NOCALL; _callLandlordEffect = NOCALL_MUSIC; break;
 	}
 	/* 根据玩家找到对应的命令对象 */
 	PlayerOrder* _playerOrder = nullptr;
@@ -397,6 +402,9 @@ void GameScene::setCallLandlordOrderState(Player* _player, int _score){
 	else if (_player == this->computerPlayer_two) _playerOrder = computerPlayer_two_order;
 
 	CC_ASSERT(_playerOrder != nullptr);
+
+	/* 播放对应的音效 */
+	MusicController::getInstance()->playCallLandlordEffect(_callLandlordEffect);
 
 	_playerOrder->setPlayerOrderState(_playerOrderState);
 	_playerOrder->setVisible(true);
@@ -447,6 +455,8 @@ void GameScene::ready(){
 	if (this->checkAllReady()){
 		/* 所有人准备好后，将命令窗口隐藏 */
 		this->setPlayerOrderStateUnVisible();
+
+		MusicController::getInstance()->playStartMusic();
 
 		btn_start->setVisible(false);	/* 隐藏开始按钮 */
 
@@ -559,6 +569,9 @@ void GameScene::setPlayerOrderStateUnVisible(){
 }
 
 void GameScene::start_callback(Ref*){
+	/* 播放点击按钮的音效 */
+	MusicController::getInstance()->playPressButtonEffect();
+
 	playerOrder->setVisible(true);
 
 	btn_start->setVisible(false);
@@ -567,6 +580,9 @@ void GameScene::start_callback(Ref*){
 }
 
 void GameScene::pass_callback(Ref*){
+	/* 播放点击按钮的音效 */
+	MusicController::getInstance()->playPassEffect();
+
 	pass->setVisible(false);		/* 不出按钮不可见 */
 	hint->setVisible(false);		/* 提示按钮不可见 */
 	hint->setEnabled(false);	/* 提示按钮不可按下 */
@@ -582,6 +598,9 @@ void GameScene::pass_callback(Ref*){
 }
 
 void GameScene::hint_callback(Ref*){
+	/* 播放点击按钮的音效 */
+	MusicController::getInstance()->playPressButtonEffect();
+
 	/* 如果点击提示按钮，那么首先要将自己点击的牌恢复到正常位置 */
 	Vector<Poker*> _pokers = this->arrWaitPlayOut;	/* 不可以直接使用this->arrWaitPlayOut，因为恢复牌时会删除该容器里的内容，这样容易出错 */
 	for (int i = 0; i < _pokers.size(); ++i){
@@ -600,6 +619,9 @@ void GameScene::hint_callback(Ref*){
 }
 
 void GameScene::out_callback(Ref*){
+	/* 播放点击按钮的音效 */
+	MusicController::getInstance()->playPressButtonEffect();
+
 	pass->setVisible(false);		/* 不出按钮不可见 */
 	hint->setVisible(false);		/* 提示按钮不可见 */
 	hint->setEnabled(false);	/* 提示按钮不可按下 */
@@ -732,6 +754,9 @@ void GameScene::outCardForComputer(Player* _computer){
 		}
 		_playerOrder->setPlayerOrderState(PASS);	/* 显示不出的状态 */
 		_playerOrder->setVisible(true);
+
+		/* 播放不出牌的音效 */
+		MusicController::getInstance()->playPassEffect();
 	}
 	 
 	if (_computer->getPoker().size() == 0){
@@ -782,6 +807,9 @@ void GameScene::outCardInOrder(float delta){
 void GameScene::outCardInScene(){
 	if (cardsInScene.size() == 0) return;
 
+	/* 根据牌型，播放对应的音效 */
+	this->outCardInSceneMusic();
+
 	//int _height = computerPlayer_one->getPosition().y;
 	int _height = Director::getInstance()->getVisibleSize().height / 2;	/* 高度:屏幕居中位置 */
 	float _middleWidth = Director::getInstance()->getVisibleSize().width / 2;
@@ -804,6 +832,71 @@ void GameScene::outCardInScene(){
 		cardsInScene.at(i)->showFront();
 		/* 出的牌令其canClick属性设置为false，使其不可点击 */
 		cardsInScene.at(i)->setCanClick(false);
+	}
+}
+
+void GameScene::outCardInSceneMusic(){
+	auto _musicController = MusicController::getInstance();
+	/* 分析所出的扑克类型 */
+	PokerValueType _pokerValueType = lastOutCards->getPokerValueType();//GameRules::getInstance()->analysePokerValueType(cardsInScene);
+	if (_pokerValueType == SINGLE){
+		/* 先判断是不是大小王，如果是，播放对应的音效后退出 */
+		if (lastOutCards->getLowestPoker()->getPokerType() == BLACKJOKER){
+			_musicController->playOutCardEffect(BLACKKING);
+			return;
+		}else if(lastOutCards->getLowestPoker()->getPokerType() == REDJOKER){
+			_musicController->playOutCardEffect(REDKING);
+			return;
+		}
+
+		auto _pokerValue = lastOutCards->getLowestPoker()->getValue();
+		/* 单张音乐 */
+		switch (_pokerValue){
+		case 1: _musicController->playOutCardEffect(A); break;
+		case 2:_musicController->playOutCardEffect(TWO); break;
+		case 3:_musicController->playOutCardEffect(THREE); break;
+		case 4:_musicController->playOutCardEffect(FOUR); break;
+		case 5:_musicController->playOutCardEffect(FIVE); break;
+		case 6:_musicController->playOutCardEffect(SIX); break;
+		case 7:_musicController->playOutCardEffect(SEVEN); break;
+		case 8:_musicController->playOutCardEffect(EIGHT); break;
+		case 9:_musicController->playOutCardEffect(NINE); break;
+		case 10:_musicController->playOutCardEffect(TEN); break;
+		case 11:_musicController->playOutCardEffect(J); break;
+		case 12:_musicController->playOutCardEffect(Q); break;
+		case 13:_musicController->playOutCardEffect(K); break;
+		default:break;
+		}
+		return;
+	}
+	else if(_pokerValueType == PAIR){
+		auto _pokerValue = lastOutCards->getLowestPoker()->getValue();
+		/* 单张音乐 */
+		switch (_pokerValue){
+		case 1: _musicController->playOutCardEffect(AA); break;
+		case 2:_musicController->playOutCardEffect(PAIRTWO); break;
+		case 3:_musicController->playOutCardEffect(PAIRTHREE); break;
+		case 4:_musicController->playOutCardEffect(PAIRFOUR); break;
+		case 5:_musicController->playOutCardEffect(PAIRFIVE); break;
+		case 6:_musicController->playOutCardEffect(PAIRSIX); break;
+		case 7:_musicController->playOutCardEffect(PAIRSEVEN); break;
+		case 8:_musicController->playOutCardEffect(PAIREIGHT); break;
+		case 9:_musicController->playOutCardEffect(PAIRNINE); break;
+		case 10:_musicController->playOutCardEffect(PAIRTEN); break;
+		case 11:_musicController->playOutCardEffect(JJ); break;
+		case 12:_musicController->playOutCardEffect(QQ); break;
+		case 13:_musicController->playOutCardEffect(KK); break;
+		default:break;
+		}
+		return;
+	}else if (_pokerValueType == PAIRSRAIGHT){
+		MusicController::getInstance()->playOutCardEffect(PAIRSTRAIGHT_EFFECT);
+	}else if (_pokerValueType == TRIPLE){
+		MusicController::getInstance()->playOutCardEffect(TRIPLE_EFFECT);
+	}else if (_pokerValueType == TRIPLESTRAIGHT){
+		MusicController::getInstance()->playOutCardEffect(TRIPLESTRAIGHT_EFFECT);
+	}else if (_pokerValueType == BOMB || _pokerValueType == KINGBOMB){
+		MusicController::getInstance()->playOutCardEffect(BOMB_EFFECT);
 	}
 }
 
@@ -879,16 +972,22 @@ void GameScene::gameStart(float delta){
 	initCallLandlord();	/* 初始化叫地主 */
 
 	this->gameState = READY;
+
+	/* 播放背景音乐，循环播放 */
+	MusicController::getInstance()->playBackgroundMusic();
+
 	this->schedule(schedule_selector(GameScene::update), 2.0f);
 }
 
 void GameScene::gameOver(){
 	/* 后面增加代码 */
 	if (player->getPoker().size() == 0){
-		log("You Win!");
+		/* 播放胜利的音乐 */
+		MusicController::getInstance()->playWinMusic();
 		this->runWinAnimation();
 	}else{
-		log("You Lose!");
+		/* 播放失败的音乐 */
+		MusicController::getInstance()->playLostMusic();
 		this->runLostAnimation();
 	}
 

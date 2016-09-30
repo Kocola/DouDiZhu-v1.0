@@ -152,6 +152,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\GlobalFunc.cpp" />
     <ClCompile Include="..\Classes\HeadImage.cpp" />
+    <ClCompile Include="..\Classes\MusicController.cpp" />
     <ClCompile Include="..\Classes\OutCards.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
     <ClCompile Include="..\Classes\PlayerOrder.cpp" />
@@ -166,6 +167,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClInclude Include="..\Classes\GlobalDefine.h" />
     <ClInclude Include="..\Classes\GlobalFunc.h" />
     <ClInclude Include="..\Classes\HeadImage.h" />
+    <ClInclude Include="..\Classes\MusicController.h" />
     <ClInclude Include="..\Classes\OutCards.h" />
     <ClInclude Include="..\Classes\Player.h" />
     <ClInclude Include="..\Classes\PlayerOrder.h" />

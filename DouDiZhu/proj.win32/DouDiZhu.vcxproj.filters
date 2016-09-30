@@ -43,6 +43,9 @@
     <Filter Include="src\游戏\玩家\命令">
       <UniqueIdentifier>{7673854e-452a-4e0b-b07b-1d0cc5383316}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\音乐">
+      <UniqueIdentifier>{6f309dd2-cdf2-40b6-81c9-b0bca5f08ef5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -80,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\PlayerOrder.cpp">
       <Filter>src\游戏\玩家\命令</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MusicController.cpp">
+      <Filter>src\音乐</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\PlayerOrder.h">
       <Filter>src\游戏\玩家\命令</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MusicController.h">
+      <Filter>src\音乐</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

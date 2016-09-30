@@ -84,6 +84,8 @@ public:
 public:
 	/* 出牌，将牌放在场景上 */
 	void outCardInScene();
+	/* 播放出牌在场景上时的音效 */
+	void outCardInSceneMusic();
 	/* 当前玩家出牌时，删除留在场景中的上一手扑克 */
 	void deleteCardInScene();
 	/* 游戏开始，或者重新开始 */

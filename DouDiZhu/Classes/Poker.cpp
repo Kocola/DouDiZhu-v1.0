@@ -1,4 +1,5 @@
 #include "GameScene.h"
+#include "MusicController.h"
 #include "Player.h"
 #include "Poker.h"
 #include "PokerController.h"
@@ -58,6 +59,10 @@ bool Poker::init(){
 		log("Touch Pos : %f, %f\n", touchPos.x, touchPos.y);*/
 		if (rect.containsPoint(touchPos) && canClick){
 			/* log("TouchBegin!!!"); */
+
+			/* 播放触摸牌的音效 */
+			MusicController::getInstance()->playTouchCardEffect();
+
 			if (!isSelect){
 				/* 如果还未选择这张牌，那就将这张牌露出来 */
 				selectedCardOut();
