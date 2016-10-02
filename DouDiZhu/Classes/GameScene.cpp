@@ -654,6 +654,8 @@ void GameScene::out_callback(Ref*){
 		return;
 	}
 
+	//this->gameState = END;
+
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
@@ -1014,6 +1016,8 @@ void GameScene::gameOver(){
 	deleteCardInTop();	/* 清空在顶部的地主扑克 */
 
 	deleteCardInScene();	/* 删除在Scene的扑克 */
+
+	lastOutCards = nullptr;		/* 置空 */
 
 	this->scheduleOnce(schedule_selector(GameScene::gameStart), 5.0f);
 }

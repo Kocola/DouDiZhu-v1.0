@@ -46,6 +46,9 @@
     <Filter Include="src\音乐">
       <UniqueIdentifier>{6f309dd2-cdf2-40b6-81c9-b0bca5f08ef5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\启动界面">
+      <UniqueIdentifier>{f99382e7-5a65-42a8-a1ee-e39ae60ee399}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\MusicController.cpp">
       <Filter>src\音乐</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LoadScene.cpp">
+      <Filter>src\启动界面</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,10 +140,18 @@
     <ClInclude Include="..\Classes\MusicController.h">
       <Filter>src\音乐</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\Classes\LoadScene.h">
+      <Filter>src\启动界面</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\game.ico" />
+    <Image Include="res\DouDiZhu.ico" />
   </ItemGroup>
 </Project>

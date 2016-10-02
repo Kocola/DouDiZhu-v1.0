@@ -152,6 +152,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\GlobalFunc.cpp" />
     <ClCompile Include="..\Classes\HeadImage.cpp" />
+    <ClCompile Include="..\Classes\LoadScene.cpp" />
     <ClCompile Include="..\Classes\MusicController.cpp" />
     <ClCompile Include="..\Classes\OutCards.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
@@ -167,6 +168,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClInclude Include="..\Classes\GlobalDefine.h" />
     <ClInclude Include="..\Classes\GlobalFunc.h" />
     <ClInclude Include="..\Classes\HeadImage.h" />
+    <ClInclude Include="..\Classes\LoadScene.h" />
     <ClInclude Include="..\Classes\MusicController.h" />
     <ClInclude Include="..\Classes\OutCards.h" />
     <ClInclude Include="..\Classes\Player.h" />
@@ -176,9 +178,14 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.8.1\prebuilt\win32\*.*" "$(OutDir)"
     <ClInclude Include="..\Classes\GameRules.h" />
     <ClInclude Include="..\Classes\PokerValueType.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\DouDiZhu.ico" />
+    <Image Include="res\game.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

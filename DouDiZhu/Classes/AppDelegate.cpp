@@ -1,7 +1,12 @@
 #include "AppDelegate.h"
 #include "GameScene.h"
+#include "LoadScene.h"
 
 USING_NS_CC;
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "../proj.win32/resource.h"//  此文件为你的资源文件
+#endif
 
 AppDelegate::AppDelegate() {
 
@@ -27,11 +32,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::createWithRect("DouDiZhu", Rect(0, 0, 960, 640));
+		glview = GLViewImpl::createWithRect("DouDiZhu", Rect(0, 0, 960, 640));
         director->setOpenGLView(glview);
     }
 
     director->getOpenGLView()->setDesignResolutionSize(960, 640, ResolutionPolicy::SHOW_ALL);
+
+	// 设置icon图标
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+	::SendMessage(glview->getWin32Window(), WM_SETICON, true, LPARAM(hIcon));
+#endif
 
     // turn on display FPS
     director->setDisplayStats(true);
