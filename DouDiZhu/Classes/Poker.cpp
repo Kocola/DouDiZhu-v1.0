@@ -54,15 +54,10 @@ bool Poker::init(){
 	/* 触摸开始 */
 	listener->onTouchBegan = [&](Touch* touch, Event* event){
 		auto rect = this->getBoundingBox();
-		auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());// this->getParent()->convertToNodeSpace(touch->getLocationInView());
-		/*log("RECT : %f, %f, %f, %f\n", rect.getMinX(), rect.getMinY(), rect.getMaxX(), rect.getMaxY());
-		log("Touch Pos : %f, %f\n", touchPos.x, touchPos.y);*/
+		auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());
 		if (rect.containsPoint(touchPos) && canClick){
-			/* log("TouchBegin!!!"); */
-
 			/* 播放触摸牌的音效 */
 			MusicController::getInstance()->playTouchCardEffect();
-
 			if (!isSelect){
 				/* 如果还未选择这张牌，那就将这张牌露出来 */
 				selectedCardOut();
@@ -70,10 +65,8 @@ bool Poker::init(){
 				/* 否则这张牌已经被选择，将其放回 */
 				selectedCardBack();
 			}
-			
 			/* 检测当前牌是否可以另出牌按钮可按 */
 			updateOutState();
-
 			return true;
 		}
 		return false;		/* 这里返回false，触摸不会被吞掉 */

@@ -31,6 +31,11 @@ private:
 	bool initPlayerOrder();	/* 初始化玩家命令状态，初始化全部为 准备 */
 	bool initCallLandlord();	/* 初始化叫地主 */
 private:
+	bool deletePoker();	/* 游戏结束时，清理Poker资源 */
+	bool deletePlayer();	/* 游戏结束时，清理Player资源 */
+	bool deleteHeadImage();	/* 游戏结束时，清理玩家头像资源 */
+	bool deletPlayerOrder();	/* 游戏结束时，清理玩家命令状态 */
+private:
 	/* 准备 */
 	void ready();
 	bool checkAllReady();	/* 检查所有人是否都准备好 */
@@ -49,7 +54,8 @@ private:
 	void outLandlordCard();	/* 发放属于地主的三张牌 */
 	/* 出牌 */
 	void initOutCardOrder();
-	Vector<Poker*> searchOutCard(Player* _player);	/* 针对上家的出牌，检查是否有能够出的牌，返回能出的牌的集合 */
+	Vector<Poker*> searchOutCardForComputer(Player* _player);	/* 电脑：针对上家的出牌，检查是否有能够出的牌，返回能出的牌的集合 */
+	Vector<Poker*> searchOutCardForPlayer(Player* _player);	/* 玩家：针对上家的出牌，检查是否有能够出的牌，返回能出的牌的集合 */
 	void outCardInOrder(float delta);
 	void outCardForPlayer(Player* _player);	/* 轮到玩家出牌 */
 	void outCardForComputer(Player* _computer);	/* 轮到电脑出牌 */

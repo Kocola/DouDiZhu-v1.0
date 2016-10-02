@@ -28,7 +28,8 @@ public:
 	/* 获取指定的类型的扑克，返回Vector为空时表示查找失败 
 		第一个参数是玩家拥有的扑克，第三个参数是返回的类型的扑克里最小的牌，如果是nullptr，表明可以出任意值的该类型扑克
 		第四个参数是针对顺子时的长度 */
-	Vector<Poker*> calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);
+	Vector<Poker*> calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);	/* 不可拆牌 */
+	Vector<Poker*> calcPokerWithValueTypeInSplit(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);		/* 可拆牌 */
 private:
 	/* 所有以下函数的value参数，表示所要查找的牌面的最低位的牌面值 */
 
@@ -50,6 +51,10 @@ private:
 	Vector<Poker*> searchSingleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker);	/* 查找顺子 */
 	Vector<Poker*> searchPairStraight(Vector<Poker*> _pokers, int length, const Poker* _poker); /* 查找双顺 */
 	Vector<Poker*> searchTripleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker); /* 查找三顺 */
+private:
+	Vector<Poker*> searchSingleInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr);	/* 查找单张，可拆牌 */
+	Vector<Poker*> searchPairInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr);		/* 查找对子，可拆牌  */
+	Vector<Poker*> searchTripleInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* 查找三张，可拆牌 */
 private:
 	bool isSingle(Vector<Poker*> _pokers);	/* 是否是单张 */
 	bool isPair(Vector<Poker*> _pokers);	/* 是否是对子 */

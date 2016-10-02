@@ -350,6 +350,44 @@ bool GameScene::initCallLandlord(){
 	return true;
 }
 
+bool GameScene::deletePoker(){
+	pokers.clear();	/* 卡牌置空 */
+	/* 删除玩家和电脑的所有卡牌 */
+	player->removeAllPoker();
+	computerPlayer_one->removeAllPoker();
+	computerPlayer_two->removeAllPoker();
+
+	return true;
+}
+
+bool GameScene::deletePlayer(){
+	/* 删除玩家和电脑端的指针 */
+ 	this->removeChild(player);
+	this->removeChild(computerPlayer_one);
+	this->removeChild(computerPlayer_two);
+	players.clear();	/* 删除玩家容器里的所有玩家指针，如果没有这一步，
+						新的一局开始时，玩家无法出牌*/
+	return true;
+}
+
+bool GameScene::deleteHeadImage(){
+	/* 删除玩家头像 */
+	this->removeChild(playerHeadImage);
+	this->removeChild(computerPlayer_one_headImage);
+	this->removeChild(computerPlayer_two_headImage);
+
+	return true;
+}
+
+bool GameScene::deletPlayerOrder(){
+	/* 删除玩家命令 */
+	this->removeChild(playerOrder);
+	this->removeChild(computerPlayer_one_order);
+	this->removeChild(computerPlayer_two_order);
+
+	return true;
+}
+
 void GameScene::chooseLandlord(){
 	int maxlandlordscore = 0;
 	if (player->getCallLandlordScore() > maxlandlordscore){
@@ -654,8 +692,6 @@ void GameScene::out_callback(Ref*){
 		return;
 	}
 
-	//this->gameState = END;
-
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
@@ -720,7 +756,7 @@ void GameScene::outCardForPlayer(Player* _player){
 	out->setVisible(true);
 	/* 智能检查是否有牌打得过上家，控制提示按钮是否可按下，提示的扑克设计成成员变量，
 		目的是按下提示按钮时，不需要再调用searchOutCard函数 */
-	this->hintPokers = searchOutCard(_player);
+	this->hintPokers = searchOutCardForPlayer(_player);
 	if (this->hintPokers.size() != 0){
 		hint->setEnabled(true);		/* 如果有可以出的牌，那么提示按钮可按下 */
 	}else{
@@ -731,7 +767,7 @@ void GameScene::outCardForPlayer(Player* _player){
 }
 
 void GameScene::outCardForComputer(Player* _computer){
-	Vector<Poker*> _pokers = searchOutCard(_computer);
+	Vector<Poker*> _pokers = searchOutCardForComputer(_computer);
 
 	if (_pokers.size() != 0){
 		lastOutCards = OutCards::create(_computer, GameRules::getInstance()->analysePokerValueType(_pokers), _pokers.size(), _pokers.at(_pokers.size() - 1));
@@ -769,7 +805,7 @@ void GameScene::outCardForComputer(Player* _computer){
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
-Vector<Poker*> GameScene::searchOutCard(Player* _player){
+Vector<Poker*> GameScene::searchOutCardForComputer(Player* _player){
 	Vector<Poker*> _pokers;
 	/* 如果上一手牌也是自己的 */
 	if (lastOutCards->getPokerOwner() == _player || lastOutCards->getPokerValueType() == NONE){
@@ -788,6 +824,33 @@ Vector<Poker*> GameScene::searchOutCard(Player* _player){
 					_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), BOMB, nullptr);
 					if (_pokers.size() == 0){	/* 如果找不到普通的炸，就找王炸 */
 						_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), KINGBOMB);
+					}
+				}
+			}
+		}
+	}
+	return _pokers;
+}
+
+Vector<Poker*> GameScene::searchOutCardForPlayer(Player* _player){
+	Vector<Poker*> _pokers;
+	/* 如果上一手牌也是自己的 */
+	if (lastOutCards->getPokerOwner() == _player || lastOutCards->getPokerValueType() == NONE){
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* 这样写会导致电脑在找不到单张后一直卡在这个地方 */ 
+		_pokers = GameRules::getInstance()->searchProperPokers(_player->getPoker());
+	}
+	else{
+		PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
+		if (_pokerValueType != KINGBOMB){
+			if (_pokerValueType == BOMB){
+				_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), BOMB, lastOutCards->getLowestPoker());
+			}
+			else{
+				_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), lastOutCards->getPokerValueType(), lastOutCards->getLowestPoker(), lastOutCards->getTotalLength());
+				if (_pokers.size() == 0){ /* 如果找不到对应的牌，就找炸弹 */
+					_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), BOMB, nullptr);
+					if (_pokers.size() == 0){	/* 如果找不到普通的炸，就找王炸 */
+						_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), KINGBOMB);
 					}
 				}
 			}
@@ -994,24 +1057,10 @@ void GameScene::gameOver(){
 	}
 
 	/* 游戏结束后，一些资源处理操作 */
-	pokers.clear();	/* 卡牌置空 */
-	/* 删除玩家和电脑的所有卡牌 */
-	player->removeAllPoker();
-	computerPlayer_one->removeAllPoker();
-	computerPlayer_two->removeAllPoker();
-	/* 删除玩家和电脑端的指针 */
-	this->removeChild(player);
-	this->removeChild(computerPlayer_one);
-	this->removeChild(computerPlayer_two);
-	players.clear();	/* 删除玩家容器里的所有玩家指针，如果没有这一步，
-						新的一局开始时，玩家无法出牌*/
-	this->removeChild(playerHeadImage);
-	this->removeChild(computerPlayer_one_headImage);
-	this->removeChild(computerPlayer_two_headImage);
-	/* 删除玩家命令 */
-	this->removeChild(playerOrder);
-	this->removeChild(computerPlayer_one_order);
-	this->removeChild(computerPlayer_two_order);
+	deletPlayerOrder();
+	deleteHeadImage();
+	deletePoker();
+	deletePlayer();
 
 	deleteCardInTop();	/* 清空在顶部的地主扑克 */
 

@@ -133,6 +133,24 @@ Vector<Poker*> GameRules::calcPokerWithValueType(Vector<Poker*> _pokers, PokerVa
 	return Vector<Poker*>();
 }
 
+Vector<Poker*> GameRules::calcPokerWithValueTypeInSplit(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker /* = nullptr */, int length /* = 0 */){
+	/* 每次排序一次，防止乱序 */
+	GlobalFunc::sort(_pokers);
+
+	switch (pokerValueType){
+	case SINGLE: return searchSingleInSplit(_pokers, _poker); break;
+	case PAIR: return searchPairInSplit(_pokers, _poker); break;
+	case TRIPLE: return searchTripleInSplit(_pokers, _poker); break;
+	case BOMB: return searchBomb(_pokers, _poker); break;
+	case KINGBOMB: return searchKingBomb(_pokers); break;
+	case STRAIGHT: return searchSingleStraight(_pokers, length, _poker); break;
+	case PAIRSRAIGHT: return searchPairStraight(_pokers, length, _poker); break;
+	case TRIPLESTRAIGHT: return searchTripleStraight(_pokers, length, _poker); break;
+	default: break;
+	}
+	return Vector<Poker*>();
+}
+
 Vector<Poker*> GameRules::searchSingle(Vector<Poker*> _pokers, const Poker* _poker /* = nullptr */){
 
 	if (_pokers.size() == 0) return Vector<Poker*>();
@@ -320,12 +338,6 @@ Vector<Poker*> GameRules::searchSpecifiedTriple(Vector<Poker*> _pokers, const Po
 	return Vector<Poker*>();
 }
 
-/* 该函数暂时不用，待后面找到优化和合并的办法再写 */
-//Vector<Poker*> GameRules::searchStraight(Vector<Poker*> _pokers, int step, int length, int value /* = 0 */){
-//	CCASSERT(value < 0, "该函数不可调用");
-//	return Vector<Poker*>();
-//}
-
 Vector<Poker*> GameRules::searchSingleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker){
 	/* 如果length参数出错，或者扑克的张数不足所需的length，那么直接返回空 */
 	if (length < 5 || length > 12 || _pokers.size() < length) return Vector<Poker*>();
@@ -415,6 +427,56 @@ Vector<Poker*> GameRules::searchTripleStraight(Vector<Poker*> _pokers, int lengt
 			return ret;
 		}
 		index++; /* 当前已经查找失败，将index+1，从下一个开始查找 */
+	}
+	return Vector<Poker*>();
+}
+
+Vector<Poker*> GameRules::searchSingleInSplit(Vector<Poker*> _pokers, const Poker* _poker /* = nullptr */){
+	if (_pokers.size() == 0) return Vector<Poker*>();
+
+	int _index = _pokers.size() - 1;
+	while (_index >= 0){
+		if (_poker == nullptr || COMPARE_GREATER(_pokers.at(_index), _poker)){
+			Vector<Poker*> _tmp;
+			_tmp.pushBack(_pokers.at(_index));
+			return _tmp;
+		}
+		_index--;
+	}
+	return Vector<Poker*>();
+}
+
+Vector<Poker*> GameRules::searchPairInSplit(Vector<Poker*> _pokers, const Poker* _poker /* = nullptr */){
+	if (_pokers.size() < 2) return Vector<Poker*>();
+	
+	int _index = _pokers.size() - 1;
+	while (_index >= 0){
+		Vector<Poker*> _tmp;
+		_tmp.pushBack(_pokers.at(_index));
+		_tmp.pushBack(_pokers.at(_index - 1));
+		if (isPair(_tmp) || (_poker == nullptr || COMPARE_GREATER(_tmp.at(0), _poker))){
+			return _tmp; 
+		}
+		_tmp.clear();
+		_index--;
+	}
+	return Vector<Poker*>();
+}
+
+Vector<Poker*> GameRules::searchTripleInSplit(Vector<Poker*> _pokers, const Poker* _poker /* = nullptr */){
+	if (_pokers.size() < 3) return Vector<Poker*>();
+
+	int _index = _pokers.size() - 1;
+	while (_index >= 0){
+		Vector<Poker*> _tmp;
+		_tmp.pushBack(_pokers.at(_index));
+		_tmp.pushBack(_pokers.at(_index - 1));
+		_tmp.pushBack(_pokers.at(_index - 2));
+		if (isTriple(_tmp) || (_poker == nullptr || COMPARE_GREATER(_tmp.at(0), _poker))){
+			return _tmp;
+		}
+		_tmp.clear();
+		_index--;
 	}
 	return Vector<Poker*>();
 }

@@ -64,6 +64,7 @@ void Player::updatePokerPos(){
 	float cardHeight = pokers.at(0)->getContentSize().height;	/* 卡牌高度 */
 	/* 对卡牌位置进行重新设置 */
 	for (int i = 0; i < cardsNum; ++i){
-		pokers.at(i)->setPosition(Point(displayLeftStartX + cardWidth / 2 + i * interval, 0));
+		auto _height = pokers.at(i)->getPosition().y;
+		pokers.at(i)->setPosition(Point(displayLeftStartX + cardWidth / 2 + i * interval, _height));
 	}
 }

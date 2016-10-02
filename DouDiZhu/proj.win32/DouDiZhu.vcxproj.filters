@@ -49,6 +49,9 @@
     <Filter Include="src\启动界面">
       <UniqueIdentifier>{f99382e7-5a65-42a8-a1ee-e39ae60ee399}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\大厅">
+      <UniqueIdentifier>{24ecbd5f-82f1-41b4-a80b-143c5bf8b3f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\LoadScene.cpp">
       <Filter>src\启动界面</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Lobby.cpp">
+      <Filter>src\大厅</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +149,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\Classes\LoadScene.h">
       <Filter>src\启动界面</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Lobby.h">
+      <Filter>src\大厅</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

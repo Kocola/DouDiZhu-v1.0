@@ -1,5 +1,5 @@
-#include "GameScene.h"
 #include "LoadScene.h"
+#include "Lobby.h"
 
 Scene* LoadScene::createScene(){
 	auto scene = Scene::create();
@@ -21,5 +21,5 @@ bool LoadScene::init(){
 }
 
 void LoadScene::gotoLobby(){
-	Director::getInstance()->replaceScene(GameScene::createScene());	/* 转入游戏场景 */
+	Director::getInstance()->replaceScene(Lobby::createScene());	/* 转入游戏场景 */
 }
