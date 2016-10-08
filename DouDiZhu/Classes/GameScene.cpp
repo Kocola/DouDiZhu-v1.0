@@ -102,8 +102,8 @@ bool GameScene::initPlayer(){
 	auto visbleSize = Director::getInstance()->getVisibleSize();	/* 获取屏幕的可见尺寸 */
 
 	/* 计算电脑的位置 */
-	auto computerPlayerOnePos = Point(visbleSize.width / 12, visbleSize.height * 2 / 3);
-	auto computerPlayerTwoPos = Point(visbleSize.width * 11 / 12, visbleSize.height * 2 / 3);
+	auto computerPlayerOnePos = Point(visbleSize.width / 12, visbleSize.height * 3 / 4);
+	auto computerPlayerTwoPos = Point(visbleSize.width * 11 / 12, visbleSize.height * 3 / 4);
 
 	/* 创建玩家示例（包括电脑），设置各自的类型，并且将其设为GameScene场景的子结点，防止被回收 */
 	player = Player::create();
@@ -301,8 +301,8 @@ bool GameScene::initHeadImage(){
 	auto headBoxSize = HeadImage::create()->getHeadBoxSize();	/* 获取头像框的大小 */
 
 	auto playerHeadImagePos = Point(computerOne_pos.x, playerPos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
-	auto computerOneHeadImagePos = Point(computerOne_pos.x, computerOne_pos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
-	auto computerTwoHeadImagePos = Point(computerTwo_pos.x, computerTwo_pos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
+	auto computerOneHeadImagePos = Point(computerOne_pos.x, computerOne_pos.y);// +cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
+	auto computerTwoHeadImagePos = Point(computerTwo_pos.x, computerTwo_pos.y);// +cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
 
 	playerHeadImage = HeadImage::create();		/* 玩家头像 */
 	playerHeadImage->setPosition(playerHeadImagePos);
@@ -311,6 +311,12 @@ bool GameScene::initHeadImage(){
 	computerPlayer_one_headImage = HeadImage::create();	/* 电脑端头像 */
 	computerPlayer_one_headImage->setPosition(computerOneHeadImagePos);
 	this->addChild(computerPlayer_one_headImage);
+	/*Vector<Poker*> _pokers;
+	_pokers.pushBack(pokers.at(0));
+	_pokers.pushBack(pokers.at(1));
+	computerPlayer_one->setPlayerPosType(PLAYERINLEFT);
+	computerPlayer_one->setHeadImagePos(computerOneHeadImagePos);
+	computerPlayer_one->test(_pokers);*/
 	//computerPlayer_one_headImage->setHeadImageType(FARMER, RIGHT);
 	computerPlayer_two_headImage = HeadImage::create();	/* 电脑端头像 */
 	computerPlayer_two_headImage->setPosition(computerTwoHeadImagePos);
@@ -549,16 +555,18 @@ void GameScene::displayLandlordCard(){
 		cardDisplayInTop.pushBack(cardForLandlord.at(i)->clone());
 	}
 
+	const float SCALE = 0.8;
 	/* 卡牌是无序的，需要先排序 */
 	GlobalFunc::sort(cardDisplayInTop);
 	/* 显示卡牌 */
-	float cardWidth = POKER_WIDTH;
-	float cardHeight = POKER_HEIGHT;
-	float interval = cardWidth - MIMIUM_CARDS_OVERLAPWIDTH;
+	float cardWidth = POKER_WIDTH * SCALE;
+	float cardHeight = POKER_HEIGHT * SCALE;
+	float interval = cardWidth - 10;// -MIMIUM_CARDS_OVERLAPWIDTH;
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	float startPosX = visibleSize.width / 2 - 1.5 * interval;
 	float cardPosY = visibleSize.height - DISPLAYCARDINTOP_INTERVAL - cardHeight / 2;
 	for (int i = 0; i < cardDisplayInTop.size(); ++i){
+		cardDisplayInTop.at(i)->setScale(SCALE);
 		cardDisplayInTop.at(i)->setPosition(Point(startPosX + cardWidth / 2 + i * interval, cardPosY));
 		cardDisplayInTop.at(i)->showFront();
 		this->addChild(cardDisplayInTop.at(i));
@@ -876,13 +884,14 @@ void GameScene::outCardInScene(){
 	/* 根据牌型，播放对应的音效 */
 	this->outCardInSceneMusic();
 
+	const float SCALE = 0.6;	/* 扑克缩放比例 */
 	//int _height = computerPlayer_one->getPosition().y;
 	int _height = Director::getInstance()->getVisibleSize().height / 2;	/* 高度:屏幕居中位置 */
 	float _middleWidth = Director::getInstance()->getVisibleSize().width / 2;
 	float _maxWidth = Director::getInstance()->getVisibleSize().width / 2;
 
 	int _cardsNum = cardsInScene.size();	/* 卡牌数量 */
-	float _cardWidth = cardsInScene.at(0)->getContentSize().width;	/* 卡牌宽度 */
+	float _cardWidth = cardsInScene.at(0)->getContentSize().width * SCALE;	/* 卡牌宽度 */
 	float interval = (_maxWidth - _cardWidth) < (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH) * (_cardsNum - 1) ? (_maxWidth - _cardWidth) / (_cardsNum - 1) : (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH);
 
 	float startPosX = _middleWidth - _maxWidth / 2; /* 如果所有出的牌的宽度加起来大于能够显示的区域，计算出牌的开始位置 */
@@ -893,7 +902,9 @@ void GameScene::outCardInScene(){
 	}
 
 	for (int i = 0; i < cardsInScene.size(); ++i){
+		cardsInScene.at(i)->setScale(SCALE);
 		this->addChild(cardsInScene.at(i));
+		cardsInScene.at(i)->setVisible(true);	/* 因为电脑玩家的牌默认是不显示的，因此在出牌时需要显示 */
 		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height + 25);
 		cardsInScene.at(i)->showFront();
 		/* 出的牌令其canClick属性设置为false，使其不可点击 */

@@ -12,7 +12,7 @@ Poker::Poker(GameScene* _gameScene, PokerType type, int value){
 	this->setGameScene(_gameScene);
 
 	createSprite();		/* 创建两个扑克精灵 */
-	this->showBack();	  /* 显示正面 */
+	this->showBack();		/* 初始化时显示背面 */
 }
 
 Poker* Poker::create(GameScene* _gameScene, PokerType type, int value /* = 0 */){
@@ -56,6 +56,8 @@ bool Poker::init(){
 		auto rect = this->getBoundingBox();
 		auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());
 		if (rect.containsPoint(touchPos) && canClick){
+			log("touch location : %f, %f", touch->getLocation().x, touch->getLocation().y);
+			log("touch Pos : %f, %f", touchPos.x, touchPos.y);
 			/* 播放触摸牌的音效 */
 			MusicController::getInstance()->playTouchCardEffect();
 			if (!isSelect){

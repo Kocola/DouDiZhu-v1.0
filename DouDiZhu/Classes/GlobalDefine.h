@@ -78,4 +78,10 @@ enum PlayerOrderPos{
 	ORDERINRIGHT	/* 右边的 */
 };
 
+enum PlayerPosType{
+	PLAYERINLEFT,	/* 左边 */
+	PLAYERINMIDDLE,	/* 中间 */
+	PLAYERINRIGHT	/* 右边 */
+};
+
 #endif
