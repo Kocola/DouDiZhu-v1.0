@@ -1,4 +1,4 @@
-#ifndef __POKER_CONTROLLER_H__
+ï»¿#ifndef __POKER_CONTROLLER_H__
 #define __POKER_CONTROLLER_H__
 
 #include "cocos2d.h"
@@ -13,11 +13,11 @@ public:
 	virtual bool init();
 public:
 	static int calcPokerValue(PokerType type, int order = 0);
-	static Size getPokerSize() { return getInstance()->getPokerWithValue(BACK)->getContentSize(); } /* »ñÈ¡ÆË¿ËµÄ³ß´ç */
-	static Sprite* getPokerWithValue(PokerType type, int order = 0);		/* ÀûÓÃÅÆÖµÕÒµ½¶ÔÓ¦µÄÅÆÃæ¾«Áé */
+	static Size getPokerSize() { return getInstance()->getPokerWithValue(BACK)->getContentSize(); } /* è·å–æ‰‘å…‹çš„å°ºå¯¸ */
+	static Sprite* getPokerWithValue(PokerType type, int order = 0);		/* åˆ©ç”¨ç‰Œå€¼æ‰¾åˆ°å¯¹åº”çš„ç‰Œé¢ç²¾çµ */
 	//Vector<Poker*> getAllPoker();
 private:
-	PokerController(){}	/* ½«Ä¬ÈÏ¹¹Ôìº¯ÊıµÄ·ÃÎÊÈ¨ÏŞÉèÖÃÎªprivate£¬½ûÖ¹Íâ²¿ÊµÀı»¯ */
+	PokerController(){}	/* å°†é»˜è®¤æ„é€ å‡½æ•°çš„è®¿é—®æƒé™è®¾ç½®ä¸ºprivateï¼Œç¦æ­¢å¤–éƒ¨å®ä¾‹åŒ– */
 private:
 	SpriteFrameCache* pokerCache;
 	static PokerController* pokerController;

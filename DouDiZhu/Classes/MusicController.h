@@ -1,4 +1,4 @@
-#ifndef __MUSIC_CONTROLLER_H__
+ï»¿#ifndef __MUSIC_CONTROLLER_H__
 #define __MUSIC_CONTROLLER_H__
 
 #include "cocos2d.h"
@@ -40,31 +40,31 @@ public:
 	static MusicController* getInstance();
 	virtual bool init();
 public:
-	/* ²¥·Å±³¾°ÒôÀÖ */
+	/* æ’­æ”¾èƒŒæ™¯éŸ³ä¹ */
 	void playBackgroundMusic();
-	/* ²¥·ÅÓÎÏ·¿ªÊ¼µÄÒôÀÖ */
+	/* æ’­æ”¾æ¸¸æˆå¼€å§‹çš„éŸ³ä¹ */
 	void playStartMusic();
-	/* ²¥·ÅÊ¤ÀûÒôÀÖ */
+	/* æ’­æ”¾èƒœåˆ©éŸ³ä¹ */
 	void playWinMusic();
-	/* ²¥·ÅÊäÁËµÄÒôÀÖ */
+	/* æ’­æ”¾è¾“äº†çš„éŸ³ä¹ */
 	void playLostMusic();
-	/* ²¥·Å³öÅÆÒôĞ§ */
+	/* æ’­æ”¾å‡ºç‰ŒéŸ³æ•ˆ */
 	void playOutCardEffect();
-	/* ²¥·Å²»³öÒôĞ§ */
+	/* æ’­æ”¾ä¸å‡ºéŸ³æ•ˆ */
 	void playPassEffect();
-	/* ²¥·Å°´ÏÂ°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾æŒ‰ä¸‹æŒ‰é’®çš„éŸ³æ•ˆ */
 	void playPressButtonEffect();
-	/* ²¥·Å´¥ÃşÅÆµÄÒôĞ§ */
+	/* æ’­æ”¾è§¦æ‘¸ç‰Œçš„éŸ³æ•ˆ */
 	void playTouchCardEffect();
 public:
-	/* ²¥·Å½ĞµØÖ÷Ê±µÄÒôĞ§ */
+	/* æ’­æ”¾å«åœ°ä¸»æ—¶çš„éŸ³æ•ˆ */
 	void playCallLandlordEffect(CallLandlordEffect _effectType);
-	/* ²¥·Å³öÅÆÊ±µÄÒôĞ§ */
+	/* æ’­æ”¾å‡ºç‰Œæ—¶çš„éŸ³æ•ˆ */
 	void playOutCardEffect(OutCardEffect _effectType);
 private:
-	void preLoadMusic();	/* Ô¤ÏÈ¼ÓÔØËùÓĞÒôÀÖ */
-	void loadMusics(const ValueMap& _musicFiles);	/* ¸ù¾İÎÄ¼ş¼ÓÔØÒôÀÖ */
-	void loadEffects(const ValueMap& _effectFiles);	/* ¸ù¾İÎÄ¼ş¼ÓÔØÒôĞ§ */
+	void preLoadMusic();	/* é¢„å…ˆåŠ è½½æ‰€æœ‰éŸ³ä¹ */
+	void loadMusics(const ValueMap& _musicFiles);	/* æ ¹æ®æ–‡ä»¶åŠ è½½éŸ³ä¹ */
+	void loadEffects(const ValueMap& _effectFiles);	/* æ ¹æ®æ–‡ä»¶åŠ è½½éŸ³æ•ˆ */
 private:
 	
 private:

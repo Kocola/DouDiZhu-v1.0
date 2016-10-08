@@ -1,4 +1,4 @@
-#include "GameRules.h"
+ï»¿#include "GameRules.h"
 #include "GlobalDefine.h"
 #include "GlobalFunc.h"
 #include "OutCards.h"
@@ -13,7 +13,7 @@ GameRules* GameRules::getInstance(){
 		gameRules = new GameRules();
 		if (gameRules != nullptr && gameRules->init()){
 			gameRules->autorelease();
-			gameRules->retain();	/* µ¥ÀıÎªÁË·ÀÖ¹±»ÄÚ´æ¹ÜÀíÆ÷»ØÊÕ£¬ĞèÒªÖ÷¶¯retaiin·ÀÖ¹»ØÊÕ */
+			gameRules->retain();	/* å•ä¾‹ä¸ºäº†é˜²æ­¢è¢«å†…å­˜ç®¡ç†å™¨å›æ”¶ï¼Œéœ€è¦ä¸»åŠ¨retaiiné˜²æ­¢å›æ”¶ */
 		}else{
 			CC_SAFE_DELETE(gameRules);
 		}
@@ -27,9 +27,9 @@ bool GameRules::init(){
 
 Vector<Poker*> GameRules::searchProperPokers(Vector<Poker*> _pokers){
 	Vector<Poker*> ret;
-	/* ÏÈÕÒµ¥ÕÅ */
+	/* å…ˆæ‰¾å•å¼  */
 	ret = calcPokerWithValueType(_pokers, SINGLE);
-	if (ret.size() == 0){	/* Ã»ÕÒµ½µ¥ÕÅ */
+	if (ret.size() == 0){	/* æ²¡æ‰¾åˆ°å•å¼  */
 		ret = calcPokerWithValueType(_pokers, PAIR);
 		if (ret.size() == 0){
 			ret = calcPokerWithValueType(_pokers, TRIPLE);
@@ -43,10 +43,10 @@ Vector<Poker*> GameRules::searchProperPokers(Vector<Poker*> _pokers){
 
 bool  GameRules::canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCards){
 	GlobalFunc::sort(curCards);
-	/* Á½ÕßÖ®Ò»ÊÇÍõÕ¨ */
+	/* ä¸¤è€…ä¹‹ä¸€æ˜¯ç‹ç‚¸ */
 	if (isKingBomb(curCards) == true) return true;
 	if (lastOutCards->getPokerValueType() == KINGBOMB) return false;
-	/* Á½ÕßÖ®Ò»ÊÇÕ¨µ¯ */
+	/* ä¸¤è€…ä¹‹ä¸€æ˜¯ç‚¸å¼¹ */
 	if (lastOutCards->getPokerValueType() == BOMB){
 		if (isBomb(curCards) == BOMB && COMPARE_GREATER(curCards.at(curCards.size() - 1), lastOutCards->getLowestPoker())){
 			return true;
@@ -56,30 +56,30 @@ bool  GameRules::canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCar
 	} else if (isBomb(curCards) == true){
 		return true;
 	}
-	/* ´ËÍâ£¬Á½ÕßÀàĞÍ±ØĞëÒ»ÖÂ */
-	/* ÀàĞÍ²»Ò»ÖÂ£¬·µ»Øfalse */
+	/* æ­¤å¤–ï¼Œä¸¤è€…ç±»å‹å¿…é¡»ä¸€è‡´ */
+	/* ç±»å‹ä¸ä¸€è‡´ï¼Œè¿”å›false */
 	if (analysePokerValueType(curCards) != lastOutCards->getPokerValueType()){
 		return false;
 	}
-	/* Á½ÕßÅÆĞÍÒ»ÖÂÊ± */
+	/* ä¸¤è€…ç‰Œå‹ä¸€è‡´æ—¶ */
 	PokerValueType _pokerValueType = lastOutCards->getPokerValueType();
-	/* Èç¹ûÊÇÄ³ÖÖË³×Ó */
+	/* å¦‚æœæ˜¯æŸç§é¡ºå­ */
 	if (_pokerValueType == STRAIGHT || _pokerValueType == PAIRSRAIGHT || _pokerValueType == TRIPLESTRAIGHT){
 		return (lastOutCards->getTotalLength() == curCards.size()) && (COMPARE_GREATER(curCards.at(curCards.size() - 1), lastOutCards->getLowestPoker()));
 	} 
-	/* µ¥ÕÅ£¬¶Ô×Ó£¬ÈıÕÅ ¿ÉÒÔºÍÉÏÒ»ÌõºÏ²¢£¬ÔİÊ±²»ÕâÃ´×ö*/
+	/* å•å¼ ï¼Œå¯¹å­ï¼Œä¸‰å¼  å¯ä»¥å’Œä¸Šä¸€æ¡åˆå¹¶ï¼Œæš‚æ—¶ä¸è¿™ä¹ˆåš*/
 	return (lastOutCards->getTotalLength() == curCards.size()) && (COMPARE_GREATER(curCards.at(curCards.size() - 1), lastOutCards->getLowestPoker()));
 }
 
 PokerValueType GameRules::analysePokerValueType(Vector<Poker*> _pokers){
 	if (_pokers.size() == 0) return NONE;
 
-	/* Ã¿´ÎÅÅĞòÒ»´Î£¬·ÀÖ¹ÂÒĞò */
+	/* æ¯æ¬¡æ’åºä¸€æ¬¡ï¼Œé˜²æ­¢ä¹±åº */
 	GlobalFunc::sort(_pokers);
 
 	if (_pokers.size() < 5){
 		if (isSingle(_pokers) == true) return SINGLE;
-		if (isKingBomb(_pokers) == true) return KINGBOMB;		/* Ë«ÍõµÄvalueÖµÊÇ0£¬Òò´ËÈç¹ûÏÈÅĞ¶Ï¶Ô×Ó»áÔì³ÉÅĞ¶Ï´íÎó */
+		if (isKingBomb(_pokers) == true) return KINGBOMB;		/* åŒç‹çš„valueå€¼æ˜¯0ï¼Œå› æ­¤å¦‚æœå…ˆåˆ¤æ–­å¯¹å­ä¼šé€ æˆåˆ¤æ–­é”™è¯¯ */
 		if (isPair(_pokers) == true) return PAIR;
 		if (isTriple(_pokers) == true) return TRIPLE;
 		if (isBomb(_pokers) == true) return BOMB;
@@ -97,7 +97,7 @@ bool GameRules::isPokerValueType(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType){
-	/* Ã¿´ÎÅÅĞòÒ»´Î£¬·ÀÖ¹ÂÒĞò */
+	/* æ¯æ¬¡æ’åºä¸€æ¬¡ï¼Œé˜²æ­¢ä¹±åº */
 	GlobalFunc::sort(_pokers);
 
 	switch (pokerValueType){
@@ -116,7 +116,7 @@ bool GameRules::isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType
 }
 
 Vector<Poker*> GameRules::calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker /* = nullptr */, int length /* = 0 */){
-	/* Ã¿´ÎÅÅĞòÒ»´Î£¬·ÀÖ¹ÂÒĞò */
+	/* æ¯æ¬¡æ’åºä¸€æ¬¡ï¼Œé˜²æ­¢ä¹±åº */
 	GlobalFunc::sort(_pokers);
 
 	switch (pokerValueType){
@@ -134,7 +134,7 @@ Vector<Poker*> GameRules::calcPokerWithValueType(Vector<Poker*> _pokers, PokerVa
 }
 
 Vector<Poker*> GameRules::calcPokerWithValueTypeInSplit(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker /* = nullptr */, int length /* = 0 */){
-	/* Ã¿´ÎÅÅĞòÒ»´Î£¬·ÀÖ¹ÂÒĞò */
+	/* æ¯æ¬¡æ’åºä¸€æ¬¡ï¼Œé˜²æ­¢ä¹±åº */
 	GlobalFunc::sort(_pokers);
 
 	switch (pokerValueType){
@@ -155,14 +155,14 @@ Vector<Poker*> GameRules::searchSingle(Vector<Poker*> _pokers, const Poker* _pok
 
 	if (_pokers.size() == 0) return Vector<Poker*>();
 
-	int index = _pokers.size() - 1;	/* ÒòÎªÅÆÃæ´Ó´óµ½Ğ¡ÅÅĞòµÄ£¬Òò´ËĞèÒª´Ó¸ßÎ»À´²éÕÒ */
-	///* ¸ù¾İËùÒª±È½ÏµÄpokerÀ´²éÕÒËùĞèµÄÆË¿Ë£¬Ò»°ãÊÇ´ó1¼´¿É */
+	int index = _pokers.size() - 1;	/* å› ä¸ºç‰Œé¢ä»å¤§åˆ°å°æ’åºçš„ï¼Œå› æ­¤éœ€è¦ä»é«˜ä½æ¥æŸ¥æ‰¾ */
+	///* æ ¹æ®æ‰€è¦æ¯”è¾ƒçš„pokeræ¥æŸ¥æ‰¾æ‰€éœ€çš„æ‰‘å…‹ï¼Œä¸€èˆ¬æ˜¯å¤§1å³å¯ */
 	//Poker* searchPoker = GlobalFunc::searchGreaterPoker(_poker, 1);
 	while (index >= 0){
 		Vector<Poker*> tmp;
 		tmp.pushBack(_pokers.at(index));
-		/* Ê×ÏÈÅĞ¶ÏÊÇ·ñÅÆÃæÖµ´óÓÚÒªÕÒµÄÅÆ£¬Èç¹ûÊÇ£¬ÄÇ¾Í¿ÉÒÔ½øÒ»²½ÅĞ¶ÏÊÇ¶Ô×Ó£¬ÈıÕÅ£¬Õ¨µ¯µÈ£¬ÕâÑù¿ÉÒÔ¼õÇá¼ÆËãÁ¿ 
-			ÅĞ¶Ï¶Ô×ÓµÈµÄ×÷ÓÃÊÇ·ÀÖ¹²ğÅÆ£¬ÔÚ·ÇË³×ÓµÄÇ°ÌáÏÂ£¬²»¿ÉÒÔ²ğÅÆ*/
+		/* é¦–å…ˆåˆ¤æ–­æ˜¯å¦ç‰Œé¢å€¼å¤§äºè¦æ‰¾çš„ç‰Œï¼Œå¦‚æœæ˜¯ï¼Œé‚£å°±å¯ä»¥è¿›ä¸€æ­¥åˆ¤æ–­æ˜¯å¯¹å­ï¼Œä¸‰å¼ ï¼Œç‚¸å¼¹ç­‰ï¼Œè¿™æ ·å¯ä»¥å‡è½»è®¡ç®—é‡ 
+			åˆ¤æ–­å¯¹å­ç­‰çš„ä½œç”¨æ˜¯é˜²æ­¢æ‹†ç‰Œï¼Œåœ¨éé¡ºå­çš„å‰æä¸‹ï¼Œä¸å¯ä»¥æ‹†ç‰Œ*/
 		if (_poker == nullptr || COMPARE_GREATER(tmp.at(0), _poker) == true){
 			if (index - 1 >= 0){
 				tmp.pushBack(_pokers.at(index - 1));
@@ -176,24 +176,24 @@ Vector<Poker*> GameRules::searchSingle(Vector<Poker*> _pokers, const Poker* _pok
 									index = index - 4;
 									continue;
 								}
-								tmp.popBack();	/* Èç¹û²»ÊÇÕ¨µ¯£¬ÄÇÃ´Òªµ±Ç°×îºóÒ»ÕÅpopBack */
+								tmp.popBack();	/* å¦‚æœä¸æ˜¯ç‚¸å¼¹ï¼Œé‚£ä¹ˆè¦å½“å‰æœ€åä¸€å¼ popBack */
 							}
 							index = index - 3;
 							continue;
 						}
-						tmp.popBack();/* Èç¹û²»ÊÇÈıÕÅ£¬ÄÇÃ´Òªµ±Ç°×îºóÒ»ÕÅpopBack  */
+						tmp.popBack();/* å¦‚æœä¸æ˜¯ä¸‰å¼ ï¼Œé‚£ä¹ˆè¦å½“å‰æœ€åä¸€å¼ popBack  */
 					}
 					index = index - 2;
 					continue;
 				}
-				tmp.popBack();	/* Èç¹û²»ÊÇ¶Ô×Ó£¬ÄÇÃ´Òªµ±Ç°×îºóÒ»ÕÅpopBack  */
+				tmp.popBack();	/* å¦‚æœä¸æ˜¯å¯¹å­ï¼Œé‚£ä¹ˆè¦å½“å‰æœ€åä¸€å¼ popBack  */
 			}
 			return tmp;
 		}
 		index = index - 1;
 		tmp.clear();
 	}
-	/* ´æÔÚµÄÒ»¸öÎÊÌâ£¬ÎªÁË²»²ğÅÆ£¬¿ÉÄÜ³öÏÖ333444555ÕâÖÖÇé¿öÊ±£¬²»»á³öµ¥ÕÅ */
+	/* å­˜åœ¨çš„ä¸€ä¸ªé—®é¢˜ï¼Œä¸ºäº†ä¸æ‹†ç‰Œï¼Œå¯èƒ½å‡ºç°333444555è¿™ç§æƒ…å†µæ—¶ï¼Œä¸ä¼šå‡ºå•å¼  */
 	return Vector<Poker*>();
 }
 
@@ -201,7 +201,7 @@ Vector<Poker*> GameRules::searchPair(Vector<Poker*> _pokers, const Poker* _poker
 	if (_pokers.size() < 2) return Vector<Poker*>();
 
 	int index = _pokers.size() - 1;
-	/* >= 1µÄÄ¿µÄÊÇ£¬±£Ö¤Ã¿ÂÖÑ­»·ÖÁÉÙÓĞÁ½ÕÅÅÆ */
+	/* >= 1çš„ç›®çš„æ˜¯ï¼Œä¿è¯æ¯è½®å¾ªç¯è‡³å°‘æœ‰ä¸¤å¼ ç‰Œ */
 	while (index >= 1){
 		Vector<Poker*> tmp;
 		tmp.pushBack(_pokers.at(index));
@@ -216,12 +216,12 @@ Vector<Poker*> GameRules::searchPair(Vector<Poker*> _pokers, const Poker* _poker
 							index = index - 4;
 							continue;
 						}
-						tmp.popBack();	/* Èç¹û²»ÊÇÕ¨µ¯£¬ÄÇÃ´Òªµ±Ç°×îºóÒ»ÕÅpopBack */
+						tmp.popBack();	/* å¦‚æœä¸æ˜¯ç‚¸å¼¹ï¼Œé‚£ä¹ˆè¦å½“å‰æœ€åä¸€å¼ popBack */
 					}
 					index = index - 3;
 					continue;
 				}
-				tmp.popBack(); /* Èç¹û²»ÊÇÈıÕÅ£¬ÄÇÃ´Òªµ±Ç°×îºóÒ»ÕÅpopBack */
+				tmp.popBack(); /* å¦‚æœä¸æ˜¯ä¸‰å¼ ï¼Œé‚£ä¹ˆè¦å½“å‰æœ€åä¸€å¼ popBack */
 			}
 			return tmp;
 		}
@@ -247,7 +247,7 @@ Vector<Poker*> GameRules::searchTriple(Vector<Poker*> _pokers, const Poker* _pok
 					index = index - 4;
 					continue;
 				}
-				tmp.popBack();/* Èç¹û²»ÊÇÕ¨µ¯£¬ÄÇÃ´Òªµ±Ç°×îºóÒ»ÕÅpopBack */
+				tmp.popBack();/* å¦‚æœä¸æ˜¯ç‚¸å¼¹ï¼Œé‚£ä¹ˆè¦å½“å‰æœ€åä¸€å¼ popBack */
 			}
 			return tmp;
 		}
@@ -271,13 +271,13 @@ Vector<Poker*> GameRules::searchBomb(Vector<Poker*> _pokers, const Poker* _poker
 		}
 		index = index - 1;
 	}
-	/* Èç¹ûÃ»ÓĞÕÒµ½Õ¨µ¯£¬³¢ÊÔ²éÕÒÍõÕ¨ */
+	/* å¦‚æœæ²¡æœ‰æ‰¾åˆ°ç‚¸å¼¹ï¼Œå°è¯•æŸ¥æ‰¾ç‹ç‚¸ */
 	return searchKingBomb(_pokers);
 }
 
 Vector<Poker*> GameRules::searchKingBomb(Vector<Poker*> _pokers){
-	if (_pokers.size() < 2) return Vector<Poker*>();	/* Èç¹ûÆË¿ËµÄÕÅÊıĞ¡ÓÚ2£¬ÄÇÃ´¿Ï¶¨²»ÊÇÍõÕ¨ */
-	/* Á½ÕÅÍõ¿Ï¶¨ÊÇÕû¸öÅÆÃæµÄµÚÒ»µÚ¶şÕÅ£¬Òò´ËÖ±½Ó½«Ç°Á½ÕÅÅÆ·ÅÈëÒ»¸öVector£¬µ÷ÓÃisKingBombº¯ÊıÀ´ÅĞ¶Ï */
+	if (_pokers.size() < 2) return Vector<Poker*>();	/* å¦‚æœæ‰‘å…‹çš„å¼ æ•°å°äº2ï¼Œé‚£ä¹ˆè‚¯å®šä¸æ˜¯ç‹ç‚¸ */
+	/* ä¸¤å¼ ç‹è‚¯å®šæ˜¯æ•´ä¸ªç‰Œé¢çš„ç¬¬ä¸€ç¬¬äºŒå¼ ï¼Œå› æ­¤ç›´æ¥å°†å‰ä¸¤å¼ ç‰Œæ”¾å…¥ä¸€ä¸ªVectorï¼Œè°ƒç”¨isKingBombå‡½æ•°æ¥åˆ¤æ–­ */
 	Vector<Poker*> tmp;
 	tmp.pushBack(_pokers.at(0));
 	tmp.pushBack(_pokers.at(1));
@@ -285,7 +285,7 @@ Vector<Poker*> GameRules::searchKingBomb(Vector<Poker*> _pokers){
 	return isBomb == true ? tmp : Vector<Poker*>();
 }
 
-/* ²éÕÒ¹Ì¶¨ÖµµÄÆË¿Ë */
+/* æŸ¥æ‰¾å›ºå®šå€¼çš„æ‰‘å…‹ */
 Vector<Poker*> GameRules::searchSpecifiedSingle(Vector<Poker*> _pokers, const Poker* _poker){
 	if (_pokers.size() < 1 || _poker == nullptr) return Vector<Poker*>();
 	int index = _pokers.size() - 1;
@@ -293,7 +293,7 @@ Vector<Poker*> GameRules::searchSpecifiedSingle(Vector<Poker*> _pokers, const Po
 		Vector<Poker*> tmp;
 		tmp.pushBack(_pokers.at(index));
 		if (COMPATE_EQUAL(tmp.at(0), _poker) == true) return tmp;
-		/* Èç¹ûµ±Ç°ÆË¿ËÒÑ¾­´óÓÚÒªÕÒµÄÆË¿Ë£¬ÄÇÃ´Ö±½Óbreak */
+		/* å¦‚æœå½“å‰æ‰‘å…‹å·²ç»å¤§äºè¦æ‰¾çš„æ‰‘å…‹ï¼Œé‚£ä¹ˆç›´æ¥break */
 		if (COMPARE_GREATER(tmp.at(0), _poker) == true) break;
 		index = index - 1;
 	}
@@ -309,7 +309,7 @@ Vector<Poker*> GameRules::searchSpecifiedPair(Vector<Poker*> _pokers, const Poke
 		tmp.pushBack(_pokers.at(index - 1));
 		if (isPair(tmp) == true){
 			if (COMPATE_EQUAL(tmp.at(0), _poker) == true) return tmp;
-			/* Èç¹ûµ±Ç°ÆË¿ËÒÑ¾­´óÓÚÒªÕÒµÄÆË¿Ë£¬ÄÇÃ´Ö±½Óbreak */
+			/* å¦‚æœå½“å‰æ‰‘å…‹å·²ç»å¤§äºè¦æ‰¾çš„æ‰‘å…‹ï¼Œé‚£ä¹ˆç›´æ¥break */
 			if (COMPARE_GREATER(tmp.at(0), _poker) == true) break;
 			index = index - 2;
 		}else{
@@ -339,14 +339,14 @@ Vector<Poker*> GameRules::searchSpecifiedTriple(Vector<Poker*> _pokers, const Po
 }
 
 Vector<Poker*> GameRules::searchSingleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker){
-	/* Èç¹ûlength²ÎÊı³ö´í£¬»òÕßÆË¿ËµÄÕÅÊı²»×ãËùĞèµÄlength£¬ÄÇÃ´Ö±½Ó·µ»Ø¿Õ */
+	/* å¦‚æœlengthå‚æ•°å‡ºé”™ï¼Œæˆ–è€…æ‰‘å…‹çš„å¼ æ•°ä¸è¶³æ‰€éœ€çš„lengthï¼Œé‚£ä¹ˆç›´æ¥è¿”å›ç©º */
 	if (length < 5 || length > 12 || _pokers.size() < length) return Vector<Poker*>();
-	/*CCASSERT(length < 5 || length > 12, "Ë³×ÓµÄ³¤¶È±ØĞëÔÚ5~12Ö®Ç°");
-	CCASSERT(_pokers.size() < length, "Ê£ÓàµÄÆË¿ËÊı²»¹»×é³É·ûºÏÌõ¼şµÄË³×Ó");*/
+	/*CCASSERT(length < 5 || length > 12, "é¡ºå­çš„é•¿åº¦å¿…é¡»åœ¨5~12ä¹‹å‰");
+	CCASSERT(_pokers.size() < length, "å‰©ä½™çš„æ‰‘å…‹æ•°ä¸å¤Ÿç»„æˆç¬¦åˆæ¡ä»¶çš„é¡ºå­");*/
 	
-	/* Èç¹û²éÕÒµÄË³×ÓµÄ×îĞ¡µÄÅÆÃæÖµÊÇ1»òÕß2£¬ÒÔ¼°ËùĞèË³×ÓÅÆÃæ×îµÍÖµ+Ë³×Ó³¤¶È£¨´ËÊ±¾ÍÊÇË³×ÓÅÆÃæµÄ×î´óÖµ£©> A£¨14£©,ÄÇÃ´Ö±½Ó·µ»Ø¿Õ */
+	/* å¦‚æœæŸ¥æ‰¾çš„é¡ºå­çš„æœ€å°çš„ç‰Œé¢å€¼æ˜¯1æˆ–è€…2ï¼Œä»¥åŠæ‰€éœ€é¡ºå­ç‰Œé¢æœ€ä½å€¼+é¡ºå­é•¿åº¦ï¼ˆæ­¤æ—¶å°±æ˜¯é¡ºå­ç‰Œé¢çš„æœ€å¤§å€¼ï¼‰> Aï¼ˆ14ï¼‰,é‚£ä¹ˆç›´æ¥è¿”å›ç©º */
 	int pokerValue = _poker->getValue();
-	/* Èç¹û²éÕÒµÄÅÆÖµÊÇ0£¬±íÃ÷ÊÇ´óÍõ»òÕßĞ¡Íõ */
+	/* å¦‚æœæŸ¥æ‰¾çš„ç‰Œå€¼æ˜¯0ï¼Œè¡¨æ˜æ˜¯å¤§ç‹æˆ–è€…å°ç‹ */
 	if (pokerValue == 0 || pokerValue == 1 || pokerValue == 2 || (pokerValue + length > 14)) return Vector<Poker*>();
 	
 	int index = pokerValue + 1;
@@ -362,16 +362,16 @@ Vector<Poker*> GameRules::searchSingleStraight(Vector<Poker*> _pokers, int lengt
 				break;
 			}
 		}
-		if (ret.size() == length){	/* ²éÑ¯ËùµÃµÄ½á¹û£¬ÊÇµİÔöµÄ£¬ºÍ¹æ¶¨µÄµİ¼õÏà·´£¬Òò´ËÕâÀïÅÅĞòÒ»´Î */
+		if (ret.size() == length){	/* æŸ¥è¯¢æ‰€å¾—çš„ç»“æœï¼Œæ˜¯é€’å¢çš„ï¼Œå’Œè§„å®šçš„é€’å‡ç›¸åï¼Œå› æ­¤è¿™é‡Œæ’åºä¸€æ¬¡ */
 			GlobalFunc::sort(ret);
 			return ret;
 		}
-		index++; /* µ±Ç°ÒÑ¾­²éÕÒÊ§°Ü£¬½«index+1£¬´ÓÏÂÒ»¸ö¿ªÊ¼²éÕÒ */
+		index++; /* å½“å‰å·²ç»æŸ¥æ‰¾å¤±è´¥ï¼Œå°†index+1ï¼Œä»ä¸‹ä¸€ä¸ªå¼€å§‹æŸ¥æ‰¾ */
 	}
 	return Vector<Poker*>();
 }
 
-/* lengthÕâÀïÊÇË³×ÓµÄ²»Í¬ÅÆµÄ¸öÊı */
+/* lengthè¿™é‡Œæ˜¯é¡ºå­çš„ä¸åŒç‰Œçš„ä¸ªæ•° */
 Vector<Poker*> GameRules::searchPairStraight(Vector<Poker*> _pokers, int length, const Poker* _poker){
 	if (length < 3 || length > 12 || _pokers.size() < length * 2) return Vector<Poker*>();
 	int pokerValue = _poker->getValue();
@@ -395,12 +395,12 @@ Vector<Poker*> GameRules::searchPairStraight(Vector<Poker*> _pokers, int length,
 			GlobalFunc::sort(ret);
 			return ret;
 		}
-		index++; /* µ±Ç°ÒÑ¾­²éÕÒÊ§°Ü£¬½«index+1£¬´ÓÏÂÒ»¸ö¿ªÊ¼²éÕÒ */
+		index++; /* å½“å‰å·²ç»æŸ¥æ‰¾å¤±è´¥ï¼Œå°†index+1ï¼Œä»ä¸‹ä¸€ä¸ªå¼€å§‹æŸ¥æ‰¾ */
 	}
 	return Vector<Poker*>();
 }
 
-/* lengthÕâÀïÊÇË³×ÓµÄ²»Í¬ÅÆµÄ¸öÊı */
+/* lengthè¿™é‡Œæ˜¯é¡ºå­çš„ä¸åŒç‰Œçš„ä¸ªæ•° */
 Vector<Poker*> GameRules::searchTripleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker){
 	if (length < 2 || length > 12 || _pokers.size() < length * 3) return Vector<Poker*>();
 	int pokerValue = _poker->getValue();
@@ -426,7 +426,7 @@ Vector<Poker*> GameRules::searchTripleStraight(Vector<Poker*> _pokers, int lengt
 			GlobalFunc::sort(ret);
 			return ret;
 		}
-		index++; /* µ±Ç°ÒÑ¾­²éÕÒÊ§°Ü£¬½«index+1£¬´ÓÏÂÒ»¸ö¿ªÊ¼²éÕÒ */
+		index++; /* å½“å‰å·²ç»æŸ¥æ‰¾å¤±è´¥ï¼Œå°†index+1ï¼Œä»ä¸‹ä¸€ä¸ªå¼€å§‹æŸ¥æ‰¾ */
 	}
 	return Vector<Poker*>();
 }
@@ -486,7 +486,7 @@ bool GameRules::isSingle(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isPair(Vector<Poker*> _pokers){
-	/* Èç¹ûÆË¿ËµÄvalueÖµĞ¡ÓÚ1£¬ËµÃ÷ÊÇÍõ£¬Ö±½Ó·µ»Øfalse */
+	/* å¦‚æœæ‰‘å…‹çš„valueå€¼å°äº1ï¼Œè¯´æ˜æ˜¯ç‹ï¼Œç›´æ¥è¿”å›false */
 	if (_pokers.size() != 2 || _pokers.at(0)->getValue() <= 0) return false;
 	return _pokers.at(0)->getValue() == _pokers.at(1)->getValue();
 }
@@ -513,10 +513,10 @@ bool GameRules::isKingBomb(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isSingleStraight(Vector<Poker*> _pokers){
-	GlobalFunc::sort(_pokers);	/* ¶ÔÆË¿Ë½øĞĞÅÅĞò */
+	GlobalFunc::sort(_pokers);	/* å¯¹æ‰‘å…‹è¿›è¡Œæ’åº */
 
 	auto _first_poker = _pokers.at(0);
-	/* Èç¹ûµÚÒ»ÕÅÊÇÍõ£¬»òÕß2£¬ÄÇÃ´¿Ï¶¨²»ÊÇË³×Ó */
+	/* å¦‚æœç¬¬ä¸€å¼ æ˜¯ç‹ï¼Œæˆ–è€…2ï¼Œé‚£ä¹ˆè‚¯å®šä¸æ˜¯é¡ºå­ */
 	if (_first_poker->getValue() == 2
 		|| _first_poker->getPokerType() == BLACKJOKER
 		|| _first_poker->getPokerType() == REDJOKER){
@@ -545,19 +545,19 @@ bool GameRules::isSingleStraight(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isPairStraight(Vector<Poker*> _pokers){
-	/* Èç¹ûÆË¿ËÊı²»ÊÇÅ¼Êı£¬ÄÇÃ´¿Ï¶¨²»ÊÇË«Ë³ */
+	/* å¦‚æœæ‰‘å…‹æ•°ä¸æ˜¯å¶æ•°ï¼Œé‚£ä¹ˆè‚¯å®šä¸æ˜¯åŒé¡º */
 	if (_pokers.size() % 2 != 0) return false;
 
-	GlobalFunc::sort(_pokers);	/* ¶ÔÆË¿Ë½øĞĞÅÅĞò */
+	GlobalFunc::sort(_pokers);	/* å¯¹æ‰‘å…‹è¿›è¡Œæ’åº */
 
 	auto _first_poker = _pokers.at(0);
-	/* Èç¹ûµÚÒ»ÕÅÊÇÍõ£¬»òÕß2£¬ÄÇÃ´¿Ï¶¨²»ÊÇË³×Ó */
+	/* å¦‚æœç¬¬ä¸€å¼ æ˜¯ç‹ï¼Œæˆ–è€…2ï¼Œé‚£ä¹ˆè‚¯å®šä¸æ˜¯é¡ºå­ */
 	if (_first_poker->getValue() == 2
 		|| _first_poker->getPokerType() == BLACKJOKER
 		|| _first_poker->getPokerType() == REDJOKER){
 		return false;
 	}
-	/* ÅĞ¶ÏÊÇ·ñ¶¼ÊÇ¶Ô×Ó */
+	/* åˆ¤æ–­æ˜¯å¦éƒ½æ˜¯å¯¹å­ */
 	for (int i = 0; i <= _pokers.size() - 2; i += 2){
 		if (isPair(GlobalFunc::createVectorPokerWithIndex(_pokers, i, i + 2)) == false){
 			return false;
@@ -588,21 +588,21 @@ bool GameRules::isPairStraight(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isTripleStraight(Vector<Poker*> _pokers){
-	/* Èç¹ûÆË¿ËÊı²»ÊÇ3µÄ±¶Êı£¬ÄÇÃ´¿Ï¶¨²»ÊÇÈıË³£¬
-		ÕâÀïĞèÒª×¢ÒâµÄÊÇ£¬±¾Ô¤±¸ÕâÀïÅĞ¶ÏÈıË³´øÒ»ÕÅµÄÇé¿ö£¬µ«ÊÇ·ÅÔÚÒ»ÆğÅĞ¶ÏÓÖ»áµ¼ÖÂ¸÷ÖÖcaseÖ®¼ä
-		´í×Û¸´ÔÓµ¼ÖÂºÜÄÑ·¢ÏÖµÄBUG£¬¹Ê·ÅÆú*/
+	/* å¦‚æœæ‰‘å…‹æ•°ä¸æ˜¯3çš„å€æ•°ï¼Œé‚£ä¹ˆè‚¯å®šä¸æ˜¯ä¸‰é¡ºï¼Œ
+		è¿™é‡Œéœ€è¦æ³¨æ„çš„æ˜¯ï¼Œæœ¬é¢„å¤‡è¿™é‡Œåˆ¤æ–­ä¸‰é¡ºå¸¦ä¸€å¼ çš„æƒ…å†µï¼Œä½†æ˜¯æ”¾åœ¨ä¸€èµ·åˆ¤æ–­åˆä¼šå¯¼è‡´å„ç§caseä¹‹é—´
+		é”™ç»¼å¤æ‚å¯¼è‡´å¾ˆéš¾å‘ç°çš„BUGï¼Œæ•…æ”¾å¼ƒ*/
 	if (_pokers.size() % 3 != 0) return false;
 
-	GlobalFunc::sort(_pokers);	/* ¶ÔÆË¿Ë½øĞĞÅÅĞò */
+	GlobalFunc::sort(_pokers);	/* å¯¹æ‰‘å…‹è¿›è¡Œæ’åº */
 
 	auto _first_poker = _pokers.at(0);
-	/* Èç¹ûµÚÒ»ÕÅÊÇÍõ£¬»òÕß2£¬ÄÇÃ´¿Ï¶¨²»ÊÇË³×Ó */
+	/* å¦‚æœç¬¬ä¸€å¼ æ˜¯ç‹ï¼Œæˆ–è€…2ï¼Œé‚£ä¹ˆè‚¯å®šä¸æ˜¯é¡ºå­ */
 	if (_first_poker->getValue() == 2
 		|| _first_poker->getPokerType() == BLACKJOKER
 		|| _first_poker->getPokerType() == REDJOKER){
 		return false;
 	}
-	/* ÅĞ¶ÏÊÇ·ñ¶¼ÊÇÈıÕÅ */
+	/* åˆ¤æ–­æ˜¯å¦éƒ½æ˜¯ä¸‰å¼  */
 	for (int i = 0; i <= _pokers.size() - 3; i += 3){
 		if (isTriple(GlobalFunc::createVectorPokerWithIndex(_pokers, i, i + 3)) == false){
 			return false;

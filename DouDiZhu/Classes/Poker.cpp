@@ -1,18 +1,18 @@
-#include "GameScene.h"
+ï»¿#include "GameScene.h"
 #include "MusicController.h"
 #include "Player.h"
 #include "Poker.h"
 #include "PokerController.h"
 
 Poker::Poker(GameScene* _gameScene, PokerType type, int value){
-	this->setCanClick(false);	/* Ä¬ÈÏ²»¿Éµã»÷ */
+	this->setCanClick(false);	/* é»˜è®¤ä¸å¯ç‚¹å‡» */
 	this->setSelect(false);
 	this->setPokerType(type);
 	this->setValue(value);
 	this->setGameScene(_gameScene);
 
-	createSprite();		/* ´´½¨Á½¸öÆË¿Ë¾«Áé */
-	this->showBack();	  /* ÏÔÊ¾ÕýÃæ */
+	createSprite();		/* åˆ›å»ºä¸¤ä¸ªæ‰‘å…‹ç²¾çµ */
+	this->showBack();	  /* æ˜¾ç¤ºæ­£é¢ */
 }
 
 Poker* Poker::create(GameScene* _gameScene, PokerType type, int value /* = 0 */){
@@ -35,41 +35,41 @@ void Poker::createSprite(){
 	auto sprite = PokerController::getInstance()->getPokerWithValue(pokerType, value);
 	this->setPoker(sprite);
 	this->addChild(poker);
-	backPoker = PokerController::getInstance()->getPokerWithValue(BACK);		/* »ñÈ¡±³ÃæÆË¿Ë¾«Áé */
+	backPoker = PokerController::getInstance()->getPokerWithValue(BACK);		/* èŽ·å–èƒŒé¢æ‰‘å…‹ç²¾çµ */
 	this->addChild(backPoker);
 
-	/* ½«ÎÞ³¤¿íµÄNodeÉèÖÃ³ÉºÍSpriteÒ»Ñù³¤¿í */
+	/* å°†æ— é•¿å®½çš„Nodeè®¾ç½®æˆå’ŒSpriteä¸€æ ·é•¿å®½ */
 	auto spriteSize = poker->getContentSize();
 	this->setAnchorPoint(Point(0.5, 0.5));
 	this->setContentSize(spriteSize);
 
-	/* ½«¾«ÁéµÄÎ»ÖÃºÍNode±¾ÉíÒ»ÖÂ */
+	/* å°†ç²¾çµçš„ä½ç½®å’ŒNodeæœ¬èº«ä¸€è‡´ */
 	poker->setPosition(this->getContentSize() / 2);
 	backPoker->setPosition(this->getContentSize() / 2);
 }
 
 bool Poker::init(){
-	auto listener = EventListenerTouchOneByOne::create();		/* ´´½¨µ¥µã´¥Ãþ¼àÌýÆ÷ */
-	listener->setSwallowTouches(true);	/* ½ûÖ¹ÏòÏÂ´«µÝ´¥Ãþ */
-	/* ´¥Ãþ¿ªÊ¼ */
+	auto listener = EventListenerTouchOneByOne::create();		/* åˆ›å»ºå•ç‚¹è§¦æ‘¸ç›‘å¬å™¨ */
+	listener->setSwallowTouches(true);	/* ç¦æ­¢å‘ä¸‹ä¼ é€’è§¦æ‘¸ */
+	/* è§¦æ‘¸å¼€å§‹ */
 	listener->onTouchBegan = [&](Touch* touch, Event* event){
 		auto rect = this->getBoundingBox();
 		auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());
 		if (rect.containsPoint(touchPos) && canClick){
-			/* ²¥·Å´¥ÃþÅÆµÄÒôÐ§ */
+			/* æ’­æ”¾è§¦æ‘¸ç‰Œçš„éŸ³æ•ˆ */
 			MusicController::getInstance()->playTouchCardEffect();
 			if (!isSelect){
-				/* Èç¹û»¹Î´Ñ¡ÔñÕâÕÅÅÆ£¬ÄÇ¾Í½«ÕâÕÅÅÆÂ¶³öÀ´ */
+				/* å¦‚æžœè¿˜æœªé€‰æ‹©è¿™å¼ ç‰Œï¼Œé‚£å°±å°†è¿™å¼ ç‰Œéœ²å‡ºæ¥ */
 				selectedCardOut();
 			}else{
-				/* ·ñÔòÕâÕÅÅÆÒÑ¾­±»Ñ¡Ôñ£¬½«Æä·Å»Ø */
+				/* å¦åˆ™è¿™å¼ ç‰Œå·²ç»è¢«é€‰æ‹©ï¼Œå°†å…¶æ”¾å›ž */
 				selectedCardBack();
 			}
-			/* ¼ì²âµ±Ç°ÅÆÊÇ·ñ¿ÉÒÔÁí³öÅÆ°´Å¥¿É°´ */
+			/* æ£€æµ‹å½“å‰ç‰Œæ˜¯å¦å¯ä»¥å¦å‡ºç‰ŒæŒ‰é’®å¯æŒ‰ */
 			updateOutState();
 			return true;
 		}
-		return false;		/* ÕâÀï·µ»Øfalse£¬´¥Ãþ²»»á±»ÍÌµô */
+		return false;		/* è¿™é‡Œè¿”å›žfalseï¼Œè§¦æ‘¸ä¸ä¼šè¢«åžæŽ‰ */
 	};
 
 	listener->onTouchMoved = [](Touch* touch, Event* event){
@@ -88,11 +88,11 @@ void Poker::selectedCardOut(){
 	this->isSelect = true;
 	this->setPosition(Point(this->getPositionX(), this->getPositionY() + 10));
 	gameScene->addWaitPlayOut(this);
-	gameScene->sort();		/* ¶Ô´ý³öµÄÆË¿Ë½øÐÐÅÅÐò */
+	gameScene->sort();		/* å¯¹å¾…å‡ºçš„æ‰‘å…‹è¿›è¡ŒæŽ’åº */
 }
 
 void Poker::selectedCardBack(){
-	/* ´Ó³öÅÆÖÐÒÆ³ý¸ÃÕÅÅÆ */
+	/* ä»Žå‡ºç‰Œä¸­ç§»é™¤è¯¥å¼ ç‰Œ */
 	isSelect = false;
 	this->setPosition(Point(this->getPositionX(), this->getPositionY() - 10));
 	gameScene->deleteWaitPlayOut(this);

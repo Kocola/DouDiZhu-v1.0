@@ -1,4 +1,4 @@
-#include "LoadScene.h"
+ï»¿#include "LoadScene.h"
 #include "Lobby.h"
 
 Scene* LoadScene::createScene(){
@@ -13,7 +13,7 @@ bool LoadScene::init(){
 	logoSprite->setPosition(Director::getInstance()->getVisibleSize() / 2);
 	this->addChild(logoSprite, 1);
 
-	auto fadeOut = FadeOut::create(3);	/* ´´½¨FadeOut¶¯×÷£¬Ö´ĞĞ¸Ã¶¯×÷µÄ½Úµã»áÔÚ3ÃëÄÚµ­³ö */
+	auto fadeOut = FadeOut::create(3);	/* åˆ›å»ºFadeOutåŠ¨ä½œï¼Œæ‰§è¡Œè¯¥åŠ¨ä½œçš„èŠ‚ç‚¹ä¼šåœ¨3ç§’å†…æ·¡å‡º */
 	auto sequenceAction = Sequence::create(fadeOut, CallFunc::create([&](){gotoLobby(); }), nullptr);
 	logoSprite->runAction(sequenceAction);
 	
@@ -21,5 +21,5 @@ bool LoadScene::init(){
 }
 
 void LoadScene::gotoLobby(){
-	Director::getInstance()->replaceScene(Lobby::createScene());	/* ×ªÈëÓÎÏ·³¡¾° */
+	Director::getInstance()->replaceScene(Lobby::createScene());	/* è½¬å…¥æ¸¸æˆåœºæ™¯ */
 }

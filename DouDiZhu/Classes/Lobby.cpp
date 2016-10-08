@@ -1,4 +1,4 @@
-#include "GameScene.h"
+ï»¿#include "GameScene.h"
 #include "Lobby.h"
 
 Scene* Lobby::createScene(){
@@ -29,6 +29,6 @@ bool Lobby::init(){
 }
 
 void Lobby::startGame(Ref*){
-	Director::getInstance()->replaceScene(GameScene::createScene());	/* ×ªÈëÓÎÏ· */
+	Director::getInstance()->replaceScene(GameScene::createScene());	/* è½¬å…¥æ¸¸æˆ */
 }
 

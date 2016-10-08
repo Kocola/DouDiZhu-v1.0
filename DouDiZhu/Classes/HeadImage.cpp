@@ -1,4 +1,4 @@
-#include "HeadImage.h"
+ï»¿#include "HeadImage.h"
 
 SpriteFrameCache* HeadImage::spriteFrameCache = nullptr;
 
@@ -14,7 +14,7 @@ bool HeadImage::init(){
 
 	this->setContentSize(headBox->getContentSize() * HEADIMAGE_SCALE);
 
-	/* ³õÊ¼»¯¾«ÁéÖ¡»º´æ */
+	/* åˆå§‹åŒ–ç²¾çµå¸§ç¼“å­˜ */
 	spriteFrameCache = SpriteFrameCache::getInstance();
 	spriteFrameCache->addSpriteFramesWithFile("Image/headImage.plist",
 		"Image/headImage.png");
@@ -23,9 +23,9 @@ bool HeadImage::init(){
 }
 
 void HeadImage::setHeadImageType(HeadImageType headImageType, HeadImageOrientation headImageOrientation /* = LEFT */){
-	/* ¸ù¾İÍ·ÏñÀàĞÍºÍ³¯Ïò£¬½¨Á¢Ò»¸ö¾«ÁéÖ¡ */
+	/* æ ¹æ®å¤´åƒç±»å‹å’Œæœå‘ï¼Œå»ºç«‹ä¸€ä¸ªç²¾çµå¸§ */
 	auto spriteFrame = HeadImage::createSpriteFrameWithType(headImageType, headImageOrientation);
-	curHeadImage->setDisplayFrame(spriteFrame);	/* ¸Ä±äµ±Ç°Í·ÏñµÄ¾«ÁéÖ¡£¬ÏÔÊ¾ÆäËûÍ¼Æ¬ */
+	curHeadImage->setDisplayFrame(spriteFrame);	/* æ”¹å˜å½“å‰å¤´åƒçš„ç²¾çµå¸§ï¼Œæ˜¾ç¤ºå…¶ä»–å›¾ç‰‡ */
 }
 
 SpriteFrame* HeadImage::createSpriteFrameWithType(HeadImageType headImageType, HeadImageOrientation headImageOrientation /* = LEFT */){

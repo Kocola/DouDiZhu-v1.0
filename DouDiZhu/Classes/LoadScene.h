@@ -1,4 +1,4 @@
-#ifndef __LOAD_SCENE_H__
+ï»¿#ifndef __LOAD_SCENE_H__
 #define __LOAD_SCENE_H__
 
 #include "cocos2d.h"
@@ -11,7 +11,7 @@ public:
 	virtual bool init();
 	CREATE_FUNC(LoadScene);
 public:
-	void gotoLobby();	/* ×ªÈë´óÌü */
+	void gotoLobby();	/* è½¬å…¥å¤§åŽ… */
 };
 
 #endif

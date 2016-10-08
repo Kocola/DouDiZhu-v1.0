@@ -1,9 +1,9 @@
-#include "HeadImage.h"
+ï»¿#include "HeadImage.h"
 #include "PlayerOrder.h"
 
 SpriteFrameCache* PlayerOrder::spriteFrameCache = nullptr;
 
-#define HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER 10	/* Í·ÏñºÍÍæ¼ÒÃüÁîÖ®¼äµÄË®Æ½¿ÕÏ¶ÊÇ10 */
+#define HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER 10	/* å¤´åƒå’Œç©å®¶å‘½ä»¤ä¹‹é—´çš„æ°´å¹³ç©ºéš™æ˜¯10 */
 
 PlayerOrder* PlayerOrder::create(){
 	auto pRet = new(std::nothrow) PlayerOrder();
@@ -16,17 +16,17 @@ PlayerOrder* PlayerOrder::create(){
 }
 
 bool PlayerOrder::init(){
-	/* ³õÊ¼»¯¾«ÁéÖ¡»º´æ */
+	/* åˆå§‹åŒ–ç²¾çµå¸§ç¼“å­˜ */
 	spriteFrameCache = SpriteFrameCache::getInstance();
 	spriteFrameCache->addSpriteFramesWithFile("Image/playerOrderState.plist",
 		"Image/playerOrderState.png");
 
-	sprite = Sprite::create();	/* sprite¸³Öµ */
+	sprite = Sprite::create();	/* spriteèµ‹å€¼ */
 	this->addChild(sprite);
 
-	this->setContentSize(sprite->getContentSize());	/* ÉèÖÃPlayerOrder¶ÔÏó³ß´ç£¬ÕâÑù×ö¿ÉÄÜ´æÔÚÎÊÌâ */
+	this->setContentSize(sprite->getContentSize());	/* è®¾ç½®PlayerOrderå¯¹è±¡å°ºå¯¸ï¼Œè¿™æ ·åšå¯èƒ½å­˜åœ¨é—®é¢˜ */
 
-	this->setPlayerOrderState(ORDERREADY);	/* ³õÊ¼×´Ì¬ÊÇ ×¼±¸ */
+	this->setPlayerOrderState(ORDERREADY);	/* åˆå§‹çŠ¶æ€æ˜¯ å‡†å¤‡ */
 
 	return true;
 }
@@ -34,7 +34,7 @@ bool PlayerOrder::init(){
 void PlayerOrder::setPlayerOrderState(PlayerOrderState _playerOrderState){
 	auto spriteFrame = createSpriteFrameWithPlayerOrderState(_playerOrderState);
 	sprite->setSpriteFrame(spriteFrame);
-	this->setContentSize(sprite->getContentSize());	/* ·ÀÖ¹ÒòÎª¶à¸öspriteFrame´óĞ¡²»Ò»ÖÂÊ±Ôì³ÉÎÊÌâ */
+	this->setContentSize(sprite->getContentSize());	/* é˜²æ­¢å› ä¸ºå¤šä¸ªspriteFrameå¤§å°ä¸ä¸€è‡´æ—¶é€ æˆé—®é¢˜ */
 }
 
 SpriteFrame* PlayerOrder::createSpriteFrameWithPlayerOrderState(PlayerOrderState _playerOrderState){

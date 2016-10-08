@@ -1,4 +1,4 @@
-#ifndef __GLOBAL_FUNC_H__
+ï»¿#ifndef __GLOBAL_FUNC_H__
 #define __GLOBAL_FUNC_H__
 
 #include <algorithm>
@@ -7,7 +7,7 @@
 
 namespace GlobalFunc{
 
-	/* ±È½Ïº¯Êı£¬¸ù¾İwithTypeÑ¡ÔñÊÇ·ñ½«ÅÆµÄ»¨É«²ÎÓëÅÅĞò£¬ÕâÀïÊÇ > Ê±·µ»Øtrue */
+	/* æ¯”è¾ƒå‡½æ•°ï¼Œæ ¹æ®withTypeé€‰æ‹©æ˜¯å¦å°†ç‰Œçš„èŠ±è‰²å‚ä¸æ’åºï¼Œè¿™é‡Œæ˜¯ > æ—¶è¿”å›true */
 	bool cmpPoker(const Poker* a, const Poker* b, bool withType);
 
 	bool cmpPokerWithType(const Poker* a, const Poker* b);
@@ -16,8 +16,8 @@ namespace GlobalFunc{
 
 	void sort(Vector<Poker*>& var);
 
-	/* ²éÕÒ±È_poker´óµÄÆË¿Ë£¬increaseValueÊÇ±È_pokerµÄÖµ´óµÄ¾ßÌåÊıÖµ£¬Ä¬ÈÏÊÇ1
-		°´ÕÕ3£¬4£¬5£¬6£¬7£¬8£¬9£¬10£¬J£¬Q£¬K£¬A£¬2£¬Ğ¡Íõ£¬´óÍõµÄË³ĞòµİÔö*/
+	/* æŸ¥æ‰¾æ¯”_pokerå¤§çš„æ‰‘å…‹ï¼ŒincreaseValueæ˜¯æ¯”_pokerçš„å€¼å¤§çš„å…·ä½“æ•°å€¼ï¼Œé»˜è®¤æ˜¯1
+		æŒ‰ç…§3ï¼Œ4ï¼Œ5ï¼Œ6ï¼Œ7ï¼Œ8ï¼Œ9ï¼Œ10ï¼ŒJï¼ŒQï¼ŒKï¼ŒAï¼Œ2ï¼Œå°ç‹ï¼Œå¤§ç‹çš„é¡ºåºé€’å¢*/
 	Poker* getGreaterPoker(const Poker* _poker, int increaseValue = 1);
 
 	Vector<Poker*> createVectorPokerWithIndex(Vector<Poker*> _pokers, size_t start, size_t end);

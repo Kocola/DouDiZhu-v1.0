@@ -1,4 +1,4 @@
-#include "MusicController.h"
+ï»¿#include "MusicController.h"
 #include "SimpleAudioEngine.h"
 
 MusicController* MusicController::musicController = nullptr;
@@ -8,7 +8,7 @@ MusicController* MusicController::getInstance(){
 		musicController = new MusicController();
 		if (musicController && musicController->init()){
 			musicController->autorelease();
-			musicController->retain();		/* ·ÀÖ¹±»ÄÚ´æ¹ÜÀíÆ÷»ØÊÕ */
+			musicController->retain();		/* é˜²æ­¢è¢«å†…å­˜ç®¡ç†å™¨å›žæ”¶ */
 		}else{
 			CC_SAFE_DELETE(musicController);
 		}
@@ -22,15 +22,15 @@ bool MusicController::init(){
 }
 
 void MusicController::preLoadMusic(){
-	/* ¼ÓÔØplistÎÄ¼þ£¬¶ÁÈ¡ÎÄ¼þÖÐµÄÓÎÏ·×ÊÔ´Ãû³ÆÁÐ±í£¬·µ»ØÒ»¸öValeuMap¶ÔÏó */
+	/* åŠ è½½plistæ–‡ä»¶ï¼Œè¯»å–æ–‡ä»¶ä¸­çš„æ¸¸æˆèµ„æºåç§°åˆ—è¡¨ï¼Œè¿”å›žä¸€ä¸ªValeuMapå¯¹è±¡ */
 	ValueMap _map = FileUtils::getInstance()->getValueMapFromFile("music/music.plist");
-	/* ¼ÓÔØÈ«¾ÖÒôÀÖ */
+	/* åŠ è½½å…¨å±€éŸ³ä¹ */
 	ValueMap _musicMap = _map.at("global").asValueMap();	
 	this->loadMusics(_musicMap);
-	/* ¼ÓÔØ¶·µØÖ÷ÒôÀÖ */
+	/* åŠ è½½æ–—åœ°ä¸»éŸ³ä¹ */
 	_musicMap = _map.at("man").asValueMap().at("calllandlord").asValueMap();
 	this->loadEffects(_musicMap);
-	/* ¼ÓÔØ³öÅÆÒôÀÖ */
+	/* åŠ è½½å‡ºç‰ŒéŸ³ä¹ */
 	_musicMap = _map.at("man").asValueMap().at("outcard").asValueMap();
 	this->loadEffects(_musicMap);
 }

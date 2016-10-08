@@ -1,4 +1,4 @@
-#include "PokerController.h"
+ï»¿#include "PokerController.h"
 
 PokerController* PokerController::pokerController = nullptr;
 
@@ -7,7 +7,7 @@ PokerController* PokerController::getInstance(){
 		pokerController = new PokerController();
 		if (pokerController && pokerController->init()){
 			pokerController->autorelease();
-			pokerController->retain();		/* ±ÜÃâ±»Cocos2dxµÄÄÚ´æ¹ÜÀí¹¤¾ß»ØÊÕ */
+			pokerController->retain();		/* é¿å…è¢«Cocos2dxçš„å†…å­˜ç®¡ç†å·¥å…·å›æ”¶ */
 			return pokerController;
 		}else{
 			CC_SAFE_DELETE(pokerController);
@@ -22,7 +22,7 @@ bool PokerController::init(){
 		return false;
 	}
 
-	/* ½«´ò°üºÃµÄÍ¼Æ¬¾­¹ıSpriteFrameCache´¦Àí£¬È»ºó¿ÉÒÔÖ±½Ó»ñÈ¡ */
+	/* å°†æ‰“åŒ…å¥½çš„å›¾ç‰‡ç»è¿‡SpriteFrameCacheå¤„ç†ï¼Œç„¶åå¯ä»¥ç›´æ¥è·å– */
 	pokerCache = SpriteFrameCache::getInstance();
 	pokerCache->addSpriteFramesWithFile("Image/Joker.plist", "Image/Joker.png");
 
@@ -40,9 +40,9 @@ int PokerController::calcPokerValue(PokerType type, int order /* = 0 */){
 	return result;
 }
 
-/* ¸ù¾İÅÆÖµ·µ»Ø¶ÔÓ¦µÄ¾«Áé£¬´Ë¾«ÁéÎ»ÖÃÃ»ÓĞ¾­¹ıÖ¸¶¨ */
+/* æ ¹æ®ç‰Œå€¼è¿”å›å¯¹åº”çš„ç²¾çµï¼Œæ­¤ç²¾çµä½ç½®æ²¡æœ‰ç»è¿‡æŒ‡å®š */
 Sprite* PokerController::getPokerWithValue(PokerType type, int order){
 	int result = calcPokerValue(type, order);
 	std::string str = StringUtils::format("%d.png", result);
 	return Sprite::createWithSpriteFrameName(str);
-}
+} 

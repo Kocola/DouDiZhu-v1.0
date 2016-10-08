@@ -1,4 +1,4 @@
-#ifndef __PLAYER_ORDER_H__
+﻿#ifndef __PLAYER_ORDER_H__
 #define __PLAYER_ORDER_H__
 
 #include "cocos2d.h"

@@ -1,4 +1,4 @@
-#ifndef __GAME_SCENE_H__
+ï»¿#ifndef __GAME_SCENE_H__
 #define __GAME_SCENE_H__
 
 #include "cocos2d.h"
@@ -22,46 +22,46 @@ public:
 
 	virtual void update(float delta);
 private:
-	bool initBackground();	/* ³õÊ¼»¯±³¾° */
-	bool initPlayer();	/* ³õÊ¼»¯Íæ¼Ò */
-	bool initPoker();	/* ³õÊ¼»¯ÆË¿Ë */
-	bool shuffleCards();	/* Ï´ÅÆ³ÌĞò */
-	bool initButton();	/* ´´½¨°´Å¥ */
-	bool initHeadImage();	/* ³õÊ¼»¯Í·Ïñ£¬°üº¬Í·ÏñºÍÍ·Ïñ¿ò */
-	bool initPlayerOrder();	/* ³õÊ¼»¯Íæ¼ÒÃüÁî×´Ì¬£¬³õÊ¼»¯È«²¿Îª ×¼±¸ */
-	bool initCallLandlord();	/* ³õÊ¼»¯½ĞµØÖ÷ */
+	bool initBackground();	/* åˆå§‹åŒ–èƒŒæ™¯ */
+	bool initPlayer();	/* åˆå§‹åŒ–ç©å®¶ */
+	bool initPoker();	/* åˆå§‹åŒ–æ‰‘å…‹ */
+	bool shuffleCards();	/* æ´—ç‰Œç¨‹åº */
+	bool initButton();	/* åˆ›å»ºæŒ‰é’® */
+	bool initHeadImage();	/* åˆå§‹åŒ–å¤´åƒï¼ŒåŒ…å«å¤´åƒå’Œå¤´åƒæ¡† */
+	bool initPlayerOrder();	/* åˆå§‹åŒ–ç©å®¶å‘½ä»¤çŠ¶æ€ï¼Œåˆå§‹åŒ–å…¨éƒ¨ä¸º å‡†å¤‡ */
+	bool initCallLandlord();	/* åˆå§‹åŒ–å«åœ°ä¸» */
 private:
-	bool deletePoker();	/* ÓÎÏ·½áÊøÊ±£¬ÇåÀíPoker×ÊÔ´ */
-	bool deletePlayer();	/* ÓÎÏ·½áÊøÊ±£¬ÇåÀíPlayer×ÊÔ´ */
-	bool deleteHeadImage();	/* ÓÎÏ·½áÊøÊ±£¬ÇåÀíÍæ¼ÒÍ·Ïñ×ÊÔ´ */
-	bool deletPlayerOrder();	/* ÓÎÏ·½áÊøÊ±£¬ÇåÀíÍæ¼ÒÃüÁî×´Ì¬ */
+	bool deletePoker();	/* æ¸¸æˆç»“æŸæ—¶ï¼Œæ¸…ç†Pokerèµ„æº */
+	bool deletePlayer();	/* æ¸¸æˆç»“æŸæ—¶ï¼Œæ¸…ç†Playerèµ„æº */
+	bool deleteHeadImage();	/* æ¸¸æˆç»“æŸæ—¶ï¼Œæ¸…ç†ç©å®¶å¤´åƒèµ„æº */
+	bool deletPlayerOrder();	/* æ¸¸æˆç»“æŸæ—¶ï¼Œæ¸…ç†ç©å®¶å‘½ä»¤çŠ¶æ€ */
 private:
-	/* ×¼±¸ */
+	/* å‡†å¤‡ */
 	void ready();
-	bool checkAllReady();	/* ¼ì²éËùÓĞÈËÊÇ·ñ¶¼×¼±¸ºÃ */
-	/* ·¢ÅÆ */
-	void dealCard();	/* ·¢ÅÆ */
-	//void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);/*Player::insertCardsÌæ´ú */
-	void initLandlordCard();	/* ³õÊ¼»¯ÊôÓÚµØÖ÷µÄÈıÕÅÅÆ */
-	void displayLandlordCard();	/*ÔÚÄ³¸öÎ»ÖÃÏÔÊ¾ÊôÓÚµØÖ÷µÄÈıÕÅÅÆ */
-	/* ½ĞµØÖ÷ */
-	void setCallLandlordOrderState(Player* _player, int _score);	/* ÉèÖÃ½ĞµØÖ÷Ê±Íæ¼ÒµÄÃüÁî×´Ì¬ */
+	bool checkAllReady();	/* æ£€æŸ¥æ‰€æœ‰äººæ˜¯å¦éƒ½å‡†å¤‡å¥½ */
+	/* å‘ç‰Œ */
+	void dealCard();	/* å‘ç‰Œ */
+	//void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);/*Player::insertCardsæ›¿ä»£ */
+	void initLandlordCard();	/* åˆå§‹åŒ–å±äºåœ°ä¸»çš„ä¸‰å¼ ç‰Œ */
+	void displayLandlordCard();	/*åœ¨æŸä¸ªä½ç½®æ˜¾ç¤ºå±äºåœ°ä¸»çš„ä¸‰å¼ ç‰Œ */
+	/* å«åœ°ä¸» */
+	void setCallLandlordOrderState(Player* _player, int _score);	/* è®¾ç½®å«åœ°ä¸»æ—¶ç©å®¶çš„å‘½ä»¤çŠ¶æ€ */
 	void computerCallLandlord(Player* _computer);
-	void playerCallLandlord();	/* ÊÖ¶¯Íæ¼Ò½ĞµØÖ÷ */
-	void callLandlord();	/* ½ĞµØÖ÷Ä£¿é */
-	/* Ñ¡ÔñµØÖ÷ */
+	void playerCallLandlord();	/* æ‰‹åŠ¨ç©å®¶å«åœ°ä¸» */
+	void callLandlord();	/* å«åœ°ä¸»æ¨¡å— */
+	/* é€‰æ‹©åœ°ä¸» */
 	void chooseLandlord();
-	void outLandlordCard();	/* ·¢·ÅÊôÓÚµØÖ÷µÄÈıÕÅÅÆ */
-	/* ³öÅÆ */
+	void outLandlordCard();	/* å‘æ”¾å±äºåœ°ä¸»çš„ä¸‰å¼ ç‰Œ */
+	/* å‡ºç‰Œ */
 	void initOutCardOrder();
-	Vector<Poker*> searchOutCardForComputer(Player* _player);	/* µçÄÔ£ºÕë¶ÔÉÏ¼ÒµÄ³öÅÆ£¬¼ì²éÊÇ·ñÓĞÄÜ¹»³öµÄÅÆ£¬·µ»ØÄÜ³öµÄÅÆµÄ¼¯ºÏ */
-	Vector<Poker*> searchOutCardForPlayer(Player* _player);	/* Íæ¼Ò£ºÕë¶ÔÉÏ¼ÒµÄ³öÅÆ£¬¼ì²éÊÇ·ñÓĞÄÜ¹»³öµÄÅÆ£¬·µ»ØÄÜ³öµÄÅÆµÄ¼¯ºÏ */
+	Vector<Poker*> searchOutCardForComputer(Player* _player);	/* ç”µè„‘ï¼šé’ˆå¯¹ä¸Šå®¶çš„å‡ºç‰Œï¼Œæ£€æŸ¥æ˜¯å¦æœ‰èƒ½å¤Ÿå‡ºçš„ç‰Œï¼Œè¿”å›èƒ½å‡ºçš„ç‰Œçš„é›†åˆ */
+	Vector<Poker*> searchOutCardForPlayer(Player* _player);	/* ç©å®¶ï¼šé’ˆå¯¹ä¸Šå®¶çš„å‡ºç‰Œï¼Œæ£€æŸ¥æ˜¯å¦æœ‰èƒ½å¤Ÿå‡ºçš„ç‰Œï¼Œè¿”å›èƒ½å‡ºçš„ç‰Œçš„é›†åˆ */
 	void outCardInOrder(float delta);
-	void outCardForPlayer(Player* _player);	/* ÂÖµ½Íæ¼Ò³öÅÆ */
-	void outCardForComputer(Player* _computer);	/* ÂÖµ½µçÄÔ³öÅÆ */
-	void outCardForLandlord();	/* ¸øµØÖ÷³öÅÆ */
+	void outCardForPlayer(Player* _player);	/* è½®åˆ°ç©å®¶å‡ºç‰Œ */
+	void outCardForComputer(Player* _computer);	/* è½®åˆ°ç”µè„‘å‡ºç‰Œ */
+	void outCardForLandlord();	/* ç»™åœ°ä¸»å‡ºç‰Œ */
 private:
-	/* »Øµ÷º¯Êı */
+	/* å›è°ƒå‡½æ•° */
 	void start_callback(Ref*);
 
 	void pass_callback(Ref*);
@@ -78,88 +78,88 @@ public:
 	void addWaitPlayOut(Poker* poker) { this->arrWaitPlayOut.pushBack(poker); }
 	void deleteWaitPlayOut(Poker* poker) { this->arrWaitPlayOut.eraseObject(poker); }
 
-	void sort();	/* ¶ÔÆË¿Ë½øĞĞÅÅĞò */
-	/* ¸üĞÂ³öÅÆ°´Å¥µÄ×´Ì¬£¬¸Ãº¯Êı¹©Poker::updateOutStateµ÷ÓÃ */
+	void sort();	/* å¯¹æ‰‘å…‹è¿›è¡Œæ’åº */
+	/* æ›´æ–°å‡ºç‰ŒæŒ‰é’®çš„çŠ¶æ€ï¼Œè¯¥å‡½æ•°ä¾›Poker::updateOutStateè°ƒç”¨ */
 	void updateOutState();
-	/* ¸üĞÂ³öÅÆ°´Å¥µÄ×´Ì¬*/
+	/* æ›´æ–°å‡ºç‰ŒæŒ‰é’®çš„çŠ¶æ€*/
 	void setOutState(bool state){ this->out->setEnabled(state); }
-	/* Òş²Ø½Ğ·Ö°´Å¥ */
+	/* éšè—å«åˆ†æŒ‰é’® */
 	void setCallLandlordButtonUnVisible();
-	/* Òş²ØÍæ¼ÒÃüÁî×´Ì¬ */
+	/* éšè—ç©å®¶å‘½ä»¤çŠ¶æ€ */
 	void setPlayerOrderStateUnVisible();
 public:
-	/* ³öÅÆ£¬½«ÅÆ·ÅÔÚ³¡¾°ÉÏ */
+	/* å‡ºç‰Œï¼Œå°†ç‰Œæ”¾åœ¨åœºæ™¯ä¸Š */
 	void outCardInScene();
-	/* ²¥·Å³öÅÆÔÚ³¡¾°ÉÏÊ±µÄÒôĞ§ */
+	/* æ’­æ”¾å‡ºç‰Œåœ¨åœºæ™¯ä¸Šæ—¶çš„éŸ³æ•ˆ */
 	void outCardInSceneMusic();
-	/* µ±Ç°Íæ¼Ò³öÅÆÊ±£¬É¾³ıÁôÔÚ³¡¾°ÖĞµÄÉÏÒ»ÊÖÆË¿Ë */
+	/* å½“å‰ç©å®¶å‡ºç‰Œæ—¶ï¼Œåˆ é™¤ç•™åœ¨åœºæ™¯ä¸­çš„ä¸Šä¸€æ‰‹æ‰‘å…‹ */
 	void deleteCardInScene();
-	/* ÓÎÏ·¿ªÊ¼£¬»òÕßÖØĞÂ¿ªÊ¼ */
+	/* æ¸¸æˆå¼€å§‹ï¼Œæˆ–è€…é‡æ–°å¼€å§‹ */
 	void gameStart(float delta);
-	/* ÓÎÏ·½áÊø */
+	/* æ¸¸æˆç»“æŸ */
 	void gameOver();
 public:
-	/* ÊÖ¶¯Íæ¼Ò£¬ÕâÀïÖµµÄÊÇ³ÖÓĞÉè±¸µÄÍæ¼Ò×Ô¼º */
+	/* æ‰‹åŠ¨ç©å®¶ï¼Œè¿™é‡Œå€¼çš„æ˜¯æŒæœ‰è®¾å¤‡çš„ç©å®¶è‡ªå·± */
 	Player* getManualPlayer() const { return player; }
-	/* µ±Ç°³öÅÆÕßÊÇ·ñÊÇ³ÖÓĞµ±Ç°Éè±¸µÄÍæ¼Ò£¬¼´¿É°´³öÅÆºÍ²»³ö°´Å¥µÄÍæ¼Ò */
+	/* å½“å‰å‡ºç‰Œè€…æ˜¯å¦æ˜¯æŒæœ‰å½“å‰è®¾å¤‡çš„ç©å®¶ï¼Œå³å¯æŒ‰å‡ºç‰Œå’Œä¸å‡ºæŒ‰é’®çš„ç©å®¶ */
 	bool isCurAndManualPlayer() const;
 private:
 	/* discarded */
-	//bool cmp_sort(const Poker* a, const Poker* b);		/* ÆË¿ËÅÅĞòÒÀÀµµÄº¯Êı */
+	//bool cmp_sort(const Poker* a, const Poker* b);		/* æ‰‘å…‹æ’åºä¾èµ–çš„å‡½æ•° */
 	void updatePokerPosAndRemovePoker(Ref* data);
 	int randomInt(int begin, int end);
-	//void Knuth_Durstenfeld_Shuffle();		/* Ï´ÅÆËã·¨ */
+	//void Knuth_Durstenfeld_Shuffle();		/* æ´—ç‰Œç®—æ³• */
 	void runWinAnimation();
 	void runLostAnimation();
 
-	void updateHeadImage(); /* ¸üĞÂÍ·Ïñ */
+	void updateHeadImage(); /* æ›´æ–°å¤´åƒ */
 
-	void deleteCardInTop();		/* É¾³ıÏÔÊ¾ÔÚÆÁÄ»¶¥²¿µÄÆË¿Ë */
+	void deleteCardInTop();		/* åˆ é™¤æ˜¾ç¤ºåœ¨å±å¹•é¡¶éƒ¨çš„æ‰‘å…‹ */
 private:
-	/* ¸üĞÂ½Ğ·ÖµÄID£¬Ê¹ÏÂÒ»¸öÈË½Ğ·Ö£¬Èç¹ûµ±Ç°Ë³ĞòÊÇ4£¬ÄÇÃ´½øÈë¾ö¶¨µØÖ÷½×¶Î */
+	/* æ›´æ–°å«åˆ†çš„IDï¼Œä½¿ä¸‹ä¸€ä¸ªäººå«åˆ†ï¼Œå¦‚æœå½“å‰é¡ºåºæ˜¯4ï¼Œé‚£ä¹ˆè¿›å…¥å†³å®šåœ°ä¸»é˜¶æ®µ */
 	void updateCallLandlordOrder();
-	/* ÅĞ¶Ï×î¸ß·Ö£¬Ê¹µÃµ±Ä³¸öÍæ¼Òº°³ö×î¸ß·ÖÊ±¿ÉÒÔÖÕÖ¹½Ğ·Ö */
+	/* åˆ¤æ–­æœ€é«˜åˆ†ï¼Œä½¿å¾—å½“æŸä¸ªç©å®¶å–Šå‡ºæœ€é«˜åˆ†æ—¶å¯ä»¥ç»ˆæ­¢å«åˆ† */
 	void isMaxCallLandlordScore(Player* player);
-	/* µçÄÔ¶Ë½Ğ·Ö³ÌĞò */
+	/* ç”µè„‘ç«¯å«åˆ†ç¨‹åº */
 	int automaticCallLandlord();
 private:
-	Player* player;	/* ÊÖ¶¯Íæ¼Ò */
-	HeadImage* playerHeadImage;		/* ÊÖ¶¯Íæ¼ÒÍ·Ïñ */
-	PlayerOrder* playerOrder;	/* ÊÖ¶¯Íæ¼ÒµÄµ±Ç°ÃüÁî×´Ì¬£¬°üº¬×¼±¸£¬²»³ö£¬½Ğ·ÖµÈ */
-	Player* computerPlayer_one;	/* µçÄÔÍæ¼Ò1 */
-	HeadImage* computerPlayer_one_headImage;		/* µçÄÔÍæ¼Ò1Í·Ïñ */
-	PlayerOrder* computerPlayer_one_order;	/* µçÄÔÍæ¼Ò1ÃüÁî×´Ì¬ */
-	Player* computerPlayer_two;	/* µçÄÔÍæ¼Ò2 */
-	HeadImage* computerPlayer_two_headImage;		/* µçÄÔÍæ¼Ò2Í·Ïñ */
-	PlayerOrder* computerPlayer_two_order;	/* µçÄÔÍæ¼Ò2ÃüÁî×´Ì¬ */
+	Player* player;	/* æ‰‹åŠ¨ç©å®¶ */
+	HeadImage* playerHeadImage;		/* æ‰‹åŠ¨ç©å®¶å¤´åƒ */
+	PlayerOrder* playerOrder;	/* æ‰‹åŠ¨ç©å®¶çš„å½“å‰å‘½ä»¤çŠ¶æ€ï¼ŒåŒ…å«å‡†å¤‡ï¼Œä¸å‡ºï¼Œå«åˆ†ç­‰ */
+	Player* computerPlayer_one;	/* ç”µè„‘ç©å®¶1 */
+	HeadImage* computerPlayer_one_headImage;		/* ç”µè„‘ç©å®¶1å¤´åƒ */
+	PlayerOrder* computerPlayer_one_order;	/* ç”µè„‘ç©å®¶1å‘½ä»¤çŠ¶æ€ */
+	Player* computerPlayer_two;	/* ç”µè„‘ç©å®¶2 */
+	HeadImage* computerPlayer_two_headImage;		/* ç”µè„‘ç©å®¶2å¤´åƒ */
+	PlayerOrder* computerPlayer_two_order;	/* ç”µè„‘ç©å®¶2å‘½ä»¤çŠ¶æ€ */
 
-	Player* landlordPlayer;	/* ±£´æµØÖ÷Ö¸Õë */
+	Player* landlordPlayer;	/* ä¿å­˜åœ°ä¸»æŒ‡é’ˆ */
 
-	Vector<Player*> players;	/* ´æ·Åµ±Ç°ËùÓĞµÄÈıÎ»Íæ¼Ò£¬ÆäÖĞµÚÒ»¸öÊÇµØÖ÷ */
-	int outcardOrder; /* µ±Ç°Ó¦¸Ã³öÅÆµÄÍæ¼Ò£¬ºÍplayersĞ­×÷ */
-	Vector<Poker*> pokers;	/* ÆË¿Ë */
-	Vector<Poker*> hintPokers;		/* ÌáÊ¾Òª³öµÄÅÆ */
-	int callLandlordOrder;	/* ½ĞµØÖ÷Ë³Ğò */
+	Vector<Player*> players;	/* å­˜æ”¾å½“å‰æ‰€æœ‰çš„ä¸‰ä½ç©å®¶ï¼Œå…¶ä¸­ç¬¬ä¸€ä¸ªæ˜¯åœ°ä¸» */
+	int outcardOrder; /* å½“å‰åº”è¯¥å‡ºç‰Œçš„ç©å®¶ï¼Œå’Œplayersåä½œ */
+	Vector<Poker*> pokers;	/* æ‰‘å…‹ */
+	Vector<Poker*> hintPokers;		/* æç¤ºè¦å‡ºçš„ç‰Œ */
+	int callLandlordOrder;	/* å«åœ°ä¸»é¡ºåº */
 private:
-	MenuItemSprite* pass;	/* ²»³ö°´Å¥ */
-	MenuItemSprite* hint;	/* ÌáÊ¾°´Å¥ */
-	MenuItemSprite* out;	/* ³öÅÆ°´Å¥ */
+	MenuItemSprite* pass;	/* ä¸å‡ºæŒ‰é’® */
+	MenuItemSprite* hint;	/* æç¤ºæŒ‰é’® */
+	MenuItemSprite* out;	/* å‡ºç‰ŒæŒ‰é’® */
 
-	MenuItemSprite* nocall;	/* ²»½Ğ°´Å¥ */
-	MenuItemSprite* call_one;	/* ½ĞÒ»·Ö */
-	MenuItemSprite* call_two;	/* ½Ğ¶ş·Ö */
-	MenuItemSprite* call_three;	/* ½ĞÈı·Ö */
+	MenuItemSprite* nocall;	/* ä¸å«æŒ‰é’® */
+	MenuItemSprite* call_one;	/* å«ä¸€åˆ† */
+	MenuItemSprite* call_two;	/* å«äºŒåˆ† */
+	MenuItemSprite* call_three;	/* å«ä¸‰åˆ† */
 
-	MenuItemSprite* btn_start;	/* ¿ªÊ¼ÓÎÏ·°´Å¥ */
+	MenuItemSprite* btn_start;	/* å¼€å§‹æ¸¸æˆæŒ‰é’® */
 private:
 	GAMESTATE gameState;
-	OutCards* lastOutCards;	/* ÉÏÒ»´ÎµÄ³öÅÆĞÅÏ¢ */
-	Vector<Poker*> cardsInScene;	/* ³öÔÚSceneµÄÅÆ¼¯ºÏ */
-	Vector<Poker*> cardForLandlord;	 /* ÊôÓÚµØÖ÷µÄ¶àÓàÈıÕÅÅÆ */
-	Vector<Poker*> cardDisplayInTop;	/* ÏÔÊ¾ÔÚÆÁÄ»¶¥²¿µÄÊôÓÚµØÖ÷µÄÈıÕÅÅÆ */
+	OutCards* lastOutCards;	/* ä¸Šä¸€æ¬¡çš„å‡ºç‰Œä¿¡æ¯ */
+	Vector<Poker*> cardsInScene;	/* å‡ºåœ¨Sceneçš„ç‰Œé›†åˆ */
+	Vector<Poker*> cardForLandlord;	 /* å±äºåœ°ä¸»çš„å¤šä½™ä¸‰å¼ ç‰Œ */
+	Vector<Poker*> cardDisplayInTop;	/* æ˜¾ç¤ºåœ¨å±å¹•é¡¶éƒ¨çš„å±äºåœ°ä¸»çš„ä¸‰å¼ ç‰Œ */
 	Sprite* winSprite;
 	Sprite* lostSprite;
-	Sprite* passHint;	/* Ã»ÓĞÅÆ´òµÃ¹ıÉÏ¼ÒµÄÌáÊ¾ */
+	Sprite* passHint;	/* æ²¡æœ‰ç‰Œæ‰“å¾—è¿‡ä¸Šå®¶çš„æç¤º */
 };
 
 #endif

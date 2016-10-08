@@ -1,9 +1,9 @@
-#include "GlobalFunc.h"
+ï»¿#include "GlobalFunc.h"
 #include "Player.h"
 
 bool Player::init(){
 	isCall = false;
-	callLandlordScore = 0; /* ³õÊ¼»¯½ĞµØÖ÷µÄ·ÖÊıÊÇ0 */
+	callLandlordScore = 0; /* åˆå§‹åŒ–å«åœ°ä¸»çš„åˆ†æ•°æ˜¯0 */
 	isLandlord = false;
 	isOutPoker = false;
 
@@ -16,8 +16,8 @@ bool Player::init(){
 void Player::addPoker(Poker* _poker){
 	if (_poker == nullptr) return;
 	pokers.pushBack(_poker);
-	this->addChild(_poker);		/* ÆË¿ËºÍÍæ¼Ò¹ØÁª£¬Ìí¼ÓÒ»¸öÆË¿Ë£¬ĞèÒªÊ¹Æä³ÉÎªÍæ¼ÒµÄ×Ó½áµã£¬·ÀÖ¹±»»ØÊÕ */
-	GlobalFunc::sort(pokers);	/* Ã¿´Î²åÈëÆË¿Ëºó£¬½øĞĞÅÅĞò£¬ÕâÑù×öĞ§ÂÊ½ÏµÍ£¬ÒÔºóÔÙÓÅ»¯ */
+	this->addChild(_poker);		/* æ‰‘å…‹å’Œç©å®¶å…³è”ï¼Œæ·»åŠ ä¸€ä¸ªæ‰‘å…‹ï¼Œéœ€è¦ä½¿å…¶æˆä¸ºç©å®¶çš„å­ç»“ç‚¹ï¼Œé˜²æ­¢è¢«å›æ”¶ */
+	GlobalFunc::sort(pokers);	/* æ¯æ¬¡æ’å…¥æ‰‘å…‹åï¼Œè¿›è¡Œæ’åºï¼Œè¿™æ ·åšæ•ˆç‡è¾ƒä½ï¼Œä»¥åå†ä¼˜åŒ– */
 }
 
 void Player::removePoker(Poker* _poker){
@@ -32,37 +32,37 @@ void Player::removeAllPoker(){
 }
 
 void Player::insertCards(const Vector<Poker*>& _pokers){
-	this->removeAllChildren();	/* É¾³ıËùÓĞÒÑÓĞµÄÆË¿Ë£¬ÏÖÔÚ¿ÉÒÔÕı³£Ê¹ÓÃ£¬Èç¹ûÒÔºóÌí¼ÓÆäËüÖÖÀàº¢×Ó£¬¿ÉÄÜ»áÔì³ÉÎóÉ¾³ı */
-	for (auto it : _pokers){	/* ½«ĞÂµÄÆË¿Ë²åÈë */
+	this->removeAllChildren();	/* åˆ é™¤æ‰€æœ‰å·²æœ‰çš„æ‰‘å…‹ï¼Œç°åœ¨å¯ä»¥æ­£å¸¸ä½¿ç”¨ï¼Œå¦‚æœä»¥åæ·»åŠ å…¶å®ƒç§ç±»å­©å­ï¼Œå¯èƒ½ä¼šé€ æˆè¯¯åˆ é™¤ */
+	for (auto it : _pokers){	/* å°†æ–°çš„æ‰‘å…‹æ’å…¥ */
 		pokers.pushBack(it);
 	}
-	GlobalFunc::sort(pokers);	/* ¶ÔËùÓĞÆË¿Ë½øĞĞÅÅĞò */
+	GlobalFunc::sort(pokers);	/* å¯¹æ‰€æœ‰æ‰‘å…‹è¿›è¡Œæ’åº */
 	for (auto it : pokers){
-		if (playerType == PLAYER){	/* Èç¹ûÊÇÊÖ¶¯Íæ¼Ò£¬ÄÇÃ´ÏÔÊ¾ÕıÃæ£¬ÇÒ¿ÉÒÔµã»÷ */
-			it->showFront();	/* ÆË¿ËÏÔÊ¾ÕıÃæ */
-			it->setCanClick(true);  /* ÆË¿Ë¿ÉÒÔµã»÷ */
+		if (playerType == PLAYER){	/* å¦‚æœæ˜¯æ‰‹åŠ¨ç©å®¶ï¼Œé‚£ä¹ˆæ˜¾ç¤ºæ­£é¢ï¼Œä¸”å¯ä»¥ç‚¹å‡» */
+			it->showFront();	/* æ‰‘å…‹æ˜¾ç¤ºæ­£é¢ */
+			it->setCanClick(true);  /* æ‰‘å…‹å¯ä»¥ç‚¹å‡» */
 		}
-		this->addChild(it);		/* Ìí¼Óµ½½áµãÊ÷ÖĞ */
+		this->addChild(it);		/* æ·»åŠ åˆ°ç»“ç‚¹æ ‘ä¸­ */
 	}
 }
 
 void Player::updatePokerPos(){
-	if (pokers.size() == 0 || playerType == COMPUTER) return;	/* Èç¹ûÃ»ÓĞÆË¿ËÁË£¬Ö±½Ó·µ»Ø£¬Ò»°ã²»»áÔËĞĞÕâ¾äµÄ */
-	float displayWidth = Director::getInstance()->getVisibleSize().width;	/* ÆÁÄ»¿í¶È */
-	int cardsNum = pokers.size();	/* ¿¨ÅÆÊıÁ¿ */
-	float cardWidth = pokers.at(0)->getContentSize().width;	/* ¿¨ÅÆ¿í¶È */
-	float maxDisplayWidth = displayWidth * 5 / 6;		/* ¿¨ÅÆ×éºÏ×î´óµÄÏÔÊ¾¿í¶È */
-	/* ¿¨ÅÆÓ¦¸ÃÏÔÊ¾µÄ¿í¶È£¬¼´¿ÉÄÜ±Ë´Ë¼ä»áÓĞÖØµş */
-	/* MIMIUM_CARDS_OVERLAPWIDTH ÊÇÈ·±£¿¨ÅÆÖ®¼äÊ¼ÖÕ»áÓĞÖØµşµÄ²¿·Ö£¬½öÊÇÎªÁËÃÀ¹Û */
+	if (pokers.size() == 0 || playerType == COMPUTER) return;	/* å¦‚æœæ²¡æœ‰æ‰‘å…‹äº†ï¼Œç›´æ¥è¿”å›ï¼Œä¸€èˆ¬ä¸ä¼šè¿è¡Œè¿™å¥çš„ */
+	float displayWidth = Director::getInstance()->getVisibleSize().width;	/* å±å¹•å®½åº¦ */
+	int cardsNum = pokers.size();	/* å¡ç‰Œæ•°é‡ */
+	float cardWidth = pokers.at(0)->getContentSize().width;	/* å¡ç‰Œå®½åº¦ */
+	float maxDisplayWidth = displayWidth * 5 / 6;		/* å¡ç‰Œç»„åˆæœ€å¤§çš„æ˜¾ç¤ºå®½åº¦ */
+	/* å¡ç‰Œåº”è¯¥æ˜¾ç¤ºçš„å®½åº¦ï¼Œå³å¯èƒ½å½¼æ­¤é—´ä¼šæœ‰é‡å  */
+	/* MIMIUM_CARDS_OVERLAPWIDTH æ˜¯ç¡®ä¿å¡ç‰Œä¹‹é—´å§‹ç»ˆä¼šæœ‰é‡å çš„éƒ¨åˆ†ï¼Œä»…æ˜¯ä¸ºäº†ç¾è§‚ */
 	float interval = (maxDisplayWidth - cardWidth) < (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH) * (cardsNum - 1) ? (maxDisplayWidth - cardWidth) / (cardsNum - 1) : (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)   ;
 
-	if (interval == (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)){	/* Èç¹û¿¨ÅÆÖ®¼ä²»ĞèÒªÖØµş£¬ÄÇÃ´ÆğÊ¼Î»ÖÃĞèÒªÖØĞÂ¼ÆËã */
+	if (interval == (cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)){	/* å¦‚æœå¡ç‰Œä¹‹é—´ä¸éœ€è¦é‡å ï¼Œé‚£ä¹ˆèµ·å§‹ä½ç½®éœ€è¦é‡æ–°è®¡ç®— */
 		displayLeftStartX = cardsNum % 2 == 0 ?
 			displayMiddleX - (cardsNum / 2) * interval:
 			displayMiddleX - (cardsNum / 2 + 0.5) * interval;
 	}
-	float cardHeight = pokers.at(0)->getContentSize().height;	/* ¿¨ÅÆ¸ß¶È */
-	/* ¶Ô¿¨ÅÆÎ»ÖÃ½øĞĞÖØĞÂÉèÖÃ */
+	float cardHeight = pokers.at(0)->getContentSize().height;	/* å¡ç‰Œé«˜åº¦ */
+	/* å¯¹å¡ç‰Œä½ç½®è¿›è¡Œé‡æ–°è®¾ç½® */
 	for (int i = 0; i < cardsNum; ++i){
 		auto _height = pokers.at(i)->getPosition().y;
 		pokers.at(i)->setPosition(Point(displayLeftStartX + cardWidth / 2 + i * interval, _height));

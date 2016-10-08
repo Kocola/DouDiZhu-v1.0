@@ -1,4 +1,4 @@
-#ifndef __GAME_RULES_H__
+ï»¿#ifndef __GAME_RULES_H__
 #define __GAME_RULES_H__
 
 #include "cocos2d.h"
@@ -14,57 +14,57 @@ public:
 	static GameRules* getInstance();
 	virtual bool init();
 public:
-	/* ¸ù¾İ×¼±¸³öµÄÅÆºÍÉÏÒ»ÊÖÅÆ£¬ÅĞ¶Ïµ±Ç°ÅÆÊÇ·ñ¿É³ö */
+	/* æ ¹æ®å‡†å¤‡å‡ºçš„ç‰Œå’Œä¸Šä¸€æ‰‹ç‰Œï¼Œåˆ¤æ–­å½“å‰ç‰Œæ˜¯å¦å¯å‡º */
 	bool canOutCards(Vector<Poker*> curCards, const OutCards* lastOutCards);
-	/* µçÄÔÔÚ×Ô¼º¿ÉÒÔÈÎÒâ³öÅÆÊ±£¬ÕÒµ½Ò»ÕÅºÏÊÊµÄÅÆ£¨ÕâÀïÎªÁË¸ÏÊ±¼ä£¬Ö»ÊÇ¼òµ¥µØÓÉµ¥ÕÅ£¬¶Ô×Ó£¬ÈıÕÅ£¬Ë³×Ó£¬Õ¨µ¯£© */
+	/* ç”µè„‘åœ¨è‡ªå·±å¯ä»¥ä»»æ„å‡ºç‰Œæ—¶ï¼Œæ‰¾åˆ°ä¸€å¼ åˆé€‚çš„ç‰Œï¼ˆè¿™é‡Œä¸ºäº†èµ¶æ—¶é—´ï¼Œåªæ˜¯ç®€å•åœ°ç”±å•å¼ ï¼Œå¯¹å­ï¼Œä¸‰å¼ ï¼Œé¡ºå­ï¼Œç‚¸å¼¹ï¼‰ */
 	Vector<Poker*> searchProperPokers(Vector<Poker*> _pokers);
 private:
-	/* »ñÈ¡µ±Ç°ÅÆµÄ×îĞ¡ÅÆ */
+	/* è·å–å½“å‰ç‰Œçš„æœ€å°ç‰Œ */
 	/*Poker* getLowestPoker(const Vector<Poker*> _pokers);*/
 public:
-	PokerValueType analysePokerValueType(Vector<Poker*> _pokers);	/* ·ÖÎö¸ø¶¨ÆË¿ËµÄÅÆĞÍ */
-	bool isPokerValueType(Vector<Poker*> _pokers);		/* ÊÇ·ñÊÇÆË¿ËÀàĞÍ */
-	bool isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType);	/* ¸ø¶¨µÄÆË¿ËÊÇ·ñÊÇÄ³ÖÖÅÆĞÍ */
-	/* »ñÈ¡Ö¸¶¨µÄÀàĞÍµÄÆË¿Ë£¬·µ»ØVectorÎª¿ÕÊ±±íÊ¾²éÕÒÊ§°Ü 
-		µÚÒ»¸ö²ÎÊıÊÇÍæ¼ÒÓµÓĞµÄÆË¿Ë£¬µÚÈı¸ö²ÎÊıÊÇ·µ»ØµÄÀàĞÍµÄÆË¿ËÀï×îĞ¡µÄÅÆ£¬Èç¹ûÊÇnullptr£¬±íÃ÷¿ÉÒÔ³öÈÎÒâÖµµÄ¸ÃÀàĞÍÆË¿Ë
-		µÚËÄ¸ö²ÎÊıÊÇÕë¶ÔË³×ÓÊ±µÄ³¤¶È */
-	Vector<Poker*> calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);	/* ²»¿É²ğÅÆ */
-	Vector<Poker*> calcPokerWithValueTypeInSplit(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);		/* ¿É²ğÅÆ */
+	PokerValueType analysePokerValueType(Vector<Poker*> _pokers);	/* åˆ†æç»™å®šæ‰‘å…‹çš„ç‰Œå‹ */
+	bool isPokerValueType(Vector<Poker*> _pokers);		/* æ˜¯å¦æ˜¯æ‰‘å…‹ç±»å‹ */
+	bool isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType);	/* ç»™å®šçš„æ‰‘å…‹æ˜¯å¦æ˜¯æŸç§ç‰Œå‹ */
+	/* è·å–æŒ‡å®šçš„ç±»å‹çš„æ‰‘å…‹ï¼Œè¿”å›Vectorä¸ºç©ºæ—¶è¡¨ç¤ºæŸ¥æ‰¾å¤±è´¥ 
+		ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯ç©å®¶æ‹¥æœ‰çš„æ‰‘å…‹ï¼Œç¬¬ä¸‰ä¸ªå‚æ•°æ˜¯è¿”å›çš„ç±»å‹çš„æ‰‘å…‹é‡Œæœ€å°çš„ç‰Œï¼Œå¦‚æœæ˜¯nullptrï¼Œè¡¨æ˜å¯ä»¥å‡ºä»»æ„å€¼çš„è¯¥ç±»å‹æ‰‘å…‹
+		ç¬¬å››ä¸ªå‚æ•°æ˜¯é’ˆå¯¹é¡ºå­æ—¶çš„é•¿åº¦ */
+	Vector<Poker*> calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);	/* ä¸å¯æ‹†ç‰Œ */
+	Vector<Poker*> calcPokerWithValueTypeInSplit(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker = nullptr, int length = 0);		/* å¯æ‹†ç‰Œ */
 private:
-	/* ËùÓĞÒÔÏÂº¯ÊıµÄvalue²ÎÊı£¬±íÊ¾ËùÒª²éÕÒµÄÅÆÃæµÄ×îµÍÎ»µÄÅÆÃæÖµ */
+	/* æ‰€æœ‰ä»¥ä¸‹å‡½æ•°çš„valueå‚æ•°ï¼Œè¡¨ç¤ºæ‰€è¦æŸ¥æ‰¾çš„ç‰Œé¢çš„æœ€ä½ä½çš„ç‰Œé¢å€¼ */
 
-	/* µÚÒ»¸ö²ÎÊıÊÇÍæ¼ÒµÄÅÆÃæ£¬µÚ¶ş¸öÊÇÉÏ¼Ò¶ÔÓ¦³öÅÆµÄ×îĞ¡ÆË¿ËµÄÖ¸Õë£¬Ä¬ÈÏÎªnullptr£¬±íÊ¾²éÕÒÈÎÒâ¶ÔÓ¦µÄÅÆĞÍ¼´¿É£¬·ñÔòĞèÒª ´óÓÚ _pokerµÄ¶ÔÓ¦ÅÆĞÍ²Å¿ÉÒÔ */
-	//Vector<Poker*> search(Vector<Poker*> _pokers, PokerValueType pokerValueType, int value = 0);	/* ¸Ãº¯Êı·ÅÆú£¬¸÷¸ö²éÕÒ·Ö±ğÊµÏÖ */
-	Vector<Poker*> searchSingle(Vector<Poker*> _pokers, const Poker* _poker = nullptr);	/* ²éÕÒµ¥ÕÅ */
-	Vector<Poker*> searchPair(Vector<Poker*> _pokers, const Poker* _poker = nullptr);		/* ²éÕÒ¶Ô×Ó  */
-	Vector<Poker*> searchTriple(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* ²éÕÒÈıÕÅ */
-	Vector<Poker*> searchBomb(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* ²éÕÒÕ¨µ¯ */
-	Vector<Poker*> searchKingBomb(Vector<Poker*> _pokers); /* ²éÕÒÍõÕ¨ */
-	/* ²éÕÒ¹Ì¶¨ÖµµÄµ¥ÕÅ£¬¶Ô×Ó£¬ÈıÕÅ */
+	/* ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯ç©å®¶çš„ç‰Œé¢ï¼Œç¬¬äºŒä¸ªæ˜¯ä¸Šå®¶å¯¹åº”å‡ºç‰Œçš„æœ€å°æ‰‘å…‹çš„æŒ‡é’ˆï¼Œé»˜è®¤ä¸ºnullptrï¼Œè¡¨ç¤ºæŸ¥æ‰¾ä»»æ„å¯¹åº”çš„ç‰Œå‹å³å¯ï¼Œå¦åˆ™éœ€è¦ å¤§äº _pokerçš„å¯¹åº”ç‰Œå‹æ‰å¯ä»¥ */
+	//Vector<Poker*> search(Vector<Poker*> _pokers, PokerValueType pokerValueType, int value = 0);	/* è¯¥å‡½æ•°æ”¾å¼ƒï¼Œå„ä¸ªæŸ¥æ‰¾åˆ†åˆ«å®ç° */
+	Vector<Poker*> searchSingle(Vector<Poker*> _pokers, const Poker* _poker = nullptr);	/* æŸ¥æ‰¾å•å¼  */
+	Vector<Poker*> searchPair(Vector<Poker*> _pokers, const Poker* _poker = nullptr);		/* æŸ¥æ‰¾å¯¹å­  */
+	Vector<Poker*> searchTriple(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* æŸ¥æ‰¾ä¸‰å¼  */
+	Vector<Poker*> searchBomb(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* æŸ¥æ‰¾ç‚¸å¼¹ */
+	Vector<Poker*> searchKingBomb(Vector<Poker*> _pokers); /* æŸ¥æ‰¾ç‹ç‚¸ */
+	/* æŸ¥æ‰¾å›ºå®šå€¼çš„å•å¼ ï¼Œå¯¹å­ï¼Œä¸‰å¼  */
 	Vector<Poker*> searchSpecifiedSingle(Vector<Poker*> _pokers, const Poker* _poker);
 	Vector<Poker*> searchSpecifiedPair(Vector<Poker*> _pokers, const Poker* _poker);
 	Vector<Poker*> searchSpecifiedTriple(Vector<Poker*> _pokers, const Poker* _poker);
-	/* searchStraightÊÇ²éÕÒÈıÖÖË³×ÓµÄ»ù±¾º¯Êı£¬ÆäËüÈıÖÖ¶¼Òªµ÷ÓÃÕâ¸öº¯Êı, stepÓÃÓÚ¿ØÖÆ²éÕÒÊ²Ã´ÀàĞÍµÄË³×Ó
-		lengthÓÃÓÚÏŞÖÆË³×ÓµÄ³¤¶ÈÊÇ¶àÉÙ£¬ÀıÈç56789 ³¤¶È¾ÍÊÇ5
-		µ¥Ë³³¤¶ÈÖÁÉÙÊÇ5£¬Ë«Ë³ºÍÈıË³µÄ³¤¶ÈÖÁÉÙÊÇ3*/
-	//Vector<Poker*> searchStraight(Vector<Poker*> _pokers, int step, int length, int value = 0);	/* ¸Ãº¯Êı·ÅÆú£¬²éÕÒµÄ¶àÖÓË³×Ó·Ö±ğÊµÏÖ */
-	Vector<Poker*> searchSingleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker);	/* ²éÕÒË³×Ó */
-	Vector<Poker*> searchPairStraight(Vector<Poker*> _pokers, int length, const Poker* _poker); /* ²éÕÒË«Ë³ */
-	Vector<Poker*> searchTripleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker); /* ²éÕÒÈıË³ */
+	/* searchStraightæ˜¯æŸ¥æ‰¾ä¸‰ç§é¡ºå­çš„åŸºæœ¬å‡½æ•°ï¼Œå…¶å®ƒä¸‰ç§éƒ½è¦è°ƒç”¨è¿™ä¸ªå‡½æ•°, stepç”¨äºæ§åˆ¶æŸ¥æ‰¾ä»€ä¹ˆç±»å‹çš„é¡ºå­
+		lengthç”¨äºé™åˆ¶é¡ºå­çš„é•¿åº¦æ˜¯å¤šå°‘ï¼Œä¾‹å¦‚56789 é•¿åº¦å°±æ˜¯5
+		å•é¡ºé•¿åº¦è‡³å°‘æ˜¯5ï¼ŒåŒé¡ºå’Œä¸‰é¡ºçš„é•¿åº¦è‡³å°‘æ˜¯3*/
+	//Vector<Poker*> searchStraight(Vector<Poker*> _pokers, int step, int length, int value = 0);	/* è¯¥å‡½æ•°æ”¾å¼ƒï¼ŒæŸ¥æ‰¾çš„å¤šé’Ÿé¡ºå­åˆ†åˆ«å®ç° */
+	Vector<Poker*> searchSingleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker);	/* æŸ¥æ‰¾é¡ºå­ */
+	Vector<Poker*> searchPairStraight(Vector<Poker*> _pokers, int length, const Poker* _poker); /* æŸ¥æ‰¾åŒé¡º */
+	Vector<Poker*> searchTripleStraight(Vector<Poker*> _pokers, int length, const Poker* _poker); /* æŸ¥æ‰¾ä¸‰é¡º */
 private:
-	Vector<Poker*> searchSingleInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr);	/* ²éÕÒµ¥ÕÅ£¬¿É²ğÅÆ */
-	Vector<Poker*> searchPairInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr);		/* ²éÕÒ¶Ô×Ó£¬¿É²ğÅÆ  */
-	Vector<Poker*> searchTripleInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* ²éÕÒÈıÕÅ£¬¿É²ğÅÆ */
+	Vector<Poker*> searchSingleInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr);	/* æŸ¥æ‰¾å•å¼ ï¼Œå¯æ‹†ç‰Œ */
+	Vector<Poker*> searchPairInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr);		/* æŸ¥æ‰¾å¯¹å­ï¼Œå¯æ‹†ç‰Œ  */
+	Vector<Poker*> searchTripleInSplit(Vector<Poker*> _pokers, const Poker* _poker = nullptr); /* æŸ¥æ‰¾ä¸‰å¼ ï¼Œå¯æ‹†ç‰Œ */
 private:
-	bool isSingle(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇµ¥ÕÅ */
-	bool isPair(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇ¶Ô×Ó */
-	bool isTriple(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇÈıÕÅ */
-	bool isSingleStraight(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇµ¥Ë³×Ó */
-	bool isPairStraight(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇË«Ë³ */
-	/* ÕâÀïÖ»ÅĞ¶Ï²»´øµ¥ÕÅ»òÕßË«ÕÅµÄÈıË³ */
-	bool isTripleStraight(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇÈıË³ */
-	bool isBomb(Vector<Poker*> _pokers);		/* ÊÇ·ñÊÇÕ¨µ¯ */
-	bool isKingBomb(Vector<Poker*> _pokers);	/* ÊÇ·ñÊÇÍõÕ¨ */
+	bool isSingle(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯å•å¼  */
+	bool isPair(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯å¯¹å­ */
+	bool isTriple(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯ä¸‰å¼  */
+	bool isSingleStraight(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯å•é¡ºå­ */
+	bool isPairStraight(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯åŒé¡º */
+	/* è¿™é‡Œåªåˆ¤æ–­ä¸å¸¦å•å¼ æˆ–è€…åŒå¼ çš„ä¸‰é¡º */
+	bool isTripleStraight(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯ä¸‰é¡º */
+	bool isBomb(Vector<Poker*> _pokers);		/* æ˜¯å¦æ˜¯ç‚¸å¼¹ */
+	bool isKingBomb(Vector<Poker*> _pokers);	/* æ˜¯å¦æ˜¯ç‹ç‚¸ */
 private:
 	static GameRules* gameRules;
 };

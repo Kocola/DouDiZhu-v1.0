@@ -1,4 +1,4 @@
-#ifndef __POKER_H__
+ï»¿#ifndef __POKER_H__
 #define __POKER_H__
 
 #include "cocos2d.h"
@@ -14,27 +14,27 @@ private:
 public:
 	virtual bool init();
 	static Poker* create(GameScene* _gameScene, PokerType type, int value = 0);
-	/* ¿ËÂ¡Ò»¸öµ±Ç°ÀàµÄÊµÀı */
+	/* å…‹éš†ä¸€ä¸ªå½“å‰ç±»çš„å®ä¾‹ */
 	Poker* clone() const;
 public:
-	void showFront();		/* ÏÔÊ¾ÕıÃæ */
-	void showBack();		/* ÏÔÊ¾±³Ãæ */
-	void selectedCardOut();		/* Ñ¡ÔñÎ´±»Ñ¡ÔñµÄÅÆ£¬ÄÇÃ´¸ÃÅÆ³öÍ·   */
-	void selectedCardBack();	/* Ñ¡ÔñµÄÅÆÒÑ¾­±»Ñ¡Ôñ£¬ÄÇÃ´½«¸ÃÅÆ·Å»Ø */
+	void showFront();		/* æ˜¾ç¤ºæ­£é¢ */
+	void showBack();		/* æ˜¾ç¤ºèƒŒé¢ */
+	void selectedCardOut();		/* é€‰æ‹©æœªè¢«é€‰æ‹©çš„ç‰Œï¼Œé‚£ä¹ˆè¯¥ç‰Œå‡ºå¤´   */
+	void selectedCardBack();	/* é€‰æ‹©çš„ç‰Œå·²ç»è¢«é€‰æ‹©ï¼Œé‚£ä¹ˆå°†è¯¥ç‰Œæ”¾å› */
 private:
-	CC_SYNTHESIZE(bool, isSelect, Select);		/* ÊÇ·ñÒÑÑ¡ */
-	CC_SYNTHESIZE(GameScene*, gameScene, GameScene);		/* ÉèÖÃÓÎÏ·³¡¾° */
-	CC_SYNTHESIZE(bool, canClick, CanClick);		/* ÊÇ·ñÄÜ±»µã»÷ */
-	CC_SYNTHESIZE(PokerType, pokerType, PokerType);		/* »¨É« */
-	CC_SYNTHESIZE(int, value, Value);		/* ÅÆÖµ */
+	CC_SYNTHESIZE(bool, isSelect, Select);		/* æ˜¯å¦å·²é€‰ */
+	CC_SYNTHESIZE(GameScene*, gameScene, GameScene);		/* è®¾ç½®æ¸¸æˆåœºæ™¯ */
+	CC_SYNTHESIZE(bool, canClick, CanClick);		/* æ˜¯å¦èƒ½è¢«ç‚¹å‡» */
+	CC_SYNTHESIZE(PokerType, pokerType, PokerType);		/* èŠ±è‰² */
+	CC_SYNTHESIZE(int, value, Value);		/* ç‰Œå€¼ */
 	CC_SYNTHESIZE(Sprite*, poker, Poker);
 private:
-	void createSprite();		/* ´´½¨Á½¸öÆË¿Ë¾«Áé£¬·Ö±ğ´ú±íÕıÃæºÍ·´Ãæ */
-	void updateSpritePos();		/* ½«¾«ÁéµÄ×ø±êºÍÀàÊµÀı¶ÔÏó¶ÔÓ¦µÄ×ø±êÏàÒ»ÖÂ */
-	void updateOutState();	/* µ÷ÓÃGameScene::updateOutState¸üĞÂ³öÅÆ°´Å¥×´Ì¬ */
+	void createSprite();		/* åˆ›å»ºä¸¤ä¸ªæ‰‘å…‹ç²¾çµï¼Œåˆ†åˆ«ä»£è¡¨æ­£é¢å’Œåé¢ */
+	void updateSpritePos();		/* å°†ç²¾çµçš„åæ ‡å’Œç±»å®ä¾‹å¯¹è±¡å¯¹åº”çš„åæ ‡ç›¸ä¸€è‡´ */
+	void updateOutState();	/* è°ƒç”¨GameScene::updateOutStateæ›´æ–°å‡ºç‰ŒæŒ‰é’®çŠ¶æ€ */
 private:
-	//Sprite* poker;	/* ±£´æ¸ÃÆË¿Ë¶ÔÓ¦µÄ¾«Áé */
-	Sprite* backPoker;	/* ±£´æÆË¿ËµÄ±³Ãæ¾«Áé£¬ÔÚĞèÒªÏÔÊ¾±³ÃæÊ±ÏÔÊ¾ */
+	//Sprite* poker;	/* ä¿å­˜è¯¥æ‰‘å…‹å¯¹åº”çš„ç²¾çµ */
+	Sprite* backPoker;	/* ä¿å­˜æ‰‘å…‹çš„èƒŒé¢ç²¾çµï¼Œåœ¨éœ€è¦æ˜¾ç¤ºèƒŒé¢æ—¶æ˜¾ç¤º */
 };
 
 #endif

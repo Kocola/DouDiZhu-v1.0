@@ -1,81 +1,81 @@
-#ifndef __GLOBAL_DEFINE_H__
+ï»¿#ifndef __GLOBAL_DEFINE_H__
 #define __GLOBAL_DEFINE_H__
 
-#define SINGLETYPECARDNUM 13	/* Ã¿ÖÖÀàÐÍµÄÅÆ¸öÊý */
-#define DISPLAYCARDHEIGHT 10	/* Íæ¼Ò¿¨ÅÆÏÔÊ¾¸ßÓÚÆÁÄ»µ×²¿µÄ¸ß¶È */
-#define DISPLAYCARDINTOP_INTERVAL 10	/* ÊôÓÚµØÖ÷µÄ¿¨ÅÆÏÔÊ¾ÔÚµÍÓÚÆÁÄ»¶¥²¿µÄ¾àÀë */
-#define MIMIUM_CARDS_OVERLAPWIDTH 20	/* ¿¨ÅÆÖ®¼ä×îÐ¡µÄÖØµþ³¤¶È */
-#define TOTAL_POKER_NUM 54	/* ÆË¿ËÅÆµÄ×Ü¸öÊý */
-#define POKER_WIDTH 108	/* ÆË¿Ë¿í¶È */
-#define POKER_HEIGHT 149	/* ÆË¿Ë¸ß¶È */
-#define HEIGHTDISTANCE_HEADIMAGEANDPLAYER 0		/* Íæ¼ÒºÍÍ·ÏñÖ®¼ä¸ß¶È */
-#define BUTTON_INTERVAL 20		/* °´Å¥Ö®¼äµÄ¼äÏ¶ */
+#define SINGLETYPECARDNUM 13	/* æ¯ç§ç±»åž‹çš„ç‰Œä¸ªæ•° */
+#define DISPLAYCARDHEIGHT 10	/* çŽ©å®¶å¡ç‰Œæ˜¾ç¤ºé«˜äºŽå±å¹•åº•éƒ¨çš„é«˜åº¦ */
+#define DISPLAYCARDINTOP_INTERVAL 10	/* å±žäºŽåœ°ä¸»çš„å¡ç‰Œæ˜¾ç¤ºåœ¨ä½ŽäºŽå±å¹•é¡¶éƒ¨çš„è·ç¦» */
+#define MIMIUM_CARDS_OVERLAPWIDTH 20	/* å¡ç‰Œä¹‹é—´æœ€å°çš„é‡å é•¿åº¦ */
+#define TOTAL_POKER_NUM 54	/* æ‰‘å…‹ç‰Œçš„æ€»ä¸ªæ•° */
+#define POKER_WIDTH 108	/* æ‰‘å…‹å®½åº¦ */
+#define POKER_HEIGHT 149	/* æ‰‘å…‹é«˜åº¦ */
+#define HEIGHTDISTANCE_HEADIMAGEANDPLAYER 0		/* çŽ©å®¶å’Œå¤´åƒä¹‹é—´é«˜åº¦ */
+#define BUTTON_INTERVAL 20		/* æŒ‰é’®ä¹‹é—´çš„é—´éš™ */
 
 enum PokerType{
-	DIAMOND = 0,		/* ·½¿é */
-	CLUB,		/* Ã·»¨ */
-	HEART,		/* ºìÌÒ */
-	SPADE = 3,		/* ºÚÌÒ */
-	BLACKJOKER = 52,	/* Ð¡Íõ */
-	REDJOKER = 53,		/* ´óÍõ */
-	BACK = 54	/* ÆË¿Ë±³Ãæ */
+	DIAMOND = 0,		/* æ–¹å— */
+	CLUB,		/* æ¢…èŠ± */
+	HEART,		/* çº¢æ¡ƒ */
+	SPADE = 3,		/* é»‘æ¡ƒ */
+	BLACKJOKER = 52,	/* å°çŽ‹ */
+	REDJOKER = 53,		/* å¤§çŽ‹ */
+	BACK = 54	/* æ‰‘å…‹èƒŒé¢ */
 };
 
 enum PlayerType{
-	PLAYER,	/* ÈË */
-	COMPUTER	/* µçÄÔ */
+	PLAYER,	/* äºº */
+	COMPUTER	/* ç”µè„‘ */
 };
 
 //enum CallLandlordOrder{
-//	PLAYER_CALL,	/* ÊÖ¶¯Íæ¼Ò */
-//	COMPUTER_ONE_CALL,	/* µçÄÔÍæ¼Ò1 */
-//	COMPUTER_TWO_CALL	/* µçÄÔÍæ¼Ò2 */
+//	PLAYER_CALL,	/* æ‰‹åŠ¨çŽ©å®¶ */
+//	COMPUTER_ONE_CALL,	/* ç”µè„‘çŽ©å®¶1 */
+//	COMPUTER_TWO_CALL	/* ç”µè„‘çŽ©å®¶2 */
 //};
 
 enum GAMESTATE{
-	READY,  /* ×¼±¸ */
-	DEAL,	/* ·¢ÅÆ */
-	CALLLANDLORD,  /* ½ÐµØÖ÷ */
-	CHOOSELANDLORD,	/* ¾ö¶¨µØÖ÷£¬²¢ÇÒ¶àµÄÈýÕÅÅÆ·¢¸øµØÖ÷ */
-	OUTCARD, /* ³öÅÆ */
-	END /* ½áÊø */
+	READY,  /* å‡†å¤‡ */
+	DEAL,	/* å‘ç‰Œ */
+	CALLLANDLORD,  /* å«åœ°ä¸» */
+	CHOOSELANDLORD,	/* å†³å®šåœ°ä¸»ï¼Œå¹¶ä¸”å¤šçš„ä¸‰å¼ ç‰Œå‘ç»™åœ°ä¸» */
+	OUTCARD, /* å‡ºç‰Œ */
+	END /* ç»“æŸ */
 };
 
-enum HeadImageType{	/* Í·ÏñÀàÐÍ */
-	LANDLORD,	/* µØÖ÷ */
-	FARMER	/* Å©Ãñ */
+enum HeadImageType{	/* å¤´åƒç±»åž‹ */
+	LANDLORD,	/* åœ°ä¸» */
+	FARMER	/* å†œæ°‘ */
 };
 
-enum HeadImageOrientation{	/* Í·Ïñ³¯Ïò */
-	LEFT, /* Ïò×ó */
-	RIGHT  /* ÏòÓÒ */
+enum HeadImageOrientation{	/* å¤´åƒæœå‘ */
+	LEFT, /* å‘å·¦ */
+	RIGHT  /* å‘å³ */
 };
 
 enum PlayerSexuality{
-	MALE,		/* ÄÐÐÔ */
-	FEMALE	/* Å®ÐÔ */
+	MALE,		/* ç”·æ€§ */
+	FEMALE	/* å¥³æ€§ */
 };
 
 //enum CallLandlordScore{
-//	ZERO,	/* Áã·Ö */
-//	ONE,		/* Ò»·Ö */
-//	TWO,  /* Á½·Ö */
-//	THREE		/* Èý·Ö */
+//	ZERO,	/* é›¶åˆ† */
+//	ONE,		/* ä¸€åˆ† */
+//	TWO,  /* ä¸¤åˆ† */
+//	THREE		/* ä¸‰åˆ† */
 //};
 
 enum PlayerOrderState{
-	ORDERREADY,		/* ×¼±¸ */
-	NOCALL,	/* ²»½Ð */
-	CALLONE,/* Ò»·Ö */
-	CALLTWO,/* ¶þ·Ö */
-	CALLTHREE, /* Èý·Ö */
-	PASS, /* ²»³öÅÆ */
+	ORDERREADY,		/* å‡†å¤‡ */
+	NOCALL,	/* ä¸å« */
+	CALLONE,/* ä¸€åˆ† */
+	CALLTWO,/* äºŒåˆ† */
+	CALLTHREE, /* ä¸‰åˆ† */
+	PASS, /* ä¸å‡ºç‰Œ */
 };
 
-/* Íæ¼ÒÃüÁî×´Ì¬µÄÎ»ÖÃ£º×ó±ßOrÓÒ±ß */
+/* çŽ©å®¶å‘½ä»¤çŠ¶æ€çš„ä½ç½®ï¼šå·¦è¾¹Orå³è¾¹ */
 enum PlayerOrderPos{
-	ORDERINLEFT,		/* ×ó±ßµÄ */
-	ORDERINRIGHT	/* ÓÒ±ßµÄ */
+	ORDERINLEFT,		/* å·¦è¾¹çš„ */
+	ORDERINRIGHT	/* å³è¾¹çš„ */
 };
 
 #endif

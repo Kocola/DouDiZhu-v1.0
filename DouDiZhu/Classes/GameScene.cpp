@@ -1,10 +1,11 @@
-#include <algorithm>
+ï»¿#include <algorithm>
 #include <ctime>
 #include "GameAnimation.h"
 #include "GameRules.h"
 #include "GameScene.h"
 #include "GlobalFunc.h"
 #include "HeadImage.h"
+#include "Lobby.h"
 #include "MusicController.h"
 #include "OutCards.h"
 #include "Player.h"
@@ -14,10 +15,10 @@
 
 using namespace std;
 
-#define HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER 10	/* Í·ÏñºÍÍæ¼ÒÃüÁîÖ®¼äµÄË®Æ½¿ÕÏ¶ÊÇ10 */
+#define HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER 10	/* å¤´åƒå’Œç©å®¶å‘½ä»¤ä¹‹é—´çš„æ°´å¹³ç©ºéš™æ˜¯10 */
 
 GameScene::GameScene(){
-	gameState = DEAL;	/* ³õÊ¼×´Ì¬ÊÇ·¢ÅÆ */
+	gameState = DEAL;	/* åˆå§‹çŠ¶æ€æ˜¯å‘ç‰Œ */
 	winSprite = nullptr;
 	lostSprite = nullptr;
 	passHint = nullptr;
@@ -45,15 +46,15 @@ bool GameScene::init(){
 
 	bool tRet = false;
 	do {
-		CC_BREAK_IF(!initBackground());	/* ³õÊ¼»¯±³¾° */
-		CC_BREAK_IF(!initButton());	/* ³õÊ¼»¯°´Å¥ */
+		CC_BREAK_IF(!initBackground());	/* åˆå§‹åŒ–èƒŒæ™¯ */
+		CC_BREAK_IF(!initButton());	/* åˆå§‹åŒ–æŒ‰é’® */
 
-		passHint = Sprite::create("Image/passhint.png");	/* ÎŞÅÆ´òµÃ¹ıÉÏ¼ÒµÄÌáÊ¾ ¾«Áé */
+		passHint = Sprite::create("Image/passhint.png");	/* æ— ç‰Œæ‰“å¾—è¿‡ä¸Šå®¶çš„æç¤º ç²¾çµ */
 		auto _hint_btn_pos = hint->getPosition();
 		auto _hint_btn_size = hint->getContentSize();
 		passHint->setPosition(Point(_hint_btn_pos.x, _hint_btn_pos.y + _hint_btn_size.height / 2 + 15 + passHint->getContentSize().height / 2));
 		this->addChild(passHint);
-		passHint->setVisible(false);	/* ³õÊ¼²»¿É¼û */
+		passHint->setVisible(false);	/* åˆå§‹ä¸å¯è§ */
 
 		NotificationCenter::getInstance()->addObserver(this,
 			callfuncO_selector(GameScene::updatePokerPosAndRemovePoker),
@@ -98,16 +99,16 @@ bool GameScene::initBackground(){
 }
 
 bool GameScene::initPlayer(){
-	auto visbleSize = Director::getInstance()->getVisibleSize();	/* »ñÈ¡ÆÁÄ»µÄ¿É¼û³ß´ç */
+	auto visbleSize = Director::getInstance()->getVisibleSize();	/* è·å–å±å¹•çš„å¯è§å°ºå¯¸ */
 
-	/* ¼ÆËãµçÄÔµÄÎ»ÖÃ */
+	/* è®¡ç®—ç”µè„‘çš„ä½ç½® */
 	auto computerPlayerOnePos = Point(visbleSize.width / 12, visbleSize.height * 2 / 3);
 	auto computerPlayerTwoPos = Point(visbleSize.width * 11 / 12, visbleSize.height * 2 / 3);
 
-	/* ´´½¨Íæ¼ÒÊ¾Àı£¨°üÀ¨µçÄÔ£©£¬ÉèÖÃ¸÷×ÔµÄÀàĞÍ£¬²¢ÇÒ½«ÆäÉèÎªGameScene³¡¾°µÄ×Ó½áµã£¬·ÀÖ¹±»»ØÊÕ */
+	/* åˆ›å»ºç©å®¶ç¤ºä¾‹ï¼ˆåŒ…æ‹¬ç”µè„‘ï¼‰ï¼Œè®¾ç½®å„è‡ªçš„ç±»å‹ï¼Œå¹¶ä¸”å°†å…¶è®¾ä¸ºGameSceneåœºæ™¯çš„å­ç»“ç‚¹ï¼Œé˜²æ­¢è¢«å›æ”¶ */
 	player = Player::create();
-	this->addChild(player);		/* ½«Íæ¼ÒÉèÖÃ³É³¡¾°µÄ×Ó½áµã£¬·ÀÖ¹±»»ØÊÕ */
-	player->setPlayerType(PLAYER);	/* ÉèÖÃÍæ¼ÒÀàĞÍ */
+	this->addChild(player);		/* å°†ç©å®¶è®¾ç½®æˆåœºæ™¯çš„å­ç»“ç‚¹ï¼Œé˜²æ­¢è¢«å›æ”¶ */
+	player->setPlayerType(PLAYER);	/* è®¾ç½®ç©å®¶ç±»å‹ */
 	computerPlayer_one = Player::create();
 	this->addChild(computerPlayer_one);
 	computerPlayer_one->setPlayerType(COMPUTER);
@@ -115,7 +116,7 @@ bool GameScene::initPlayer(){
 	computerPlayer_two->setPlayerType(COMPUTER); 
 	this->addChild(computerPlayer_two);
 
-	/* ÉèÖÃÍæ¼ÒºÍµçÄÔµÄ×ø±ê */
+	/* è®¾ç½®ç©å®¶å’Œç”µè„‘çš„åæ ‡ */
 	player->setPosition(visbleSize.width / 2, DISPLAYCARDHEIGHT + PokerController::getPokerSize().height / 2);
 	computerPlayer_one->setPosition(computerPlayerOnePos);
 	computerPlayer_two->setPosition(computerPlayerTwoPos);
@@ -124,27 +125,27 @@ bool GameScene::initPlayer(){
 }
 
 bool GameScene::initPoker(){
-	/* ·½¿éDIAMOND */
+	/* æ–¹å—DIAMOND */
 	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
 		auto poker = Poker::create(this, DIAMOND, i);
 		pokers.pushBack(poker);
 	}
-	/* Ã·»¨HEART */
+	/* æ¢…èŠ±HEART */
 	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
 		auto poker = Poker::create(this, CLUB, i);
 		pokers.pushBack(poker);
 	}
-	/* ºìÌÒHEART */
+	/* çº¢æ¡ƒHEART */
 	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
 		auto poker = Poker::create(this, HEART, i);
 		pokers.pushBack(poker);
 	}
-	/* ºÚÌÒSPADE */
+	/* é»‘æ¡ƒSPADE */
 	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
 		auto poker = Poker::create(this, SPADE, i);
 		pokers.pushBack(poker);
 	}
-	/* ´óĞ¡Íõ */
+	/* å¤§å°ç‹ */
 	pokers.pushBack(Poker::create(this, BLACKJOKER));
 	pokers.pushBack(Poker::create(this, REDJOKER));
 
@@ -157,12 +158,12 @@ void GameScene::sort(){
 
 void GameScene::updatePokerPosAndRemovePoker(Ref* data){
 	Poker* poker = dynamic_cast<Poker*>(data);
-	auto player = dynamic_cast<Player*>(poker->getParent());	/* ÕâÀïPokerºÍPlayer¹ı¶ÈñîºÏ */
+	auto player = dynamic_cast<Player*>(poker->getParent());	/* è¿™é‡ŒPokerå’ŒPlayerè¿‡åº¦è€¦åˆ */
 	player->removePoker(poker);
 	player->updatePokerPos();
 }
 
-int GameScene::randomInt(int begin, int end){	/* ×ó±ÕÓÒ¿ªÇø¼ä */
+int GameScene::randomInt(int begin, int end){	/* å·¦é—­å³å¼€åŒºé—´ */
 	if (begin > end) std::swap(begin, end);
 	int ret = begin + rand() % (end - begin);
 	return ret;
@@ -170,7 +171,7 @@ int GameScene::randomInt(int begin, int end){	/* ×ó±ÕÓÒ¿ªÇø¼ä */
 
 /* Knuth_Durstenfeld_Shuffle */
 bool GameScene::shuffleCards(){
-	srand((unsigned)time(0));	/* ¿ªÆôËæ»úÖÖ×Ó */
+	srand((unsigned)time(0));	/* å¼€å¯éšæœºç§å­ */
 	for (int i = pokers.size(); i > 0; --i){
 		pokers.swap(i - 1, randomInt(0, i));
 	}
@@ -178,64 +179,64 @@ bool GameScene::shuffleCards(){
 }
 
 bool GameScene::initButton(){
-	auto visibleSize = Director::getInstance()->getVisibleSize();	/* ÆÁÄ»³ß´ç */
+	auto visibleSize = Director::getInstance()->getVisibleSize();	/* å±å¹•å°ºå¯¸ */
 
 	auto _menu = Menu::create();
-	_menu->setPosition(Point(0, 0));	/* Menu´´½¨Ê±ĞèÒª½«ÆäÎ»ÖÃÄ¬ÈÏ±äÎª0 */
+	_menu->setPosition(Point(0, 0));	/* Menuåˆ›å»ºæ—¶éœ€è¦å°†å…¶ä½ç½®é»˜è®¤å˜ä¸º0 */
 
-	/* ¿ªÊ¼°´Å¥µÄ²Ëµ¥ */
+	/* å¼€å§‹æŒ‰é’®çš„èœå• */
 	auto _start = Sprite::create("Image/btn_start.png");
 	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
 	btn_start = MenuItemSprite::create(_start, _start_pressed, CC_CALLBACK_1(GameScene::start_callback, this));	
 
-	/* ²»³ö°´Å¥ */
+	/* ä¸å‡ºæŒ‰é’® */
 	auto _pass = Sprite::create("Image/btn_pass.png");
-	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* ÀûÓÃ¾«ÁéÖ¡À´¸´ÖÆ´´½¨Ò»¸ö¾«Áé */
+	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* åˆ©ç”¨ç²¾çµå¸§æ¥å¤åˆ¶åˆ›å»ºä¸€ä¸ªç²¾çµ */
 	auto _pass_disabled = Sprite::create("Image/btn_pass.png");
 	pass = MenuItemSprite::create(_pass, _pass_pressed, CC_CALLBACK_1(GameScene::pass_callback, this));
-	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* ÕâÑùĞ´»á³ö´í£¬ÎªÊ²Ã´£¿*/ 
+	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* è¿™æ ·å†™ä¼šå‡ºé”™ï¼Œä¸ºä»€ä¹ˆï¼Ÿ*/ 
 
-	/* ÌáÊ¾°´Å¥ */
+	/* æç¤ºæŒ‰é’® */
 	auto _hint = Sprite::create("Image/btn_hint.png");
 	auto _hint_pressed = Sprite::create("Image/btn_hint_selected.png");
 	auto _hint_disabled = Sprite::create("Image/btn_hint_disabled.png");
 	hint = MenuItemSprite::create(_hint, _hint_pressed, CC_CALLBACK_1(GameScene::hint_callback,this));
 	hint->setDisabledImage(_hint_disabled);
-	hint->setEnabled(false);		/* ÌáÊ¾ÊÇ·ñ¿ÉÒÔµã»÷ÊÇÒÀ¾İµãÇ°ÊÇ·ñ´æÔÚ´óÓÚÉÏÒ»¼ÒµÄÅÆ */
+	hint->setEnabled(false);		/* æç¤ºæ˜¯å¦å¯ä»¥ç‚¹å‡»æ˜¯ä¾æ®ç‚¹å‰æ˜¯å¦å­˜åœ¨å¤§äºä¸Šä¸€å®¶çš„ç‰Œ */
 
-	/* ³öÅÆ°´Å¥ */
+	/* å‡ºç‰ŒæŒ‰é’® */
 	auto _out = Sprite::create("Image/btn_out.png");
 	auto _out_pressed = Sprite::create("Image/btn_out_selected.png");
 	auto _out_disabled = Sprite::create("Image/btn_out_disabled.png");
 	out = MenuItemSprite::create(_out, _out_pressed, CC_CALLBACK_1(GameScene::out_callback, this));
 	out->setDisabledImage(_out_disabled);
-	out->setEnabled(false);		/* ³õÊ¼»¯Ê±ÉèÖÃ ³öÅÆ °´Å¥²»¿É°´ÏÂ*/
+	out->setEnabled(false);		/* åˆå§‹åŒ–æ—¶è®¾ç½® å‡ºç‰Œ æŒ‰é’®ä¸å¯æŒ‰ä¸‹*/
 
-	/* ²»½Ğ²Ëµ¥ */
+	/* ä¸å«èœå• */
 	auto _nocall = Sprite::create("Image/btn_nocall.png");
 	auto _nocall_pressed = Sprite::create("Image/btn_nocall_selected.png");
 	nocall = MenuItemSprite::create(_nocall, _nocall_pressed, CC_CALLBACK_1(GameScene::nocall_callback, this));
 
-	/* Ò»·Ö²Ëµ¥ */
+	/* ä¸€åˆ†èœå• */
 	auto _call_one = Sprite::create("Image/btn_one.png");
 	auto _call_one_selected = Sprite::create("Image/btn_one_selected.png");
 	call_one = MenuItemSprite::create(_call_one, _call_one_selected, CC_CALLBACK_1(GameScene::callone_callback, this));
 
-	/* ¶ş·Ö²Ëµ¥ */
+	/* äºŒåˆ†èœå• */
 	auto _call_two = Sprite::create("Image/btn_two.png");
 	auto _call_two_selected = Sprite::create("Image/btn_two_selected.png");
 	call_two = MenuItemSprite::create(_call_two, _call_two_selected, CC_CALLBACK_1(GameScene::calltwo_callback, this));
 
-	/* Èı·Ö²Ëµ¥ */
+	/* ä¸‰åˆ†èœå• */
 	auto _call_three = Sprite::create("Image/btn_three.png");
 	auto _call_three_selected = Sprite::create("Image/btn_three_selected.png");
 	call_three = MenuItemSprite::create(_call_three, _call_three_selected, CC_CALLBACK_1(GameScene::callthree_callback, this));
 
 	pass->setVisible(false);  
 	hint->setVisible(false);
-	out->setVisible(false);/* ³õÊ¼»¯Ê±ÉèÖÃ Á½¸ö°´Å¥ ²»¿É¼û */
+	out->setVisible(false);/* åˆå§‹åŒ–æ—¶è®¾ç½® ä¸¤ä¸ªæŒ‰é’® ä¸å¯è§ */
 
-	/* ÉèÖÃ°´Å¥Î»ÖÃ */
+	/* è®¾ç½®æŒ‰é’®ä½ç½® */
 	auto _posY = POKER_HEIGHT + DISPLAYCARDHEIGHT + pass->getContentSize().height / 2 + 15;
 	auto _hint_width = hint->getContentSize().width;
 	auto _pass_pos = Point(visibleSize.width / 2 - (_hint_width / 2 + BUTTON_INTERVAL + _pass->getContentSize().width / 2), _posY);
@@ -245,29 +246,29 @@ bool GameScene::initButton(){
 	hint->setPosition(_hint_pos);
 	out->setPosition(_out_pos);
 
-	/* ½«MenuItemSpriteÌí¼Óµ½MenuÀïÏÔÊ¾ */
+	/* å°†MenuItemSpriteæ·»åŠ åˆ°Menué‡Œæ˜¾ç¤º */
 	_menu->addChild(pass);
 	_menu->addChild(hint);
 	_menu->addChild(out);
 
-	/* ÉèÖÃ¿ªÊ¼°´Å¥²»¿É¼û */
+	/* è®¾ç½®å¼€å§‹æŒ‰é’®ä¸å¯è§ */
 	btn_start->setVisible(false);
 
-	/* ÉèÖÃ¿ªÊ¼°´Å¥Î»ÖÃ £º ¿íÔÚÆÁÄ»ÖĞ¼ä£¬¸ß¶ÈºÍÍæ¼ÒÍ·Ïñ¶ÔÆë*/
+	/* è®¾ç½®å¼€å§‹æŒ‰é’®ä½ç½® ï¼š å®½åœ¨å±å¹•ä¸­é—´ï¼Œé«˜åº¦å’Œç©å®¶å¤´åƒå¯¹é½*/
 	auto start_pos = Point(visibleSize.width / 2, 
 		DISPLAYCARDHEIGHT + POKER_HEIGHT + 20 + btn_start->getContentSize().height / 2);
 	btn_start->setPosition(start_pos);
 
-	/* ½« ¿ªÊ¼  MenuItemSpriteÌí¼Óµ½MenuÀïÏÔÊ¾ */
+	/* å°† å¼€å§‹  MenuItemSpriteæ·»åŠ åˆ°Menué‡Œæ˜¾ç¤º */
 	_menu->addChild(btn_start);
 
-	/* ½Ğ·Ö°´Å¥È«²¿ÉèÖÃÎ»²»¿É¼û */
+	/* å«åˆ†æŒ‰é’®å…¨éƒ¨è®¾ç½®ä½ä¸å¯è§ */
 	nocall->setVisible(false);
 	call_one->setVisible(false);
 	call_two->setVisible(false);
 	call_three->setVisible(false);
 
-	/* ÉèÖÃ°´Å¥Î»ÖÃ */
+	/* è®¾ç½®æŒ‰é’®ä½ç½® */
 	auto _nocall_pos = Point(visibleSize.width / 2 - call_one->getContentSize().width - BUTTON_INTERVAL - nocall->getContentSize().width / 2 - BUTTON_INTERVAL / 2, 
 		POKER_HEIGHT + DISPLAYCARDHEIGHT + nocall->getContentSize().height / 2 + 15);
 	nocall->setPosition(_nocall_pos);
@@ -281,13 +282,13 @@ bool GameScene::initButton(){
 		POKER_HEIGHT + DISPLAYCARDHEIGHT + call_three->getContentSize().height / 2 + 15);
 	call_three->setPosition(_call_three_pos);
 
-	/* ½«MenuItemSpriteÌí¼Óµ½MenuÀïÏÔÊ¾ */
+	/* å°†MenuItemSpriteæ·»åŠ åˆ°Menué‡Œæ˜¾ç¤º */
 	_menu->addChild(nocall);
 	_menu->addChild(call_one);
 	_menu->addChild(call_two);
 	_menu->addChild(call_three);
 
-	this->addChild(_menu);	/* MenuItemSprite¶ÔÏó±ØĞë´æ·ÅÔÚMenuÖĞ²ÅÄÜÕı³£Ê¹ÓÃ */
+	this->addChild(_menu);	/* MenuItemSpriteå¯¹è±¡å¿…é¡»å­˜æ”¾åœ¨Menuä¸­æ‰èƒ½æ­£å¸¸ä½¿ç”¨ */
 
 	return true;
 }
@@ -297,21 +298,21 @@ bool GameScene::initHeadImage(){
 	auto computerOne_pos = computerPlayer_one->getPosition();
 	auto computerTwo_pos = computerPlayer_two->getPosition();
 	auto cardSize = PokerController::getInstance()->getPokerSize();
-	auto headBoxSize = HeadImage::create()->getHeadBoxSize();	/* »ñÈ¡Í·Ïñ¿òµÄ´óĞ¡ */
+	auto headBoxSize = HeadImage::create()->getHeadBoxSize();	/* è·å–å¤´åƒæ¡†çš„å¤§å° */
 
 	auto playerHeadImagePos = Point(computerOne_pos.x, playerPos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
 	auto computerOneHeadImagePos = Point(computerOne_pos.x, computerOne_pos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
 	auto computerTwoHeadImagePos = Point(computerTwo_pos.x, computerTwo_pos.y + cardSize.height / 2 + headBoxSize.height / 2 + HEIGHTDISTANCE_HEADIMAGEANDPLAYER);
 
-	playerHeadImage = HeadImage::create();		/* Íæ¼ÒÍ·Ïñ */
+	playerHeadImage = HeadImage::create();		/* ç©å®¶å¤´åƒ */
 	playerHeadImage->setPosition(playerHeadImagePos);
 	this->addChild(playerHeadImage);
 	//playerHeadImage->setHeadImageType(LANDLORD, RIGHT);
-	computerPlayer_one_headImage = HeadImage::create();	/* µçÄÔ¶ËÍ·Ïñ */
+	computerPlayer_one_headImage = HeadImage::create();	/* ç”µè„‘ç«¯å¤´åƒ */
 	computerPlayer_one_headImage->setPosition(computerOneHeadImagePos);
 	this->addChild(computerPlayer_one_headImage);
 	//computerPlayer_one_headImage->setHeadImageType(FARMER, RIGHT);
-	computerPlayer_two_headImage = HeadImage::create();	/* µçÄÔ¶ËÍ·Ïñ */
+	computerPlayer_two_headImage = HeadImage::create();	/* ç”µè„‘ç«¯å¤´åƒ */
 	computerPlayer_two_headImage->setPosition(computerTwoHeadImagePos);
 	this->addChild(computerPlayer_two_headImage);
 	//computerPlayer_two_headImage->setHeadImageType(FARMER, LEFT);
@@ -320,25 +321,25 @@ bool GameScene::initHeadImage(){
 }
 
 bool GameScene::initPlayerOrder(){
-	playerOrder = PlayerOrder::create();	/* Í·ÏñÄ¬ÈÏÊÇÔÚÆÁÄ»×ó±ß */
-	auto headImagePos = playerHeadImage->getPosition();	/* Íæ¼ÒÃüÁîÊÇºÍÍ·ÏñµÄÎ»ÖÃÏà¶ÔµÄ£¬Òò´ËÒªÏÈ»ñÈ¡¶ÔÓ¦Íæ¼ÒÍ·ÏñµÄÎ»ÖÃ */
+	playerOrder = PlayerOrder::create();	/* å¤´åƒé»˜è®¤æ˜¯åœ¨å±å¹•å·¦è¾¹ */
+	auto headImagePos = playerHeadImage->getPosition();	/* ç©å®¶å‘½ä»¤æ˜¯å’Œå¤´åƒçš„ä½ç½®ç›¸å¯¹çš„ï¼Œå› æ­¤è¦å…ˆè·å–å¯¹åº”ç©å®¶å¤´åƒçš„ä½ç½® */
 	playerOrder->setPosition(headImagePos.x + (playerHeadImage->getContentSize().width / 2 + 
 		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + playerOrder->getContentSize().width / 2), headImagePos.y);
-	playerOrder->setVisible(false);	/* Íæ¼ÒÃüÁî³õÊ¼»¯Ê±²»¿É¼û */
-	this->addChild(playerOrder);		/* Ìí¼Óµ½½ÚµãÊ÷ÖĞ */
+	playerOrder->setVisible(false);	/* ç©å®¶å‘½ä»¤åˆå§‹åŒ–æ—¶ä¸å¯è§ */
+	this->addChild(playerOrder);		/* æ·»åŠ åˆ°èŠ‚ç‚¹æ ‘ä¸­ */
 
-	computerPlayer_one_order = PlayerOrder::create();	/* µçÄÔ1Í·ÏñÄ¬ÈÏÊÇÔÚÆÁÄ»×ó±ß */
+	computerPlayer_one_order = PlayerOrder::create();	/* ç”µè„‘1å¤´åƒé»˜è®¤æ˜¯åœ¨å±å¹•å·¦è¾¹ */
 	headImagePos = computerPlayer_one_headImage->getPosition();
 	computerPlayer_one_order->setPosition(headImagePos.x + (playerHeadImage->getContentSize().width / 2 +
 		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + computerPlayer_one_order->getContentSize().width / 2), headImagePos.y);
-	computerPlayer_one_order->setVisible(false);	/* µçÄÔÍæ¼Ò1µÄÃüÁî³õÊ¼»¯Ê±²»¿É¼û */
+	computerPlayer_one_order->setVisible(false);	/* ç”µè„‘ç©å®¶1çš„å‘½ä»¤åˆå§‹åŒ–æ—¶ä¸å¯è§ */
 	this->addChild(computerPlayer_one_order);
 
-	computerPlayer_two_order = PlayerOrder::create();	/* µçÄÔ2Í·ÏñÄ¬ÈÏÊÇÔÚÆÁÄ»ÓÒ±ß */
+	computerPlayer_two_order = PlayerOrder::create();	/* ç”µè„‘2å¤´åƒé»˜è®¤æ˜¯åœ¨å±å¹•å³è¾¹ */
 	headImagePos = computerPlayer_two_headImage->getPosition();
 	computerPlayer_two_order->setPosition(headImagePos.x - (playerHeadImage->getContentSize().width / 2 +
 		HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER + computerPlayer_two_order->getContentSize().width / 2), headImagePos.y);
-	computerPlayer_two_order->setVisible(false);	/* µçÄÔÍæ¼Ò2µÄÃüÁî³õÊ¼»¯Ê±²»¿É¼û */
+	computerPlayer_two_order->setVisible(false);	/* ç”µè„‘ç©å®¶2çš„å‘½ä»¤åˆå§‹åŒ–æ—¶ä¸å¯è§ */
 	this->addChild(computerPlayer_two_order);
 
 	return true;
@@ -351,8 +352,8 @@ bool GameScene::initCallLandlord(){
 }
 
 bool GameScene::deletePoker(){
-	pokers.clear();	/* ¿¨ÅÆÖÃ¿Õ */
-	/* É¾³ıÍæ¼ÒºÍµçÄÔµÄËùÓĞ¿¨ÅÆ */
+	pokers.clear();	/* å¡ç‰Œç½®ç©º */
+	/* åˆ é™¤ç©å®¶å’Œç”µè„‘çš„æ‰€æœ‰å¡ç‰Œ */
 	player->removeAllPoker();
 	computerPlayer_one->removeAllPoker();
 	computerPlayer_two->removeAllPoker();
@@ -361,17 +362,17 @@ bool GameScene::deletePoker(){
 }
 
 bool GameScene::deletePlayer(){
-	/* É¾³ıÍæ¼ÒºÍµçÄÔ¶ËµÄÖ¸Õë */
+	/* åˆ é™¤ç©å®¶å’Œç”µè„‘ç«¯çš„æŒ‡é’ˆ */
  	this->removeChild(player);
 	this->removeChild(computerPlayer_one);
 	this->removeChild(computerPlayer_two);
-	players.clear();	/* É¾³ıÍæ¼ÒÈİÆ÷ÀïµÄËùÓĞÍæ¼ÒÖ¸Õë£¬Èç¹ûÃ»ÓĞÕâÒ»²½£¬
-						ĞÂµÄÒ»¾Ö¿ªÊ¼Ê±£¬Íæ¼ÒÎŞ·¨³öÅÆ*/
+	players.clear();	/* åˆ é™¤ç©å®¶å®¹å™¨é‡Œçš„æ‰€æœ‰ç©å®¶æŒ‡é’ˆï¼Œå¦‚æœæ²¡æœ‰è¿™ä¸€æ­¥ï¼Œ
+						æ–°çš„ä¸€å±€å¼€å§‹æ—¶ï¼Œç©å®¶æ— æ³•å‡ºç‰Œ*/
 	return true;
 }
 
 bool GameScene::deleteHeadImage(){
-	/* É¾³ıÍæ¼ÒÍ·Ïñ */
+	/* åˆ é™¤ç©å®¶å¤´åƒ */
 	this->removeChild(playerHeadImage);
 	this->removeChild(computerPlayer_one_headImage);
 	this->removeChild(computerPlayer_two_headImage);
@@ -380,7 +381,7 @@ bool GameScene::deleteHeadImage(){
 }
 
 bool GameScene::deletPlayerOrder(){
-	/* É¾³ıÍæ¼ÒÃüÁî */
+	/* åˆ é™¤ç©å®¶å‘½ä»¤ */
 	this->removeChild(playerOrder);
 	this->removeChild(computerPlayer_one_order);
 	this->removeChild(computerPlayer_two_order);
@@ -402,28 +403,28 @@ void GameScene::chooseLandlord(){
 		maxlandlordscore = computerPlayer_two->getCallLandlordScore();
 		landlordPlayer = computerPlayer_two;
 	}
-	/* ÉèÖÃ·ÖÊı×î¸ßµÄÈËÊÇµØÖ÷£¬Èç¹û¶¼Ã»ÓĞ½Ğ£¬ÄÇÃ´ÕâÀïÈÃÊÖ¶¯Íæ¼Ò³ÉÎªµØÖ÷ */
+	/* è®¾ç½®åˆ†æ•°æœ€é«˜çš„äººæ˜¯åœ°ä¸»ï¼Œå¦‚æœéƒ½æ²¡æœ‰å«ï¼Œé‚£ä¹ˆè¿™é‡Œè®©æ‰‹åŠ¨ç©å®¶æˆä¸ºåœ°ä¸» */
 	landlordPlayer = landlordPlayer == nullptr ? player : landlordPlayer;
 	landlordPlayer->setLandlord(true);
 
-	/* ²¥·Å»ñµÃµØÖ÷µÄÒôÀÖ */
+	/* æ’­æ”¾è·å¾—åœ°ä¸»çš„éŸ³ä¹ */
 	MusicController::getInstance()->playCallLandlordEffect(LANDLORD_MUSIC);
 
-	/* Òş²ØËùÓĞÍæ¼ÒµÄ½Ğ·ÖÃüÁî×´Ì¬ */
+	/* éšè—æ‰€æœ‰ç©å®¶çš„å«åˆ†å‘½ä»¤çŠ¶æ€ */
 	this->setPlayerOrderStateUnVisible();
 }
 
 void GameScene::playerCallLandlord(){
-	/* ÏÔÊ¾ËùÓĞ½Ğ·Ö°´Å¥ */
+	/* æ˜¾ç¤ºæ‰€æœ‰å«åˆ†æŒ‰é’® */
 	nocall->setVisible(true);
 	call_one->setVisible(true);
 	call_two->setVisible(true);
 	call_three->setVisible(true);
-	/* µÈ´ı½Ğ·Ö */
+	/* ç­‰å¾…å«åˆ† */
 }
 
 void GameScene::setCallLandlordOrderState(Player* _player, int _score){
-	/* ¸ù¾İ·ÖÊıÕÒµ½¶ÔÓ¦µÄ½ĞµØÖ÷×´Ì¬ */
+	/* æ ¹æ®åˆ†æ•°æ‰¾åˆ°å¯¹åº”çš„å«åœ°ä¸»çŠ¶æ€ */
 	PlayerOrderState _playerOrderState;
 	CallLandlordEffect _callLandlordEffect;
 	switch (_score){
@@ -433,7 +434,7 @@ void GameScene::setCallLandlordOrderState(Player* _player, int _score){
 	case 3:_playerOrderState = CALLTHREE; _callLandlordEffect = CALLTHREE_MUSIC; break;
 	default: _playerOrderState = NOCALL; _callLandlordEffect = NOCALL_MUSIC; break;
 	}
-	/* ¸ù¾İÍæ¼ÒÕÒµ½¶ÔÓ¦µÄÃüÁî¶ÔÏó */
+	/* æ ¹æ®ç©å®¶æ‰¾åˆ°å¯¹åº”çš„å‘½ä»¤å¯¹è±¡ */
 	PlayerOrder* _playerOrder = nullptr;
 	if (_player == this->player) _playerOrder = this->playerOrder;
 	else if (_player == this->computerPlayer_one) _playerOrder = computerPlayer_one_order;
@@ -441,7 +442,7 @@ void GameScene::setCallLandlordOrderState(Player* _player, int _score){
 
 	CC_ASSERT(_playerOrder != nullptr);
 
-	/* ²¥·Å¶ÔÓ¦µÄÒôĞ§ */
+	/* æ’­æ”¾å¯¹åº”çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playCallLandlordEffect(_callLandlordEffect);
 
 	_playerOrder->setPlayerOrderState(_playerOrderState);
@@ -453,7 +454,7 @@ void GameScene::computerCallLandlord(Player* _computer){
 	_computer->setCallLandlordScore(score);
 	this->setCallLandlordOrderState(_computer, score);
 	isMaxCallLandlordScore(_computer);
-	updateCallLandlordOrder();	/* ¸üĞÂ½ĞÏÂÒ»¸ö½ĞµØÖ÷µÄID */
+	updateCallLandlordOrder();	/* æ›´æ–°å«ä¸‹ä¸€ä¸ªå«åœ°ä¸»çš„ID */
 }
 
 void GameScene::callLandlord(){
@@ -466,8 +467,8 @@ void GameScene::callLandlord(){
 }
 
 int GameScene::automaticCallLandlord(){
-	srand((unsigned)time(0));	/* ¿ªÆôËæ»úÖÖ×Ó */
-	int score = rand() % 4;	/* ½Ğ·ÖÒ»¹²ÓĞ²»½Ğ£¬1£¬2£¬3ËÄÖÖÇé¿ö£¬ÆäÖĞ0±íÊ¾²»½Ğ */
+	srand((unsigned)time(0));	/* å¼€å¯éšæœºç§å­ */
+	int score = rand() % 4;	/* å«åˆ†ä¸€å…±æœ‰ä¸å«ï¼Œ1ï¼Œ2ï¼Œ3å››ç§æƒ…å†µï¼Œå…¶ä¸­0è¡¨ç¤ºä¸å« */
 	return score;
 }
 
@@ -476,29 +477,29 @@ void GameScene::updateCallLandlordOrder(){
 }
 
 void GameScene::isMaxCallLandlordScore(Player* _player){
-	/* Èç¹û¸ÃÍæ¼ÒÊÇ×î¸ß½Ğ·Ö£¬ÄÇÃ´Ö±½Ó½øÈë¾ö¶¨µØÖ÷½×¶Î */
+	/* å¦‚æœè¯¥ç©å®¶æ˜¯æœ€é«˜å«åˆ†ï¼Œé‚£ä¹ˆç›´æ¥è¿›å…¥å†³å®šåœ°ä¸»é˜¶æ®µ */
 	if (_player->getCallLandlordScore() == 3){
 		this->gameState = CHOOSELANDLORD;
 	}
 }
 
 void GameScene::ready(){
-	computerPlayer_one->setReady(true);	/* µçÄÔ¶ËÍæ¼Ò1×¼±¸ºÃ */
-	computerPlayer_one_order->setVisible(true);	/* µçÄÔÍæ¼Ò1µÄ ×¼±¸ ¿É¼û */
-	computerPlayer_two->setReady(true);	/* µçÄÔ¶ËÍæ¼Ò2×¼±¸ºÃ */
-	computerPlayer_two_order->setVisible(true);	/* µçÄÔÍæ¼Ò2µÄ ×¼±¸ ¿É¼û */
+	computerPlayer_one->setReady(true);	/* ç”µè„‘ç«¯ç©å®¶1å‡†å¤‡å¥½ */
+	computerPlayer_one_order->setVisible(true);	/* ç”µè„‘ç©å®¶1çš„ å‡†å¤‡ å¯è§ */
+	computerPlayer_two->setReady(true);	/* ç”µè„‘ç«¯ç©å®¶2å‡†å¤‡å¥½ */
+	computerPlayer_two_order->setVisible(true);	/* ç”µè„‘ç©å®¶2çš„ å‡†å¤‡ å¯è§ */
 
 	btn_start->setVisible(true);
 
 	if (this->checkAllReady()){
-		/* ËùÓĞÈË×¼±¸ºÃºó£¬½«ÃüÁî´°¿ÚÒş²Ø */
+		/* æ‰€æœ‰äººå‡†å¤‡å¥½åï¼Œå°†å‘½ä»¤çª—å£éšè— */
 		this->setPlayerOrderStateUnVisible();
 
 		MusicController::getInstance()->playStartMusic();
 
-		btn_start->setVisible(false);	/* Òş²Ø¿ªÊ¼°´Å¥ */
+		btn_start->setVisible(false);	/* éšè—å¼€å§‹æŒ‰é’® */
 
-		this->gameState = DEAL;	/* ËùÓĞÈË×¼±¸ºÃºó£¬ÇĞ»»ÓÎÏ·×´Ì¬ */
+		this->gameState = DEAL;	/* æ‰€æœ‰äººå‡†å¤‡å¥½åï¼Œåˆ‡æ¢æ¸¸æˆçŠ¶æ€ */
 	}
 }
 
@@ -515,12 +516,12 @@ void GameScene::dealCard(){
 		_pokers.pushBack(pokers.at(i));
 	}
 
-	/* ÕâÊÇÊôÓÚµØÖ÷µÄÈıÕÅÅÆ */
+	/* è¿™æ˜¯å±äºåœ°ä¸»çš„ä¸‰å¼ ç‰Œ */
 	/*for (int i = TOTAL_POKER_NUM - 3; i < TOTAL_POKER_NUM; ++i){
 		_pokers.pushBack(pokers.at(i));
 	}*/
-	player->insertCards(_pokers);/* ¶ÔÍæ¼Ò·¢ÅÆ */
-	player->updatePokerPos();	/* ³õÊ¼»¯Ê±¶ÔÍæ¼ÒµÄÅÆµÄÎ»ÖÃ½øĞĞ¸üĞÂ£¬·ÀÖ¹Ö»ÏÔÊ¾Ò»ÕÅÅÆ */
+	player->insertCards(_pokers);/* å¯¹ç©å®¶å‘ç‰Œ */
+	player->updatePokerPos();	/* åˆå§‹åŒ–æ—¶å¯¹ç©å®¶çš„ç‰Œçš„ä½ç½®è¿›è¡Œæ›´æ–°ï¼Œé˜²æ­¢åªæ˜¾ç¤ºä¸€å¼ ç‰Œ */
 
 	_pokers.clear();
 	for (int i = 1; i < TOTAL_POKER_NUM - 3; i += 3){
@@ -543,14 +544,14 @@ void GameScene::initLandlordCard(){
 
 void GameScene::displayLandlordCard(){
 	CC_ASSERT(cardForLandlord.size() > 0);
-	/* ¸´ÖÆÊôÓÚµØÖ÷µÄÈıÕÅÅÆ */
+	/* å¤åˆ¶å±äºåœ°ä¸»çš„ä¸‰å¼ ç‰Œ */
 	for (int i = 0; i < cardForLandlord.size(); ++i){
 		cardDisplayInTop.pushBack(cardForLandlord.at(i)->clone());
 	}
 
-	/* ¿¨ÅÆÊÇÎŞĞòµÄ£¬ĞèÒªÏÈÅÅĞò */
+	/* å¡ç‰Œæ˜¯æ— åºçš„ï¼Œéœ€è¦å…ˆæ’åº */
 	GlobalFunc::sort(cardDisplayInTop);
-	/* ÏÔÊ¾¿¨ÅÆ */
+	/* æ˜¾ç¤ºå¡ç‰Œ */
 	float cardWidth = POKER_WIDTH;
 	float cardHeight = POKER_HEIGHT;
 	float interval = cardWidth - MIMIUM_CARDS_OVERLAPWIDTH;
@@ -569,12 +570,12 @@ bool GameScene::isCurAndManualPlayer() const {
 }
 
 void GameScene::updateOutState(){
-	if (players.size() == 0) return;	/* Èç¹ûplayersÊı×é»¹Ã»ÓĞ³õÊ¼»¯£¬ÄÇÃ´Ö±½Ó·Å»Ø£¬²»È»»á³öÏÖ¶ÏÑÔ */
-	/* Èç¹ûµ±Ç°³öÅÆÍæ¼Ò²»ÊÇplayer£¬ÄÇÃ´²»ĞèÒª¸üĞÂ³öÅÆ°´Å¥µÄ¿É°´ĞÔ */
+	if (players.size() == 0) return;	/* å¦‚æœplayersæ•°ç»„è¿˜æ²¡æœ‰åˆå§‹åŒ–ï¼Œé‚£ä¹ˆç›´æ¥æ”¾å›ï¼Œä¸ç„¶ä¼šå‡ºç°æ–­è¨€ */
+	/* å¦‚æœå½“å‰å‡ºç‰Œç©å®¶ä¸æ˜¯playerï¼Œé‚£ä¹ˆä¸éœ€è¦æ›´æ–°å‡ºç‰ŒæŒ‰é’®çš„å¯æŒ‰æ€§ */
 	if (players.at(outcardOrder % 3) != player) return;
 	if (lastOutCards->getPokerValueType() == NONE || lastOutCards->getPokerOwner() == player){
-		/* Èç¹ûÉÏÒ»´ÎµÄ³öÅÆÊÇNONE£¨±íÊ¾¸Õ¿ªÊ¼£©»òÕß ÉÏÒ»´Î³öÅÆµÄ³ÖÓĞÕß»¹ÊÇplayer£¬
-			ÄÇÃ´ÅĞ¶Ïµ±Ç°´ı³öµÄÅÆÊÇ²»ÊÇÕıÈ·µÄÅÆĞÍ£¬Èç¹ûÊÇ£¬¾ÍÁî³öÅÆ°´Å¥¿É°´£¬·ñÔò²»¿É°´ */
+		/* å¦‚æœä¸Šä¸€æ¬¡çš„å‡ºç‰Œæ˜¯NONEï¼ˆè¡¨ç¤ºåˆšå¼€å§‹ï¼‰æˆ–è€… ä¸Šä¸€æ¬¡å‡ºç‰Œçš„æŒæœ‰è€…è¿˜æ˜¯playerï¼Œ
+			é‚£ä¹ˆåˆ¤æ–­å½“å‰å¾…å‡ºçš„ç‰Œæ˜¯ä¸æ˜¯æ­£ç¡®çš„ç‰Œå‹ï¼Œå¦‚æœæ˜¯ï¼Œå°±ä»¤å‡ºç‰ŒæŒ‰é’®å¯æŒ‰ï¼Œå¦åˆ™ä¸å¯æŒ‰ */
 		if (GameRules::getInstance()->isPokerValueType(arrWaitPlayOut) == true){
 			out->setEnabled(true);
 		}else{
@@ -583,7 +584,7 @@ void GameScene::updateOutState(){
 		return;
 	} else{
 		PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(arrWaitPlayOut);
-		if (_pokerValueType == NONE){	/* Èç¹ûµ±Ç°²»ÊÇÈÎºÎÅÆĞÍ */
+		if (_pokerValueType == NONE){	/* å¦‚æœå½“å‰ä¸æ˜¯ä»»ä½•ç‰Œå‹ */
 			out->setEnabled(false);
 		} else{
 			out->setEnabled(GameRules::getInstance()->canOutCards(arrWaitPlayOut, lastOutCards));
@@ -592,7 +593,7 @@ void GameScene::updateOutState(){
 }
 
 void GameScene::setCallLandlordButtonUnVisible(){
-	/* Òş²ØËùÓĞ½Ğ·Ö°´Å¥ */
+	/* éšè—æ‰€æœ‰å«åˆ†æŒ‰é’® */
 	nocall->setVisible(false);
 	call_one->setVisible(false);
 	call_two->setVisible(false);
@@ -600,81 +601,81 @@ void GameScene::setCallLandlordButtonUnVisible(){
 }
 
 void GameScene::setPlayerOrderStateUnVisible(){
-	/* Òş²ØËùÓĞÃüÁî×´Ì¬ */
+	/* éšè—æ‰€æœ‰å‘½ä»¤çŠ¶æ€ */
 	playerOrder->setVisible(false);
 	computerPlayer_one_order->setVisible(false);
 	computerPlayer_two_order->setVisible(false);
 }
 
 void GameScene::start_callback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPressButtonEffect();
 
 	playerOrder->setVisible(true);
 
 	btn_start->setVisible(false);
 
-	player->setReady(true);	/* ÉèÖÃÊÖ¶¯Íæ¼ÒÒÑ¾­×¼±¸ºÃ */
+	player->setReady(true);	/* è®¾ç½®æ‰‹åŠ¨ç©å®¶å·²ç»å‡†å¤‡å¥½ */
 }
 
 void GameScene::pass_callback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPassEffect();
 
-	pass->setVisible(false);		/* ²»³ö°´Å¥²»¿É¼û */
-	hint->setVisible(false);		/* ÌáÊ¾°´Å¥²»¿É¼û */
-	hint->setEnabled(false);	/* ÌáÊ¾°´Å¥²»¿É°´ÏÂ */
-	out->setVisible(false);		/* ³öÅÆ°´Å¥²»¿É¼û */
-	out->setEnabled(false);	/* Ã¿´Î³öÅÆ»òÕßpassºó£¬½«out°´Å¥ÉèÎª²»¿É°´ */
+	pass->setVisible(false);		/* ä¸å‡ºæŒ‰é’®ä¸å¯è§ */
+	hint->setVisible(false);		/* æç¤ºæŒ‰é’®ä¸å¯è§ */
+	hint->setEnabled(false);	/* æç¤ºæŒ‰é’®ä¸å¯æŒ‰ä¸‹ */
+	out->setVisible(false);		/* å‡ºç‰ŒæŒ‰é’®ä¸å¯è§ */
+	out->setEnabled(false);	/* æ¯æ¬¡å‡ºç‰Œæˆ–è€…passåï¼Œå°†outæŒ‰é’®è®¾ä¸ºä¸å¯æŒ‰ */
 
 	passHint->setVisible(false);
 
-	playerOrder->setPlayerOrderState(PASS);	/* ÏÔÊ¾²»³öµÄ×´Ì¬ */
+	playerOrder->setPlayerOrderState(PASS);	/* æ˜¾ç¤ºä¸å‡ºçš„çŠ¶æ€ */
 	playerOrder->setVisible(true);
 
 	this->outcardOrder = (this->outcardOrder + 1) % 3;
 }
 
 void GameScene::hint_callback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPressButtonEffect();
 
-	/* Èç¹ûµã»÷ÌáÊ¾°´Å¥£¬ÄÇÃ´Ê×ÏÈÒª½«×Ô¼ºµã»÷µÄÅÆ»Ö¸´µ½Õı³£Î»ÖÃ */
-	Vector<Poker*> _pokers = this->arrWaitPlayOut;	/* ²»¿ÉÒÔÖ±½ÓÊ¹ÓÃthis->arrWaitPlayOut£¬ÒòÎª»Ö¸´ÅÆÊ±»áÉ¾³ı¸ÃÈİÆ÷ÀïµÄÄÚÈİ£¬ÕâÑùÈİÒ×³ö´í */
+	/* å¦‚æœç‚¹å‡»æç¤ºæŒ‰é’®ï¼Œé‚£ä¹ˆé¦–å…ˆè¦å°†è‡ªå·±ç‚¹å‡»çš„ç‰Œæ¢å¤åˆ°æ­£å¸¸ä½ç½® */
+	Vector<Poker*> _pokers = this->arrWaitPlayOut;	/* ä¸å¯ä»¥ç›´æ¥ä½¿ç”¨this->arrWaitPlayOutï¼Œå› ä¸ºæ¢å¤ç‰Œæ—¶ä¼šåˆ é™¤è¯¥å®¹å™¨é‡Œçš„å†…å®¹ï¼Œè¿™æ ·å®¹æ˜“å‡ºé”™ */
 	for (int i = 0; i < _pokers.size(); ++i){
 		auto _poker = _pokers.at(i);
-		_poker->selectedCardBack();		/* ÒÑ³öµÄÅÆ»Ö¸´Î»ÖÃ */
+		_poker->selectedCardBack();		/* å·²å‡ºçš„ç‰Œæ¢å¤ä½ç½® */
 	}
-	//this->arrWaitPlayOut.clear();	/* Çå¿Õ´ı³ö°´Å¥ */
+	//this->arrWaitPlayOut.clear();	/* æ¸…ç©ºå¾…å‡ºæŒ‰é’® */
 
-	/* ½«ÌáÊ¾µÄÆË¿ËÉÏÒÆ£¬±ä³É´ı³öµÄ×´Ì¬ */
+	/* å°†æç¤ºçš„æ‰‘å…‹ä¸Šç§»ï¼Œå˜æˆå¾…å‡ºçš„çŠ¶æ€ */
 	for (int i = 0; i < this->hintPokers.size(); ++i){
 		auto _poker = this->hintPokers.at(i);
-		_poker->selectedCardOut();	/* ÆË¿Ë±ä³É´ı³ö×´Ì¬ */
+		_poker->selectedCardOut();	/* æ‰‘å…‹å˜æˆå¾…å‡ºçŠ¶æ€ */
 	}
-	//this->arrWaitPlayOut = this->hintPokers;	/* ½«´ı³öÆË¿ËÖÃÎªÌáÊ¾ÆË¿Ë */
-	this->updateOutState();	/* ÌáÊ¾°´Å¥ºó£¬¸üĞÂ³öÅÆ°´Å¥µÄ×´Ì¬£¬ÕâÀïÖ±½Óµ÷ÓÃupdateOutState£¬¶ø²»ÊÇÖ±½ÓÖÃ³öÅÆ°´Å¥¿É°´ */
+	//this->arrWaitPlayOut = this->hintPokers;	/* å°†å¾…å‡ºæ‰‘å…‹ç½®ä¸ºæç¤ºæ‰‘å…‹ */
+	this->updateOutState();	/* æç¤ºæŒ‰é’®åï¼Œæ›´æ–°å‡ºç‰ŒæŒ‰é’®çš„çŠ¶æ€ï¼Œè¿™é‡Œç›´æ¥è°ƒç”¨updateOutStateï¼Œè€Œä¸æ˜¯ç›´æ¥ç½®å‡ºç‰ŒæŒ‰é’®å¯æŒ‰ */
 }
 
 void GameScene::out_callback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPressButtonEffect();
 
-	pass->setVisible(false);		/* ²»³ö°´Å¥²»¿É¼û */
-	hint->setVisible(false);		/* ÌáÊ¾°´Å¥²»¿É¼û */
-	hint->setEnabled(false);	/* ÌáÊ¾°´Å¥²»¿É°´ÏÂ */
-	out->setVisible(false);		/* ³öÅÆ°´Å¥²»¿É¼û */
-	out->setEnabled(false);	/* Ã¿´Î³öÅÆ»òÕßpassºó£¬½«out°´Å¥ÉèÎª²»¿É°´ */
+	pass->setVisible(false);		/* ä¸å‡ºæŒ‰é’®ä¸å¯è§ */
+	hint->setVisible(false);		/* æç¤ºæŒ‰é’®ä¸å¯è§ */
+	hint->setEnabled(false);	/* æç¤ºæŒ‰é’®ä¸å¯æŒ‰ä¸‹ */
+	out->setVisible(false);		/* å‡ºç‰ŒæŒ‰é’®ä¸å¯è§ */
+	out->setEnabled(false);	/* æ¯æ¬¡å‡ºç‰Œæˆ–è€…passåï¼Œå°†outæŒ‰é’®è®¾ä¸ºä¸å¯æŒ‰ */
 
 	passHint->setVisible(false);
 
 	lastOutCards = OutCards::create(player, GameRules::getInstance()->analysePokerValueType(arrWaitPlayOut),
 		arrWaitPlayOut.size(), arrWaitPlayOut.at(arrWaitPlayOut.size() - 1));
-	lastOutCards->retain();		/* ·ÀÖ¹±»ÄÚ´æ¹ÜÀíÆ÷»ØÊÕ */
+	lastOutCards->retain();		/* é˜²æ­¢è¢«å†…å­˜ç®¡ç†å™¨å›æ”¶ */
 
-	deleteCardInScene();		/* ÔÚ½«cardInScene´æ·ÅĞÂµÄÆË¿ËÊ±£¬ÏÈ½«ÒÔÇ°µÄÔÚSceneµÄÆË¿ËÉ¾³ı */
+	deleteCardInScene();		/* åœ¨å°†cardInSceneå­˜æ”¾æ–°çš„æ‰‘å…‹æ—¶ï¼Œå…ˆå°†ä»¥å‰çš„åœ¨Sceneçš„æ‰‘å…‹åˆ é™¤ */
 
-	cardsInScene = arrWaitPlayOut;	/* ½«³öµÄÅÆ·Åµ½³öÅÆµÄÈİÆ÷Àï£¬´ıÔÚ³öÅÆÇøÓòÏÔÊ¾ */
+	cardsInScene = arrWaitPlayOut;	/* å°†å‡ºçš„ç‰Œæ”¾åˆ°å‡ºç‰Œçš„å®¹å™¨é‡Œï¼Œå¾…åœ¨å‡ºç‰ŒåŒºåŸŸæ˜¾ç¤º */
 
 	for (int i = 0; i < arrWaitPlayOut.size(); ++i){
 		arrWaitPlayOut.at(i)->removeFromParent();
@@ -682,11 +683,11 @@ void GameScene::out_callback(Ref*){
 		player->updatePokerPos();
 	}
 
-	arrWaitPlayOut.clear();	/* ´ı³öµÄÅÆ³öÁË£¬¾ÍÒª½«´ı³öÅÆÈİÆ÷Çå¿Õ£¬²»È»ºÍÏÂ´ÎµÄÖØ¸´ÔÚÒ»Æğ»áµ¼ÖÂ´íÎó */
+	arrWaitPlayOut.clear();	/* å¾…å‡ºçš„ç‰Œå‡ºäº†ï¼Œå°±è¦å°†å¾…å‡ºç‰Œå®¹å™¨æ¸…ç©ºï¼Œä¸ç„¶å’Œä¸‹æ¬¡çš„é‡å¤åœ¨ä¸€èµ·ä¼šå¯¼è‡´é”™è¯¯ */
 
 	outCardInScene();
 
-	/* Èç¹ûÍæ¼ÒÒÑ¾­³öÍêÅÆ£¬Ôò»ñÊ¤ */
+	/* å¦‚æœç©å®¶å·²ç»å‡ºå®Œç‰Œï¼Œåˆ™è·èƒœ */
 	if (player->getPoker().size() == 0){
 		this->gameState = END;
 		return;
@@ -698,7 +699,7 @@ void GameScene::out_callback(Ref*){
 void GameScene::nocall_callback(Ref*){
 	player->setCallLandlordScore(0);
 	this->setCallLandlordOrderState(player, player->getCallLandlordScore());
-	updateCallLandlordOrder();	/* ¸üĞÂ½Ğ·ÖµÄID£¬Ê¹ÏÂÒ»¸öÈË½Ğ·Ö */
+	updateCallLandlordOrder();	/* æ›´æ–°å«åˆ†çš„IDï¼Œä½¿ä¸‹ä¸€ä¸ªäººå«åˆ† */
 	setCallLandlordButtonUnVisible();
 }
 
@@ -726,7 +727,7 @@ void GameScene::callthree_callback(Ref*){
 
 void GameScene::initOutCardOrder(){
 	this->outcardOrder = 0;
-	/* Èç¹ûÊÇµØÖ÷¾Í²åÈëµ½VectorÊ×Î»£¬ÕâÑù¾Í²»Ğè¿¼ÂÇË³ĞòÎÊÌâÁË£¬Ö»Òª°´ÕÕ1£¬2£¬3µÄË³ĞòÀ´³öÅÆ¼´¿É */
+	/* å¦‚æœæ˜¯åœ°ä¸»å°±æ’å…¥åˆ°Vectoré¦–ä½ï¼Œè¿™æ ·å°±ä¸éœ€è€ƒè™‘é¡ºåºé—®é¢˜äº†ï¼Œåªè¦æŒ‰ç…§1ï¼Œ2ï¼Œ3çš„é¡ºåºæ¥å‡ºç‰Œå³å¯ */
 	if (player->getLandlord() == true){
 		this->players.insert(0, player);
 	}else{
@@ -744,25 +745,25 @@ void GameScene::initOutCardOrder(){
 	}else{
 		this->players.pushBack(computerPlayer_two);
 	}
-	/* ³õÊ¼»¯outCards */
+	/* åˆå§‹åŒ–outCards */
 	this->lastOutCards = OutCards::create(this->players.at(0), NONE, 0, nullptr);
 	lastOutCards->retain();
 }
 
 void GameScene::outCardForPlayer(Player* _player){
-	/* ÈÃ²»³ö£¬ÌáÊ¾ºÍ³öÅÆ°´Å¥ÏÔÊ¾³öÀ´£¬³öÅÆ°´Å¥²»¿É°´ÓÉ³öÅÆºÍ²»³ö°´Å¥µÄ´¥·¢ÊÂ¼ş¿ØÖÆ */
+	/* è®©ä¸å‡ºï¼Œæç¤ºå’Œå‡ºç‰ŒæŒ‰é’®æ˜¾ç¤ºå‡ºæ¥ï¼Œå‡ºç‰ŒæŒ‰é’®ä¸å¯æŒ‰ç”±å‡ºç‰Œå’Œä¸å‡ºæŒ‰é’®çš„è§¦å‘äº‹ä»¶æ§åˆ¶ */
 	pass->setVisible(true);
 	hint->setVisible(true); 
 	out->setVisible(true);
-	/* ÖÇÄÜ¼ì²éÊÇ·ñÓĞÅÆ´òµÃ¹ıÉÏ¼Ò£¬¿ØÖÆÌáÊ¾°´Å¥ÊÇ·ñ¿É°´ÏÂ£¬ÌáÊ¾µÄÆË¿ËÉè¼Æ³É³ÉÔ±±äÁ¿£¬
-		Ä¿µÄÊÇ°´ÏÂÌáÊ¾°´Å¥Ê±£¬²»ĞèÒªÔÙµ÷ÓÃsearchOutCardº¯Êı */
+	/* æ™ºèƒ½æ£€æŸ¥æ˜¯å¦æœ‰ç‰Œæ‰“å¾—è¿‡ä¸Šå®¶ï¼Œæ§åˆ¶æç¤ºæŒ‰é’®æ˜¯å¦å¯æŒ‰ä¸‹ï¼Œæç¤ºçš„æ‰‘å…‹è®¾è®¡æˆæˆå‘˜å˜é‡ï¼Œ
+		ç›®çš„æ˜¯æŒ‰ä¸‹æç¤ºæŒ‰é’®æ—¶ï¼Œä¸éœ€è¦å†è°ƒç”¨searchOutCardå‡½æ•° */
 	this->hintPokers = searchOutCardForPlayer(_player);
 	if (this->hintPokers.size() != 0){
-		hint->setEnabled(true);		/* Èç¹ûÓĞ¿ÉÒÔ³öµÄÅÆ£¬ÄÇÃ´ÌáÊ¾°´Å¥¿É°´ÏÂ */
+		hint->setEnabled(true);		/* å¦‚æœæœ‰å¯ä»¥å‡ºçš„ç‰Œï¼Œé‚£ä¹ˆæç¤ºæŒ‰é’®å¯æŒ‰ä¸‹ */
 	}else{
 		passHint->setVisible(true);
 	}
-	/* ÂÖµ½Íæ¼Ò³öÅÆÊ±£¬Íæ¼Ò¿ÉÄÜÒÑ¾­×¼±¸ºÃÒª³öµÄÅÆ£¬Òò´ËÂÖµ½Íæ¼Ò³öÅÆÊ±£¬ĞèÒª¶Ô´Ë×öÒ»´Î¸üĞÂ */
+	/* è½®åˆ°ç©å®¶å‡ºç‰Œæ—¶ï¼Œç©å®¶å¯èƒ½å·²ç»å‡†å¤‡å¥½è¦å‡ºçš„ç‰Œï¼Œå› æ­¤è½®åˆ°ç©å®¶å‡ºç‰Œæ—¶ï¼Œéœ€è¦å¯¹æ­¤åšä¸€æ¬¡æ›´æ–° */
 	this->updateOutState();
 }
 
@@ -781,7 +782,7 @@ void GameScene::outCardForComputer(Player* _computer){
 
 	if (_pokers.size() != 0){
 		deleteCardInScene();
-		cardsInScene = _pokers;	/* Èç¹ûµçÄÔ³öÅÆÁË£¬ÄÇÃ´½«³öµÄÅÆ·ÅÈë´ıÏÔÊ¾ÔÚSceneÖĞµÄÈİÆ÷ */
+		cardsInScene = _pokers;	/* å¦‚æœç”µè„‘å‡ºç‰Œäº†ï¼Œé‚£ä¹ˆå°†å‡ºçš„ç‰Œæ”¾å…¥å¾…æ˜¾ç¤ºåœ¨Sceneä¸­çš„å®¹å™¨ */
 		outCardInScene();
 	}else{
 		PlayerOrder* _playerOrder = nullptr;
@@ -790,10 +791,10 @@ void GameScene::outCardForComputer(Player* _computer){
 		}else if (_computer == computerPlayer_two){
 			_playerOrder = computerPlayer_two_order;
 		}
-		_playerOrder->setPlayerOrderState(PASS);	/* ÏÔÊ¾²»³öµÄ×´Ì¬ */
+		_playerOrder->setPlayerOrderState(PASS);	/* æ˜¾ç¤ºä¸å‡ºçš„çŠ¶æ€ */
 		_playerOrder->setVisible(true);
 
-		/* ²¥·Å²»³öÅÆµÄÒôĞ§ */
+		/* æ’­æ”¾ä¸å‡ºç‰Œçš„éŸ³æ•ˆ */
 		MusicController::getInstance()->playPassEffect();
 	}
 	 
@@ -807,9 +808,9 @@ void GameScene::outCardForComputer(Player* _computer){
 
 Vector<Poker*> GameScene::searchOutCardForComputer(Player* _player){
 	Vector<Poker*> _pokers;
-	/* Èç¹ûÉÏÒ»ÊÖÅÆÒ²ÊÇ×Ô¼ºµÄ */
+	/* å¦‚æœä¸Šä¸€æ‰‹ç‰Œä¹Ÿæ˜¯è‡ªå·±çš„ */
 	if (lastOutCards->getPokerOwner() == _player || lastOutCards->getPokerValueType() == NONE){
-		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* ÕâÑùĞ´»áµ¼ÖÂµçÄÔÔÚÕÒ²»µ½µ¥ÕÅºóÒ»Ö±¿¨ÔÚÕâ¸öµØ·½ */ 
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* è¿™æ ·å†™ä¼šå¯¼è‡´ç”µè„‘åœ¨æ‰¾ä¸åˆ°å•å¼ åä¸€ç›´å¡åœ¨è¿™ä¸ªåœ°æ–¹ */ 
 		_pokers = GameRules::getInstance()->searchProperPokers(_player->getPoker());
 	}
 	else{
@@ -820,9 +821,9 @@ Vector<Poker*> GameScene::searchOutCardForComputer(Player* _player){
 			}
 			else{
 				_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), lastOutCards->getPokerValueType(), lastOutCards->getLowestPoker(), lastOutCards->getTotalLength());
-				if (_pokers.size() == 0){ /* Èç¹ûÕÒ²»µ½¶ÔÓ¦µÄÅÆ£¬¾ÍÕÒÕ¨µ¯ */
+				if (_pokers.size() == 0){ /* å¦‚æœæ‰¾ä¸åˆ°å¯¹åº”çš„ç‰Œï¼Œå°±æ‰¾ç‚¸å¼¹ */
 					_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), BOMB, nullptr);
-					if (_pokers.size() == 0){	/* Èç¹ûÕÒ²»µ½ÆÕÍ¨µÄÕ¨£¬¾ÍÕÒÍõÕ¨ */
+					if (_pokers.size() == 0){	/* å¦‚æœæ‰¾ä¸åˆ°æ™®é€šçš„ç‚¸ï¼Œå°±æ‰¾ç‹ç‚¸ */
 						_pokers = GameRules::getInstance()->calcPokerWithValueType(_player->getPoker(), KINGBOMB);
 					}
 				}
@@ -834,9 +835,9 @@ Vector<Poker*> GameScene::searchOutCardForComputer(Player* _player){
 
 Vector<Poker*> GameScene::searchOutCardForPlayer(Player* _player){
 	Vector<Poker*> _pokers;
-	/* Èç¹ûÉÏÒ»ÊÖÅÆÒ²ÊÇ×Ô¼ºµÄ */
+	/* å¦‚æœä¸Šä¸€æ‰‹ç‰Œä¹Ÿæ˜¯è‡ªå·±çš„ */
 	if (lastOutCards->getPokerOwner() == _player || lastOutCards->getPokerValueType() == NONE){
-		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* ÕâÑùĞ´»áµ¼ÖÂµçÄÔÔÚÕÒ²»µ½µ¥ÕÅºóÒ»Ö±¿¨ÔÚÕâ¸öµØ·½ */ 
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* è¿™æ ·å†™ä¼šå¯¼è‡´ç”µè„‘åœ¨æ‰¾ä¸åˆ°å•å¼ åä¸€ç›´å¡åœ¨è¿™ä¸ªåœ°æ–¹ */ 
 		_pokers = GameRules::getInstance()->searchProperPokers(_player->getPoker());
 	}
 	else{
@@ -847,9 +848,9 @@ Vector<Poker*> GameScene::searchOutCardForPlayer(Player* _player){
 			}
 			else{
 				_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), lastOutCards->getPokerValueType(), lastOutCards->getLowestPoker(), lastOutCards->getTotalLength());
-				if (_pokers.size() == 0){ /* Èç¹ûÕÒ²»µ½¶ÔÓ¦µÄÅÆ£¬¾ÍÕÒÕ¨µ¯ */
+				if (_pokers.size() == 0){ /* å¦‚æœæ‰¾ä¸åˆ°å¯¹åº”çš„ç‰Œï¼Œå°±æ‰¾ç‚¸å¼¹ */
 					_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), BOMB, nullptr);
-					if (_pokers.size() == 0){	/* Èç¹ûÕÒ²»µ½ÆÕÍ¨µÄÕ¨£¬¾ÍÕÒÍõÕ¨ */
+					if (_pokers.size() == 0){	/* å¦‚æœæ‰¾ä¸åˆ°æ™®é€šçš„ç‚¸ï¼Œå°±æ‰¾ç‹ç‚¸ */
 						_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(_player->getPoker(), KINGBOMB);
 					}
 				}
@@ -860,31 +861,31 @@ Vector<Poker*> GameScene::searchOutCardForPlayer(Player* _player){
 }
 
 void GameScene::outCardInOrder(float delta){
-	this->setPlayerOrderStateUnVisible();	/* ½«ËùÓĞµÄÍæ¼ÒµÄ×´Ì¬Òş²Ø */
+	this->setPlayerOrderStateUnVisible();	/* å°†æ‰€æœ‰çš„ç©å®¶çš„çŠ¶æ€éšè— */
 
 	auto _player = players.at(outcardOrder);
 	if (_player->getPlayerType() == PLAYER) outCardForPlayer(_player);
 	else if (_player->getPlayerType() == COMPUTER) outCardForComputer(_player);
 }
 
-/* ³öµÄÅÆ·ÅÔÚ¸ß¶ÈºÍµçÄÔµÄÅÆ¸ß¶ÈÒ»ÖÂ£¬×î´ó¿í¶ÈÊÇ1/2ÆÁÄ»¿í¶È */
-/* ³öµÄÅÆ·ÅÔÚÒ»¸öÈİÆ÷Àï£¬È»ºó·ÅÔÚÕâ¸öÀïÃæ */
+/* å‡ºçš„ç‰Œæ”¾åœ¨é«˜åº¦å’Œç”µè„‘çš„ç‰Œé«˜åº¦ä¸€è‡´ï¼Œæœ€å¤§å®½åº¦æ˜¯1/2å±å¹•å®½åº¦ */
+/* å‡ºçš„ç‰Œæ”¾åœ¨ä¸€ä¸ªå®¹å™¨é‡Œï¼Œç„¶åæ”¾åœ¨è¿™ä¸ªé‡Œé¢ */
 void GameScene::outCardInScene(){
 	if (cardsInScene.size() == 0) return;
 
-	/* ¸ù¾İÅÆĞÍ£¬²¥·Å¶ÔÓ¦µÄÒôĞ§ */
+	/* æ ¹æ®ç‰Œå‹ï¼Œæ’­æ”¾å¯¹åº”çš„éŸ³æ•ˆ */
 	this->outCardInSceneMusic();
 
 	//int _height = computerPlayer_one->getPosition().y;
-	int _height = Director::getInstance()->getVisibleSize().height / 2;	/* ¸ß¶È:ÆÁÄ»¾ÓÖĞÎ»ÖÃ */
+	int _height = Director::getInstance()->getVisibleSize().height / 2;	/* é«˜åº¦:å±å¹•å±…ä¸­ä½ç½® */
 	float _middleWidth = Director::getInstance()->getVisibleSize().width / 2;
 	float _maxWidth = Director::getInstance()->getVisibleSize().width / 2;
 
-	int _cardsNum = cardsInScene.size();	/* ¿¨ÅÆÊıÁ¿ */
-	float _cardWidth = cardsInScene.at(0)->getContentSize().width;	/* ¿¨ÅÆ¿í¶È */
+	int _cardsNum = cardsInScene.size();	/* å¡ç‰Œæ•°é‡ */
+	float _cardWidth = cardsInScene.at(0)->getContentSize().width;	/* å¡ç‰Œå®½åº¦ */
 	float interval = (_maxWidth - _cardWidth) < (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH) * (_cardsNum - 1) ? (_maxWidth - _cardWidth) / (_cardsNum - 1) : (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH);
 
-	float startPosX = _middleWidth - _maxWidth / 2; /* Èç¹ûËùÓĞ³öµÄÅÆµÄ¿í¶È¼ÓÆğÀ´´óÓÚÄÜ¹»ÏÔÊ¾µÄÇøÓò£¬¼ÆËã³öÅÆµÄ¿ªÊ¼Î»ÖÃ */
+	float startPosX = _middleWidth - _maxWidth / 2; /* å¦‚æœæ‰€æœ‰å‡ºçš„ç‰Œçš„å®½åº¦åŠ èµ·æ¥å¤§äºèƒ½å¤Ÿæ˜¾ç¤ºçš„åŒºåŸŸï¼Œè®¡ç®—å‡ºç‰Œçš„å¼€å§‹ä½ç½® */
 	if (interval == (_cardWidth - MIMIUM_CARDS_OVERLAPWIDTH)){
 		startPosX = _cardsNum % 2 == 0 ?
 			_middleWidth - (_cardsNum / 2) *  interval :
@@ -895,17 +896,17 @@ void GameScene::outCardInScene(){
 		this->addChild(cardsInScene.at(i));
 		cardsInScene.at(i)->setPosition(startPosX + _cardWidth / 2 + interval * i, _height + 25);
 		cardsInScene.at(i)->showFront();
-		/* ³öµÄÅÆÁîÆäcanClickÊôĞÔÉèÖÃÎªfalse£¬Ê¹Æä²»¿Éµã»÷ */
+		/* å‡ºçš„ç‰Œä»¤å…¶canClickå±æ€§è®¾ç½®ä¸ºfalseï¼Œä½¿å…¶ä¸å¯ç‚¹å‡» */
 		cardsInScene.at(i)->setCanClick(false);
 	}
 }
 
 void GameScene::outCardInSceneMusic(){
 	auto _musicController = MusicController::getInstance();
-	/* ·ÖÎöËù³öµÄÆË¿ËÀàĞÍ */
+	/* åˆ†ææ‰€å‡ºçš„æ‰‘å…‹ç±»å‹ */
 	PokerValueType _pokerValueType = lastOutCards->getPokerValueType();//GameRules::getInstance()->analysePokerValueType(cardsInScene);
 	if (_pokerValueType == SINGLE){
-		/* ÏÈÅĞ¶ÏÊÇ²»ÊÇ´óĞ¡Íõ£¬Èç¹ûÊÇ£¬²¥·Å¶ÔÓ¦µÄÒôĞ§ºóÍË³ö */
+		/* å…ˆåˆ¤æ–­æ˜¯ä¸æ˜¯å¤§å°ç‹ï¼Œå¦‚æœæ˜¯ï¼Œæ’­æ”¾å¯¹åº”çš„éŸ³æ•ˆåé€€å‡º */
 		if (lastOutCards->getLowestPoker()->getPokerType() == BLACKJOKER){
 			_musicController->playOutCardEffect(BLACKKING);
 			return;
@@ -915,7 +916,7 @@ void GameScene::outCardInSceneMusic(){
 		}
 
 		auto _pokerValue = lastOutCards->getLowestPoker()->getValue();
-		/* µ¥ÕÅÒôÀÖ */
+		/* å•å¼ éŸ³ä¹ */
 		switch (_pokerValue){
 		case 1: _musicController->playOutCardEffect(A); break;
 		case 2:_musicController->playOutCardEffect(TWO); break;
@@ -936,7 +937,7 @@ void GameScene::outCardInSceneMusic(){
 	}
 	else if(_pokerValueType == PAIR){
 		auto _pokerValue = lastOutCards->getLowestPoker()->getValue();
-		/* µ¥ÕÅÒôÀÖ */
+		/* å•å¼ éŸ³ä¹ */
 		switch (_pokerValue){
 		case 1: _musicController->playOutCardEffect(AA); break;
 		case 2:_musicController->playOutCardEffect(PAIRTWO); break;
@@ -967,9 +968,9 @@ void GameScene::outCardInSceneMusic(){
 
 void GameScene::outCardForLandlord(){
 	landlordPlayer->insertCards(cardForLandlord);
-	landlordPlayer->updatePokerPos();	/* Ìí¼ÓÆË¿ËÍê±Ïºó£¬ÖØĞÂÅÅĞò */
+	landlordPlayer->updatePokerPos();	/* æ·»åŠ æ‰‘å…‹å®Œæ¯•åï¼Œé‡æ–°æ’åº */
 
-	cardForLandlord.clear();	/* ÊôÓÚµØÖ÷µÄÅÆ·¢¸øµØÖ÷ºó£¬ÖÃÈİÆ÷Îª¿Õ */
+	cardForLandlord.clear();	/* å±äºåœ°ä¸»çš„ç‰Œå‘ç»™åœ°ä¸»åï¼Œç½®å®¹å™¨ä¸ºç©º */
 }
 
 void GameScene::deleteCardInScene(){
@@ -1029,44 +1030,45 @@ void GameScene::deleteCardInTop(){
 }
 
 void GameScene::gameStart(float delta){
-	initPoker();	/* ¿¨ÅÆ³õÊ¼»¯ */
-	shuffleCards();	/* Ï´ÅÆ */
-	initPlayer();	/* ³õÊ¼»¯¶à¸öÍæ¼Ò */
-	initHeadImage();	/* ³õÊ¼»¯¶à¸öÍæ¼ÒµÄÍ·Ïñ */
-	initPlayerOrder();	/* ³õÊ¼»¯Íæ¼ÒÃüÁî */
-	initCallLandlord();	/* ³õÊ¼»¯½ĞµØÖ÷ */
+	initPoker();	/* å¡ç‰Œåˆå§‹åŒ– */
+	shuffleCards();	/* æ´—ç‰Œ */
+	initPlayer();	/* åˆå§‹åŒ–å¤šä¸ªç©å®¶ */
+	initHeadImage();	/* åˆå§‹åŒ–å¤šä¸ªç©å®¶çš„å¤´åƒ */
+	initPlayerOrder();	/* åˆå§‹åŒ–ç©å®¶å‘½ä»¤ */
+	initCallLandlord();	/* åˆå§‹åŒ–å«åœ°ä¸» */
 
 	this->gameState = READY;
 
-	/* ²¥·Å±³¾°ÒôÀÖ£¬Ñ­»·²¥·Å */
+	/* æ’­æ”¾èƒŒæ™¯éŸ³ä¹ï¼Œå¾ªç¯æ’­æ”¾ */
 	MusicController::getInstance()->playBackgroundMusic();
 
 	this->schedule(schedule_selector(GameScene::update), 2.0f);
 }
 
 void GameScene::gameOver(){
-	/* ºóÃæÔö¼Ó´úÂë */
+	/* åé¢å¢åŠ ä»£ç  */
 	if (player->getPoker().size() == 0){
-		/* ²¥·ÅÊ¤ÀûµÄÒôÀÖ */
+		/* æ’­æ”¾èƒœåˆ©çš„éŸ³ä¹ */
 		MusicController::getInstance()->playWinMusic();
 		this->runWinAnimation();
 	}else{
-		/* ²¥·ÅÊ§°ÜµÄÒôÀÖ */
+		/* æ’­æ”¾å¤±è´¥çš„éŸ³ä¹ */
 		MusicController::getInstance()->playLostMusic();
 		this->runLostAnimation();
 	}
 
-	/* ÓÎÏ·½áÊøºó£¬Ò»Ğ©×ÊÔ´´¦Àí²Ù×÷ */
+	/* æ¸¸æˆç»“æŸåï¼Œä¸€äº›èµ„æºå¤„ç†æ“ä½œ */
 	deletPlayerOrder();
 	deleteHeadImage();
 	deletePoker();
 	deletePlayer();
 
-	deleteCardInTop();	/* Çå¿ÕÔÚ¶¥²¿µÄµØÖ÷ÆË¿Ë */
+	deleteCardInTop();	/* æ¸…ç©ºåœ¨é¡¶éƒ¨çš„åœ°ä¸»æ‰‘å…‹ */
 
-	deleteCardInScene();	/* É¾³ıÔÚSceneµÄÆË¿Ë */
+	deleteCardInScene();	/* åˆ é™¤åœ¨Sceneçš„æ‰‘å…‹ */
 
-	lastOutCards = nullptr;		/* ÖÃ¿Õ */
+	lastOutCards = nullptr;		/* ç½®ç©º */
 
 	this->scheduleOnce(schedule_selector(GameScene::gameStart), 5.0f);
+	//Director::getInstance()->replaceScene(Lobby::createScene());
 }

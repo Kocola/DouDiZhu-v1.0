@@ -1,16 +1,16 @@
-#ifndef __POKER_VALUE_TYPE_H__
+﻿#ifndef __POKER_VALUE_TYPE_H__
 #define __POKER_VALUE_TYPE_H__
 
 enum PokerValueType{
-	NONE, /* ʲô������ */
-	SINGLE, /* ���� */
-	PAIR,	/* ���� */
-	TRIPLE,	/* ���� */
-	BOMB,	/* ը�� */
-	KINGBOMB,	/* ��ը */
-	STRAIGHT,	/* ˳�� */
-	PAIRSRAIGHT,	/* ˫˳ */
-	TRIPLESTRAIGHT	/* ��˳ */
+	NONE, /* 什么都不是 */
+	SINGLE, /* 单张 */
+	PAIR,	/* 对子 */
+	TRIPLE,	/* 三张 */
+	BOMB,	/* 炸弹 */
+	KINGBOMB,	/* 王炸 */
+	STRAIGHT,	/* 顺子 */
+	PAIRSRAIGHT,	/* 双顺 */
+	TRIPLESTRAIGHT	/* 三顺 */
 };
 
 #endif

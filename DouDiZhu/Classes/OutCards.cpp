@@ -1,4 +1,4 @@
-#include "OutCards.h"
+﻿#include "OutCards.h"
 
 OutCards::OutCards(Player* _pokerOwner, PokerValueType _pokerValueType, size_t _totalLength, Poker* _lowestPoker){
 	this->pokerOwner = _pokerOwner;

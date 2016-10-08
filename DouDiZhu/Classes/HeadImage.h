@@ -1,4 +1,4 @@
-#ifndef __HEAD_IMAGE_H__
+ï»¿#ifndef __HEAD_IMAGE_H__
 #define __HEAD_IMAGE_H__
 
 #include "cocos2d.h"
@@ -12,13 +12,13 @@ public:
 	CREATE_FUNC(HeadImage);
 	virtual bool init();
 public:
-	void setHeadImageType(HeadImageType headImageType, HeadImageOrientation headImageOrientation = LEFT);	/* ÉèÖÃµ±Ç°µÄ */
+	void setHeadImageType(HeadImageType headImageType, HeadImageOrientation headImageOrientation = LEFT);	/* è®¾ç½®å½“å‰çš„ */
 	Size getHeadBoxSize() { return headBox->getContentSize(); }
 private:
 	static SpriteFrame* createSpriteFrameWithType(HeadImageType headImageType, HeadImageOrientation headImageOrientation = LEFT);
 private:
-	Sprite* curHeadImage;		/* µ±Ç°Í·Ïñ */
-	Sprite* headBox;		/* Í·Ïñ¿ò */
+	Sprite* curHeadImage;		/* å½“å‰å¤´åƒ */
+	Sprite* headBox;		/* å¤´åƒæ¡† */
 private:
 	static SpriteFrameCache* spriteFrameCache;
 };

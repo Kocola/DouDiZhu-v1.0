@@ -1,4 +1,4 @@
-#ifndef __LOBBY_H__
+﻿#ifndef __LOBBY_H__
 #define __LOBBY_H__
 
 #include "cocos2d.h"

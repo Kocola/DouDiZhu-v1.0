@@ -1,11 +1,11 @@
-#include "AppDelegate.h"
+ï»¿#include "AppDelegate.h"
 #include "GameScene.h"
 #include "LoadScene.h"
 
 USING_NS_CC;
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-#include "../proj.win32/resource.h"//  ´ËÎÄ¼þÎªÄãµÄ×ÊÔ´ÎÄ¼þ
+#include "../proj.win32/resource.h"//  æ­¤æ–‡ä»¶ä¸ºä½ çš„èµ„æºæ–‡ä»¶
 #endif
 
 AppDelegate::AppDelegate() {
@@ -36,9 +36,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
-    director->getOpenGLView()->setDesignResolutionSize(960, 640, ResolutionPolicy::SHOW_ALL);
+    director->getOpenGLView()->setDesignResolutionSize(960, 640, ResolutionPolicy::FIXED_WIDTH);
 
-	// ÉèÖÃiconÍ¼±ê
+	// è®¾ç½®iconå›¾æ ‡
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 	::SendMessage(glview->getWin32Window(), WM_SETICON, true, LPARAM(hIcon));

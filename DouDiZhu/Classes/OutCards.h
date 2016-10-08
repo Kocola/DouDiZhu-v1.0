@@ -1,4 +1,4 @@
-#ifndef __OUT_CARDS_H__
+ï»¿#ifndef __OUT_CARDS_H__
 #define __OUT_CARDS_H__
 
 #include "cocos2d.h"
@@ -10,7 +10,7 @@ using namespace cocos2d;
 class Poker;
 class Player;
 
-/* ³öÅÆÀà£¬ÓÃÓÚ±£´æÍæ¼Ò³öµÄÅÆ£¬¼Ì³Ğ×ÔRef£¬ÊÇÎªÁË±ÜÃâÊÖ¶¯ÄÚ´æ¹ÜÀí */
+/* å‡ºç‰Œç±»ï¼Œç”¨äºä¿å­˜ç©å®¶å‡ºçš„ç‰Œï¼Œç»§æ‰¿è‡ªRefï¼Œæ˜¯ä¸ºäº†é¿å…æ‰‹åŠ¨å†…å­˜ç®¡ç† */
 class OutCards : public Ref{
 public:
 	OutCards(Player* _pokerOwner, PokerValueType _pokerValueType, size_t _totalLength, Poker* _lowestPoker);
@@ -29,10 +29,10 @@ public:
 	/* PokerOwner */
 	Player* getPokerOwner() const{ return pokerOwner; }
 private:
-	PokerValueType pokerValueType;		/* µ±Ç°µÄÅÆĞÍ */
-	size_t totalLength;		/* Õû¸öÅÆÃæµÄ³¤¶È£¬ÀıÈç334455µÄ³¤¶ÈÊÇ6 */
-	Poker* lowestPoker;		/* Õû¸öÅÆÃæÅÆÖµ×îĞ¡µÄÅÆ£¬ÀıÈç334455ÊÇÖ¸Ïò3Ëù¶ÔÓ¦µÄÆË¿ËµÄÖ¸Õë */
-	Player* pokerOwner;		/* µ±Ç°ÆË¿Ë³ÖÓĞÕß */
+	PokerValueType pokerValueType;		/* å½“å‰çš„ç‰Œå‹ */
+	size_t totalLength;		/* æ•´ä¸ªç‰Œé¢çš„é•¿åº¦ï¼Œä¾‹å¦‚334455çš„é•¿åº¦æ˜¯6 */
+	Poker* lowestPoker;		/* æ•´ä¸ªç‰Œé¢ç‰Œå€¼æœ€å°çš„ç‰Œï¼Œä¾‹å¦‚334455æ˜¯æŒ‡å‘3æ‰€å¯¹åº”çš„æ‰‘å…‹çš„æŒ‡é’ˆ */
+	Player* pokerOwner;		/* å½“å‰æ‰‘å…‹æŒæœ‰è€… */
 };
 
 #endif

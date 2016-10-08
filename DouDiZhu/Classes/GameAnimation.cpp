@@ -1,4 +1,4 @@
-#include "GameAnimation.h"
+ï»¿#include "GameAnimation.h"
 
 GameAnimation* GameAnimation::gameAnimation = nullptr;
 
@@ -7,7 +7,7 @@ GameAnimation* GameAnimation::getInstance(){
 		gameAnimation = new GameAnimation();
 		if (gameAnimation && gameAnimation->init()){
 			gameAnimation->autorelease();
-			gameAnimation->retain();		/* ·ÀÖ¹±»ÄÚ´æ¹ÜÀíÆ÷»ØÊÕ */
+			gameAnimation->retain();		/* é˜²æ­¢è¢«å†…å­˜ç®¡ç†å™¨å›æ”¶ */
 		}else{
 			CC_SAFE_DELETE(gameAnimation);
 		}
@@ -27,7 +27,7 @@ bool GameAnimation::init(){
 }
 
 bool GameAnimation::initWinAnimation(){
-	/* ¼ÓÔØÍ¼Æ¬Ö¡µ½»º´æ³Ø */
+	/* åŠ è½½å›¾ç‰‡å¸§åˆ°ç¼“å­˜æ±  */
 	auto frameCache = SpriteFrameCache::getInstance();
 	frameCache->addSpriteFramesWithFile("Image/win.plist", "Image/win.png");
 
@@ -35,17 +35,17 @@ bool GameAnimation::initWinAnimation(){
 	SpriteFrame* frame = nullptr;
 	Vector<SpriteFrame*> frameVec;
 
-	/* ÓÃÒ»¸öÁĞ±í±£´æËùÓĞSpriteFrame¶ÔÏó */
+	/* ç”¨ä¸€ä¸ªåˆ—è¡¨ä¿å­˜æ‰€æœ‰SpriteFrameå¯¹è±¡ */
 	for (int i = 0; i <= iFrameNum; ++i){
 		frame = frameCache->getSpriteFrameByName(StringUtils::format("win_%d.png", i));
 		frameVec.pushBack(frame);
 	}
 	
-	/* Ê¹ÓÃSpriteFrameÁĞ±í´´½¨¶¯»­¶ÔÏó */
+	/* ä½¿ç”¨SpriteFrameåˆ—è¡¨åˆ›å»ºåŠ¨ç”»å¯¹è±¡ */
 	auto animation = Animation::createWithSpriteFrames(frameVec);
 	animation->setDelayPerUnit(0.25f);
 
-	/* ½«¶¯»­´ò°ü³ÉÒ»¸ö¶¯×÷ */
+	/* å°†åŠ¨ç”»æ‰“åŒ…æˆä¸€ä¸ªåŠ¨ä½œ */
 	winAction = Animate::create(animation);
 
 	return true;
@@ -56,7 +56,7 @@ Animate* GameAnimation::getWinAnimation() const {
 }
 
 bool GameAnimation::initLostAnimation(){
-	/* ¼ÓÔØÍ¼Æ¬Ö¡µ½»º´æ³Ø */
+	/* åŠ è½½å›¾ç‰‡å¸§åˆ°ç¼“å­˜æ±  */
 	auto frameCache = SpriteFrameCache::getInstance();
 	frameCache->addSpriteFramesWithFile("Image/lost.plist", "Image/lost.png");
 
@@ -64,17 +64,17 @@ bool GameAnimation::initLostAnimation(){
 	SpriteFrame* frame = nullptr;
 	Vector<SpriteFrame*> frameVec;
 
-	/* ÓÃÒ»¸öÁĞ±í±£´æËùÓĞSpriteFrame¶ÔÏó */
+	/* ç”¨ä¸€ä¸ªåˆ—è¡¨ä¿å­˜æ‰€æœ‰SpriteFrameå¯¹è±¡ */
 	for (int i = 0; i <= iFrameNum; ++i){
 		frame = frameCache->getSpriteFrameByName(StringUtils::format("lost_%d.png", i));
 		frameVec.pushBack(frame);
 	}
 
-	/* Ê¹ÓÃSpriteFrameÁĞ±í´´½¨¶¯»­¶ÔÏó */
+	/* ä½¿ç”¨SpriteFrameåˆ—è¡¨åˆ›å»ºåŠ¨ç”»å¯¹è±¡ */
 	auto animation = Animation::createWithSpriteFrames(frameVec);
 	animation->setDelayPerUnit(0.25f);
 
-	/* ½«¶¯»­´ò°ü³ÉÒ»¸ö¶¯×÷ */
+	/* å°†åŠ¨ç”»æ‰“åŒ…æˆä¸€ä¸ªåŠ¨ä½œ */
 	lostAction = Animate::create(animation);
 
 	return true;

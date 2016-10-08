@@ -1,28 +1,28 @@
-#include "GlobalFunc.h"
+ï»¿#include "GlobalFunc.h"
 
 namespace GlobalFunc{
 	bool cmpPoker(const Poker* a, const Poker* b, bool withType){
-		/* Èç¹ûÊÇ´óĞ¡Íõ£¬ÄÇÃ´Ö±½ÓÅĞ¶Ï²¢·µ»Ø±È½Ï½á¹û */
+		/* å¦‚æœæ˜¯å¤§å°ç‹ï¼Œé‚£ä¹ˆç›´æ¥åˆ¤æ–­å¹¶è¿”å›æ¯”è¾ƒç»“æœ */
 		if (a->getPokerType() == REDJOKER) return true;
 		else if (b->getPokerType() == REDJOKER) return false;
 		else if (a->getPokerType() == BLACKJOKER) return true;
 		else if (b->getPokerType() == BLACKJOKER) return false;
 
-		/* ÆÕÍ¨µÄÆË¿Ë */
+		/* æ™®é€šçš„æ‰‘å…‹ */
 		int aValue = a->getValue() % SINGLETYPECARDNUM;
 		int bValue = b->getValue() % SINGLETYPECARDNUM;
-		/* Èç¹ûÆË¿ËµÄÅÆÃæÖµÏàÍ¬£¬ÄÇÃ´Ö±½Ó¸ù¾İ»¨É«ÅÅĞò */
+		/* å¦‚æœæ‰‘å…‹çš„ç‰Œé¢å€¼ç›¸åŒï¼Œé‚£ä¹ˆç›´æ¥æ ¹æ®èŠ±è‰²æ’åº */
 		if (aValue == bValue){
 			if(withType == true) return a->getPokerType() > b->getPokerType();
-			else if(withType == false) return false;	/* ÏàµÈ¾Í²»ÊÇ >,Òò´Ë·µ»Øfalse */
+			else if(withType == false) return false;	/* ç›¸ç­‰å°±ä¸æ˜¯ >,å› æ­¤è¿”å›false */
 		}
 		else{
-			/* Èç¹ûÆË¿ËµÄÅÆÃæÖµ²»µÈ£¬ÄÇÃ´Ê×ÏÈ½«AºÍ2µÄÇé¿öÅÅĞò£¬È»ºó¸ù¾İÅÆÃæÖµ´óĞ¡ÅÅĞò¼´¿É */
+			/* å¦‚æœæ‰‘å…‹çš„ç‰Œé¢å€¼ä¸ç­‰ï¼Œé‚£ä¹ˆé¦–å…ˆå°†Aå’Œ2çš„æƒ…å†µæ’åºï¼Œç„¶åæ ¹æ®ç‰Œé¢å€¼å¤§å°æ’åºå³å¯ */
 			if (aValue == 2) return true;
 			else if (bValue == 2) return false;
 			else if (aValue == 1) return true;
 			else if (bValue == 1) return false;
-			else if (aValue == 0) return true;	/* KÇóÓàÊÇ0£¬ËùÒÔÕâÀïÌØÊâ´¦ÀíÒ»ÏÂ*/
+			else if (aValue == 0) return true;	/* Kæ±‚ä½™æ˜¯0ï¼Œæ‰€ä»¥è¿™é‡Œç‰¹æ®Šå¤„ç†ä¸€ä¸‹*/
 			else if (bValue == 0) return false;
 			return aValue > bValue;
 		}
@@ -42,7 +42,7 @@ namespace GlobalFunc{
 
 	Poker* getGreaterPoker(const Poker* _poker, int increaseValue /* = 1 */){
 
-		CCASSERT(increaseValue >= 0, "²»ÔÊĞí²éÕÒµÄÅÆ±Èµ±Ç°Ğ¡£¡");
+		CCASSERT(increaseValue >= 0, "ä¸å…è®¸æŸ¥æ‰¾çš„ç‰Œæ¯”å½“å‰å°ï¼");
 
 		Poker* tmp = _poker->clone();
 		int curValue = _poker->getValue();
@@ -56,7 +56,7 @@ namespace GlobalFunc{
 		case 15:tmp->setValue(2); break;
 		case 16:tmp->setPokerType(BLACKJOKER); tmp->setValue(0); break;
 		case 17:tmp->setPokerType(REDJOKER); tmp->setValue(0); break;
-		default:tmp = nullptr;	/* ´óÓÚ17±íÊ¾Ã»ÓĞÕÒµ½ÏÖÓĞµÄ´óÓÚµ±Ç°_pokerµÄÅÆ£¬ÖÃtmpÎªnullptr¼´¿É */
+		default:tmp = nullptr;	/* å¤§äº17è¡¨ç¤ºæ²¡æœ‰æ‰¾åˆ°ç°æœ‰çš„å¤§äºå½“å‰_pokerçš„ç‰Œï¼Œç½®tmpä¸ºnullptrå³å¯ */
 		}
 		return tmp;
 	}
