@@ -7,8 +7,14 @@ using namespace cocos2d;
 
 #include "Player.h"
 
-class ComputerPlayer : public Player{
+class OutCards;
 
+class ComputerPlayer : public Player{
+public:
+	void outCard(OutCards* _lastOutcards, 
+		std::function<void(OutCards*)>& _updateOutcardsCallback, std::function<void>& _updateOutcardOrderCallback);
+private:
+	Vector<Poker*> searchOutCard(OutCards* lastOutcards);
 };
 
 #endif

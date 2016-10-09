@@ -56,8 +56,8 @@ bool Poker::init(){
 		auto rect = this->getBoundingBox();
 		auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());
 		if (rect.containsPoint(touchPos) && canClick){
-			log("touch location : %f, %f", touch->getLocation().x, touch->getLocation().y);
-			log("touch Pos : %f, %f", touchPos.x, touchPos.y);
+			/*log("touch location : %f, %f", touch->getLocation().x, touch->getLocation().y);
+			log("touch Pos : %f, %f", touchPos.x, touchPos.y);*/
 			/* 播放触摸牌的音效 */
 			MusicController::getInstance()->playTouchCardEffect();
 			if (!isSelect){
@@ -68,7 +68,7 @@ bool Poker::init(){
 				selectedCardBack();
 			}
 			/* 检测当前牌是否可以另出牌按钮可按 */
-			updateOutState();
+			this->updateOutState();
 			return true;
 		}
 		return false;		/* 这里返回false，触摸不会被吞掉 */
@@ -86,18 +86,16 @@ bool Poker::init(){
 }
 
 void Poker::selectedCardOut(){
-	log("Out !!!");
 	this->isSelect = true;
 	this->setPosition(Point(this->getPositionX(), this->getPositionY() + 10));
-	gameScene->addWaitPlayOut(this);
-	gameScene->sort();		/* 对待出的扑克进行排序 */
+	NotificationCenter::getInstance()->postNotification(ADDCARDFORWAITOUT);
 }
 
 void Poker::selectedCardBack(){
 	/* 从出牌中移除该张牌 */
 	isSelect = false;
 	this->setPosition(Point(this->getPositionX(), this->getPositionY() - 10));
-	gameScene->deleteWaitPlayOut(this);
+	NotificationCenter::getInstance()->postNotification(DELETECARDFORWAITOUT);
 }
 
 void Poker::showFront(){
@@ -111,5 +109,5 @@ void Poker::showBack(){
 }
 
 void Poker::updateOutState(){
-	gameScene->updateOutState();
+	NotificationCenter::getInstance()->postNotification(UPDATEOUTSTATE);
 }

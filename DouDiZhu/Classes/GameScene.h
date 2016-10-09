@@ -31,6 +31,8 @@ private:
 	bool initPlayerOrder();	/* 初始化玩家命令状态，初始化全部为 准备 */
 	bool initCallLandlord();	/* 初始化叫地主 */
 private:
+	void initObserver();	/* 初始化观察者 */
+private:
 	bool deletePoker();	/* 游戏结束时，清理Poker资源 */
 	bool deletePlayer();	/* 游戏结束时，清理Player资源 */
 	bool deleteHeadImage();	/* 游戏结束时，清理玩家头像资源 */
@@ -64,14 +66,9 @@ private:
 	/* 回调函数 */
 	void start_callback(Ref*);
 
-	void pass_callback(Ref*);
 	void hint_callback(Ref*);
 	void out_callback(Ref*);
 
-	void nocall_callback(Ref*);
-	void callone_callback(Ref*);
-	void calltwo_callback(Ref*);
-	void callthree_callback(Ref*);
 public:
 	CC_SYNTHESIZE(Vector<Poker*>, arrWaitPlayOut, ArrWaitPlayOut);
 public:
@@ -105,7 +102,7 @@ public:
 	bool isCurAndManualPlayer() const;
 	/* 修改结构添加的代码 */
 public:
-	void updateLastOutcards(OutCards* _outCards) { this->lastOutCards = _outCards; }
+	void updateLastOutcards(OutCards* _outCards) { this->lastOutCard = _outCards; }
 	void updateOutOrder() { this->outcardOrder = (this->outcardOrder + 1) % 3; }
 	void playerOutCards(Player* _player, std::function<void(OutCards*)>& _updateLastOutcards, std::function<void(void)>& _updateOutOrder);
 private:
@@ -121,12 +118,19 @@ private:
 
 	void deleteCardInTop();		/* 删除显示在屏幕顶部的扑克 */
 private:
-	/* 更新叫分的ID，使下一个人叫分，如果当前顺序是4，那么进入决定地主阶段 */
-	void updateCallLandlordOrder();
 	/* 判断最高分，使得当某个玩家喊出最高分时可以终止叫分 */
 	void isMaxCallLandlordScore(Player* player);
 	/* 电脑端叫分程序 */
 	int automaticCallLandlord();
+
+public:
+	/* 更新叫分的ID，使下一个人叫分，如果当前顺序是4，那么进入决定地主阶段 */
+	void updateCallLandlordOrder(Ref*);
+	/* 更新出牌的顺序 */
+	void updateOutCardOrder(Ref*);
+	/* 更新桌面上一手牌 */
+	void updateLastOutCards(Ref* _data);
+
 private:
 	Player* player;	/* 手动玩家 */
 	HeadImage* playerHeadImage;		/* 手动玩家头像 */
@@ -158,7 +162,7 @@ private:
 	MenuItemSprite* btn_start;	/* 开始游戏按钮 */
 private:
 	GAMESTATE gameState;
-	OutCards* lastOutCards;	/* 上一次的出牌信息 */
+	OutCards* lastOutCard;	/* 上一次的出牌信息 */
 	Vector<Poker*> cardsInScene;	/* 出在Scene的牌集合 */
 	Vector<Poker*> cardForLandlord;	 /* 属于地主的多余三张牌 */
 	Vector<Poker*> cardDisplayInTop;	/* 显示在屏幕顶部的属于地主的三张牌 */

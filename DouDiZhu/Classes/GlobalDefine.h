@@ -1,6 +1,8 @@
 ﻿#ifndef __GLOBAL_DEFINE_H__
 #define __GLOBAL_DEFINE_H__
 
+#include "cocos2d.h"
+
 #define SINGLETYPECARDNUM 13	/* 每种类型的牌个数 */
 #define DISPLAYCARDHEIGHT 10	/* 玩家卡牌显示高于屏幕底部的高度 */
 #define DISPLAYCARDINTOP_INTERVAL 10	/* 属于地主的卡牌显示在低于屏幕顶部的距离 */
@@ -8,8 +10,14 @@
 #define TOTAL_POKER_NUM 54	/* 扑克牌的总个数 */
 #define POKER_WIDTH 108	/* 扑克宽度 */
 #define POKER_HEIGHT 149	/* 扑克高度 */
-#define HEIGHTDISTANCE_HEADIMAGEANDPLAYER 0		/* 玩家和头像之间高度 */
+#define HEIGHTBETWEENHEADIMAGEANDPLAYER 0		/* 玩家和头像之间高度 */
 #define BUTTON_INTERVAL 20		/* 按钮之间的间隙 */
+#define WIDTHBETWEENSCREENANDHEADIMAGE (cocos2d::Director::getInstance()->getVisibleSize().width / 12)
+
+const std::string UPDATEOUTSTATE = "UpdateOutState";
+const std::string DELETECARDFORWAITOUT = "DeleteCardForWaitOut";
+const std::string ADDCARDFORWAITOUT = "AddCardForWaitOut";
+const std::string UPDATELASTOUTCARD = "UpdateLastOutCard";
 
 enum PokerType{
 	DIAMOND = 0,		/* 方块 */
