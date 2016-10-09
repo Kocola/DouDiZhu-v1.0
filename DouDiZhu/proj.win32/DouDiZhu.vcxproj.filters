@@ -52,6 +52,15 @@
     <Filter Include="src\大厅">
       <UniqueIdentifier>{24ecbd5f-82f1-41b4-a80b-143c5bf8b3f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\游戏\玩家\计时器">
+      <UniqueIdentifier>{fa9cf00c-9734-4484-9976-3cec7fd9e3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\游戏\玩家\电脑玩家">
+      <UniqueIdentifier>{48e9df04-f65d-4cfb-af68-9dd2134fe467}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\游戏\玩家\手动玩家">
+      <UniqueIdentifier>{e32de81d-9cac-46e0-b49c-9a236fc15f13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -98,6 +107,15 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Lobby.cpp">
       <Filter>src\大厅</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CoundDown.cpp">
+      <Filter>src\游戏\玩家\计时器</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ComputerPlayer.cpp">
+      <Filter>src\游戏\玩家\电脑玩家</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HolderPlayer.cpp">
+      <Filter>src\游戏\玩家\手动玩家</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +170,15 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Lobby.h">
       <Filter>src\大厅</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CountDown.h">
+      <Filter>src\游戏\玩家\计时器</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ComputerPlayer.h">
+      <Filter>src\游戏\玩家\电脑玩家</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HolderPlayer.h">
+      <Filter>src\游戏\玩家\手动玩家</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

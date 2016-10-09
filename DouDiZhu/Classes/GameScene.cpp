@@ -187,6 +187,7 @@ bool GameScene::initButton(){
 	/* 开始按钮的菜单 */
 	auto _start = Sprite::create("Image/btn_start.png");
 	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
+	ccMenuCallback
 	btn_start = MenuItemSprite::create(_start, _start_pressed, CC_CALLBACK_1(GameScene::start_callback, this));	
 
 	/* 不出按钮 */
@@ -311,12 +312,13 @@ bool GameScene::initHeadImage(){
 	computerPlayer_one_headImage = HeadImage::create();	/* 电脑端头像 */
 	computerPlayer_one_headImage->setPosition(computerOneHeadImagePos);
 	this->addChild(computerPlayer_one_headImage);
-	/*Vector<Poker*> _pokers;
-	_pokers.pushBack(pokers.at(0));
-	_pokers.pushBack(pokers.at(1));
-	computerPlayer_one->setPlayerPosType(PLAYERINLEFT);
-	computerPlayer_one->setHeadImagePos(computerOneHeadImagePos);
-	computerPlayer_one->test(_pokers);*/
+	Vector<Poker*> _pokers;
+	for (int i = 0; i < 10; ++i){
+		_pokers.pushBack(pokers.at(i));
+	}
+	player->setPlayerPosType(PLAYERINMIDDLE);
+	player->setHeadImagePos(playerHeadImagePos);
+	player->test(_pokers);
 	//computerPlayer_one_headImage->setHeadImageType(FARMER, RIGHT);
 	computerPlayer_two_headImage = HeadImage::create();	/* 电脑端头像 */
 	computerPlayer_two_headImage->setPosition(computerTwoHeadImagePos);
@@ -555,7 +557,7 @@ void GameScene::displayLandlordCard(){
 		cardDisplayInTop.pushBack(cardForLandlord.at(i)->clone());
 	}
 
-	const float SCALE = 0.8;
+	const float SCALE = 0.7;
 	/* 卡牌是无序的，需要先排序 */
 	GlobalFunc::sort(cardDisplayInTop);
 	/* 显示卡牌 */

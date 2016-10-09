@@ -103,6 +103,11 @@ public:
 	Player* getManualPlayer() const { return player; }
 	/* 当前出牌者是否是持有当前设备的玩家，即可按出牌和不出按钮的玩家 */
 	bool isCurAndManualPlayer() const;
+	/* 修改结构添加的代码 */
+public:
+	void updateLastOutcards(OutCards* _outCards) { this->lastOutCards = _outCards; }
+	void updateOutOrder() { this->outcardOrder = (this->outcardOrder + 1) % 3; }
+	void playerOutCards(Player* _player, std::function<void(OutCards*)>& _updateLastOutcards, std::function<void(void)>& _updateOutOrder);
 private:
 	/* discarded */
 	//bool cmp_sort(const Poker* a, const Poker* b);		/* 扑克排序依赖的函数 */

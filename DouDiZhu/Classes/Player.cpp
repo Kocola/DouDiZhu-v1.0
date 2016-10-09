@@ -1,4 +1,5 @@
-﻿#include "GlobalFunc.h"
+﻿#include "CountDown.h"
+#include "GlobalFunc.h"
 #include "HeadImage.h"
 #include "Player.h"
 
@@ -19,9 +20,11 @@ bool Player::init(){
 	displayCardStartX = displayCardMiddleX - 5.0 / 12 * Director::getInstance()->getVisibleSize().width;
 
 	headImage = HeadImage::create();
-	//this->addChild(headImage);
+	this->addChild(headImage);
 
-	displayOutcardMaxWidth = 60;		/* 出牌显示的最大宽度 */
+	countDown = nullptr;
+
+	displayOutcardMaxWidth = 280;		/* 出牌显示的最大宽度 */
 
 	return true;
 }
@@ -77,20 +80,24 @@ void Player::setHeadImagePos(Point _pointInWorld){
 void Player::calcOutcardPos(){
 	const float INTERVALBETWEENOUTCARDANDHEADIMAGE = 20.0;	/* 待出的牌的位置和头像之间的X轴距离，默认设置为20 */
 	auto _headImageX = headImage->getPosition().x;
+	auto _headImageWidth = headImage->getContentSize().width;
 	switch (playerPos){
 	case PLAYERINLEFT:
-		displayOutcardStartX = _headImageX + INTERVALBETWEENOUTCARDANDHEADIMAGE;
+		displayOutcardStartX = _headImageX + _headImageWidth / 2 + INTERVALBETWEENOUTCARDANDHEADIMAGE;
 		displayOutcardMiddleX = displayOutcardStartX + displayOutcardMaxWidth / 2;
+		displayOutcardY = this->headImage->getPosition().y - this->headImage->getContentSize().height / 2;
 		break;
 	case PLAYERINMIDDLE:
 		displayOutcardMiddleX = 0;
 		displayOutcardStartX = displayOutcardMiddleX - displayOutcardMaxWidth / 2;
+		displayOutcardY = this->headImage->getPosition().y + 15;
 		break;
 	case PLAYERINRIGHT:
-		displayOutcardStartX = _headImageX - INTERVALBETWEENOUTCARDANDHEADIMAGE - displayOutcardMaxWidth;
+		displayOutcardStartX = _headImageX - (_headImageWidth / 2 + INTERVALBETWEENOUTCARDANDHEADIMAGE + displayOutcardMaxWidth);
 		displayOutcardMiddleX = displayOutcardStartX + displayOutcardMaxWidth / 2;
+		displayOutcardY = this->headImage->getPosition().y - this->headImage->getContentSize().height / 2;
 		break;
-	default:CC_ASSERT(0 != 0); break;
+	default:CC_ASSERT(0 != 0); break; 
 	}
 }
 
@@ -133,6 +140,8 @@ void Player::displayCard(const Vector<Poker*>& _pokers, float _displayMaxWidth, 
 			_displayY = _pokers.at(i)->getPosition().y;	/* 如果是已经添加过的扑克（也就是待出的牌）
 														，那么获取其Y坐标，如果统一的Y坐标，那么会产生BUG*/
 		}
+		_pokers.at(i)->setScale(SCALE);
+		_pokers.at(i)->showFront();
 		_pokers.at(i)->setPosition(Point(_displayStartX + cardWidth / 2 + i * intervalBetweenCards, _displayY));
 	}
 }
@@ -140,11 +149,30 @@ void Player::displayCard(const Vector<Poker*>& _pokers, float _displayMaxWidth, 
 void Player::showOutcardInScene(const Vector<Poker*> _pokers){
 	if (_pokers.size() == 0) return;	/* 如果卡牌数量是0，那么不需要排序 */
 	CC_ASSERT(headImage != nullptr);	/* 调用这个函数时，headImage必须已经设置好 */
-	const int SCALE = 0.6;
+	const float SCALE = 0.6;
 	//float _displayOutcardMiddleX = displayOutcardStartX + displayOutcardMaxWidth / 2;	/* 计算显示出牌的中心位置 */
 	/* 将头像的底部Y坐标作为所出牌的中心Y坐标 */
-	float _displayOutcardY = this->headImage->getPosition().y - this->headImage->getContentSize().height / 2;
-	displayCard(_pokers, displayOutcardMaxWidth, displayOutcardStartX, displayOutcardMiddleX, _displayOutcardY, false, SCALE);
+	//float _displayOutcardY = this->headImage->getPosition().y - this->headImage->getContentSize().height / 2;
+	displayCard(_pokers, displayOutcardMaxWidth, displayOutcardStartX, displayOutcardMiddleX, displayOutcardY, false, SCALE);
+}
+
+void Player::showCountDown(float _totalCount /* = 15 */){
+	if (countDown == nullptr){
+		countDown = CountDown::create();
+		countDown->setPosition(Point(displayTimerStartX, headImage->getPosition().y));	/* 高度和头像对齐 */
+		this->addChild(countDown);
+		//countDown->setScale(0.5);	/* countDown本身无大小，因此直接调用setScale会出现意想不到的错误 */ 
+		countDown->setCountDownScale(0.7);
+	}
+	countDown->setCountDownUpper(_totalCount);
+	countDown->startCountDown();
+	countDown->setVisible(true);
+}
+
+void Player::stopCountDown(){
+	if (countDown == nullptr) return;
+	countDown->setVisible(false);
+	countDown->stopCountDown();
 }
 
 void Player::updatePokerPos(){
@@ -156,4 +184,5 @@ void Player::updatePokerPos(){
 
 void Player::test(const Vector<Poker*>& _pokers){
 	showOutcardInScene(_pokers);
+	showCountDown(18);
 }
