@@ -27,7 +27,7 @@ private:
 	void initMenuItemSprite();	/* 初始化和Player相关的按钮菜单 */
 	void initPassHintSprite();	/* 初始化打不过上家的提示 */
 private:
-	Vector<Poker*> HolderPlayer::searchHintCard(OutCards* _lastOutcards);
+	Vector<Poker*> searchHintCard(OutCards* _lastOutcards);
 	void pass();	/* 不出牌 */
 private:
 	void addCardForWaitOut(Ref* _data);

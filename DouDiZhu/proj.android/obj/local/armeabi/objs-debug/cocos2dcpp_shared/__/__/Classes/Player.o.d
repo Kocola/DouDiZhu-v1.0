@@ -1,7 +1,5 @@
 obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/Player.o: \
- jni/../../Classes/Player.cpp jni/../../Classes/GlobalFunc.h \
- E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm \
- jni/../../Classes/GlobalDefine.h jni/../../Classes/Poker.h \
+ jni/../../Classes/Player.cpp jni/../../Classes/CountDown.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../cocos2d.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/ccConfig.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/CCPlatformConfig.h \
@@ -19,12 +17,20 @@ obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/Player.o: \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/ccMacros.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/CCConsole.h \
  E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/sys/select.h \
+ E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/vector \
  E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/map \
  E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/mutex \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/CCStdC.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/android/CCStdC-android.h \
+ E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/math.h \
+ E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/stdlib.h \
+ E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/alloca.h \
+ E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/strings.h \
+ E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/memory.h \
  E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/cassert \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/ccRandom.h \
+ E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/random \
+ E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../2d/CCScene.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../2d/CCNode.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/CCProtocols.h \
@@ -337,15 +343,13 @@ obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/Player.o: \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCSet.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCString.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h \
- jni/../../Classes/Player.h
+ jni/../../Classes/GlobalDefine.h jni/../../Classes/GlobalFunc.h \
+ jni/../../Classes/Poker.h jni/../../Classes/HeadImage.h \
+ jni/../../Classes/MusicController.h jni/../../Classes/OutCards.h \
+ jni/../../Classes/PokerValueType.h jni/../../Classes/Player.h \
+ jni/../../Classes/PlayerOrder.h jni/../../Classes/PokerController.h
 
-jni/../../Classes/GlobalFunc.h:
-
-E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm:
-
-jni/../../Classes/GlobalDefine.h:
-
-jni/../../Classes/Poker.h:
+jni/../../Classes/CountDown.h:
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../cocos2d.h:
 
@@ -381,6 +385,8 @@ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/CCConsole.h:
 
 E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/sys/select.h:
 
+E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/vector:
+
 E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/map:
 
 E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/mutex:
@@ -389,9 +395,23 @@ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/CCStdC.h
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/android/CCStdC-android.h:
 
+E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/math.h:
+
+E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/stdlib.h:
+
+E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/alloca.h:
+
+E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/strings.h:
+
+E:/android-ndk-r10d/platforms/android-14/arch-arm/usr/include/memory.h:
+
 E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/cassert:
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/ccRandom.h:
+
+E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/random:
+
+E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm:
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../2d/CCScene.h:
 
@@ -1017,4 +1037,22 @@ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCStri
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h:
 
+jni/../../Classes/GlobalDefine.h:
+
+jni/../../Classes/GlobalFunc.h:
+
+jni/../../Classes/Poker.h:
+
+jni/../../Classes/HeadImage.h:
+
+jni/../../Classes/MusicController.h:
+
+jni/../../Classes/OutCards.h:
+
+jni/../../Classes/PokerValueType.h:
+
 jni/../../Classes/Player.h:
+
+jni/../../Classes/PlayerOrder.h:
+
+jni/../../Classes/PokerController.h:

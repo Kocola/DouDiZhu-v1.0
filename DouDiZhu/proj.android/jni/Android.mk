@@ -24,7 +24,10 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
 				   ../../Classes/Player.cpp \
 				   ../../Classes/PlayerOrder.cpp \
 				   ../../Classes/Poker.cpp \
-				   ../../Classes/PokerController.cpp
+				   ../../Classes/PokerController.cpp  \
+				   ../../Classes/ComputerPlayer.cpp \
+				   ../../Classes/CoundDown.cpp \
+				   ../../Classes/HolderPlayer.cpp 
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 

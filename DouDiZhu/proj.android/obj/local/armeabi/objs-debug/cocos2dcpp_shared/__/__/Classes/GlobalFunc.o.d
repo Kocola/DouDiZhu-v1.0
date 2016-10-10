@@ -1,7 +1,7 @@
 obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/GlobalFunc.o: \
  jni/../../Classes/GlobalFunc.cpp jni/../../Classes/GlobalFunc.h \
  E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm \
- jni/../../Classes/GlobalDefine.h jni/../../Classes/Poker.h \
+ jni/../../Classes/GlobalDefine.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../cocos2d.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/ccConfig.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/CCPlatformConfig.h \
@@ -336,15 +336,14 @@ obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/GlobalFunc.o: \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCNotificationCenter.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCSet.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCString.h \
- C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h
+ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h \
+ jni/../../Classes/Poker.h
 
 jni/../../Classes/GlobalFunc.h:
 
 E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm:
 
 jni/../../Classes/GlobalDefine.h:
-
-jni/../../Classes/Poker.h:
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../cocos2d.h:
 
@@ -1015,3 +1014,5 @@ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCSet.
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCString.h:
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h:
+
+jni/../../Classes/Poker.h:

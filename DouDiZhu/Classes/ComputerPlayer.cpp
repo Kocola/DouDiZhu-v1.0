@@ -1,4 +1,4 @@
-#include "ComputerPlayer.h"
+ï»¿#include "ComputerPlayer.h"
 #include "GameRules.h"
 #include "MusicController.h"
 #include "OutCards.h"
@@ -23,8 +23,8 @@ bool ComputerPlayer::init(PlayerPosType _playerPosType){
 
 
 int ComputerPlayer::automaticCallLandlord(){
-	srand((unsigned)time(0));	/* ¿ªÆôËæ»úÖÖ×Ó */
-	int score = rand() % 4;	/* ½Ğ·ÖÒ»¹²ÓĞ²»½Ğ£¬1£¬2£¬3ËÄÖÖÇé¿ö£¬ÆäÖĞ0±íÊ¾²»½Ğ */
+	srand((unsigned)time(0));	/* å¼€å¯éšæœºç§å­ */
+	int score = rand() % 4;	/* å«åˆ†ä¸€å…±æœ‰ä¸å«ï¼Œ1ï¼Œ2ï¼Œ3å››ç§æƒ…å†µï¼Œå…¶ä¸­0è¡¨ç¤ºä¸å« */
 	return score;
 }
 
@@ -35,7 +35,7 @@ void ComputerPlayer::callLandlord(){
 	if (score == MAXCALLLANDLORDSCORE){
 		this->setGameStateChooseLandlord();
 	}else{
-		this->updateCallLandlordOrder();	/* ¸üĞÂ½ĞÏÂÒ»¸ö½ĞµØÖ÷µÄID */
+		this->updateCallLandlordOrder();	/* æ›´æ–°å«ä¸‹ä¸€ä¸ªå«åœ°ä¸»çš„ID */
 	}
 }
 
@@ -43,49 +43,49 @@ void ComputerPlayer::outCard(OutCards* _lastOutcards){
 
 	this->deleteOutcardInScene();
 
-	Vector<Poker*> _pokers = this->searchOutCard(_lastOutcards);/* ¸ù¾İÓÎÏ·ÉÏÒ»ÊÖÅÆ²éÕÒ·ûºÏÒªÇóµÄÅÆ */
+	Vector<Poker*> _pokers = this->searchOutCard(_lastOutcards);/* æ ¹æ®æ¸¸æˆä¸Šä¸€æ‰‹ç‰ŒæŸ¥æ‰¾ç¬¦åˆè¦æ±‚çš„ç‰Œ */
 
 	auto _playerOrder = this->getPlayerOrder();
 
-	/* Ëæ»ú³öÅÆÊ±¼äÊÇ 3 ~ 8 */
-	this->startCountDown(rand() % 5 + 3, [=]() mutable{/* ´æÔÚÁÙÊ±±äÁ¿£¬²»¿ÉÒÔÓÃ& */
+	/* éšæœºå‡ºç‰Œæ—¶é—´æ˜¯ 3 ~ 8 */
+	this->startCountDown(rand() % 5 + 3, [=]() mutable{/* å­˜åœ¨ä¸´æ—¶å˜é‡ï¼Œä¸å¯ä»¥ç”¨& */
 		if (_pokers.size() == 0){
-			_playerOrder->setPlayerOrderState(PASS);	/* ÏÔÊ¾²»³öµÄ×´Ì¬ */
+			_playerOrder->setPlayerOrderState(PASS);	/* æ˜¾ç¤ºä¸å‡ºçš„çŠ¶æ€ */
 			_playerOrder->setVisible(true);
 
-			/* ²¥·Å²»³öÅÆµÄÒôĞ§ */
+			/* æ’­æ”¾ä¸å‡ºç‰Œçš„éŸ³æ•ˆ */
 			MusicController::getInstance()->playPassEffect();
 		}
 		else{
-			/* ÒÔµ±Ç°µÄÅÆ¸üĞÂÓÎÏ·µÄÉÏÒ»ÊÖÅÆ */
+			/* ä»¥å½“å‰çš„ç‰Œæ›´æ–°æ¸¸æˆçš„ä¸Šä¸€æ‰‹ç‰Œ */
 			_lastOutcards = OutCards::create(this, GameRules::getInstance()->analysePokerValueType(_pokers), _pokers.size(), _pokers.at(_pokers.size() - 1));
 			_lastOutcards->retain();
 			this->updateLastOutCards(_lastOutcards);
-			/* ½«³öµÄÅÆ´Óµ±Ç°Íæ¼ÒµÄÆË¿ËÖĞÉ¾³ı */
+			/* å°†å‡ºçš„ç‰Œä»å½“å‰ç©å®¶çš„æ‰‘å…‹ä¸­åˆ é™¤ */
 			for (int i = 0; i < _pokers.size(); ++i){
 				_pokers.at(i)->removeFromParent();
 				this->removeCard(_pokers.at(i));
 			}
-			/* ½«Òª³öµÄÅÆÔÚ³öÅÆÇøÏÔÊ¾³öÀ´ */
+			/* å°†è¦å‡ºçš„ç‰Œåœ¨å‡ºç‰ŒåŒºæ˜¾ç¤ºå‡ºæ¥ */
 			/*this->deleteOutcardInScene();*/
 			this->setOutcardInScene(_pokers);
 			this->showOutcardInScene();
-			this->playOutCardInSceneMusic();	/* ²¥·Å³öÅÆÒôÀÖ */
+			this->playOutCardInSceneMusic();	/* æ’­æ”¾å‡ºç‰ŒéŸ³ä¹ */
 
 			if (this->getPoker().size() == 0){
 				this->setGameOver();
 				return;
 			}
 		}
-		this->updateOutOrder();	/* ¸üĞÂ³öÅÆË³Ğò£¬ÈÃÏÂÒ»¸öÍæ¼Ò³öÅÆ */
+		this->updateOutOrder();	/* æ›´æ–°å‡ºç‰Œé¡ºåºï¼Œè®©ä¸‹ä¸€ä¸ªç©å®¶å‡ºç‰Œ */
 	});
 }
 
 Vector<Poker*> ComputerPlayer::searchOutCard(OutCards* _lastOutcards){
 	Vector<Poker*> _pokers;
-	/* Èç¹ûÉÏÒ»ÊÖÅÆÒ²ÊÇ×Ô¼ºµÄ */
+	/* å¦‚æœä¸Šä¸€æ‰‹ç‰Œä¹Ÿæ˜¯è‡ªå·±çš„ */
 	if (_lastOutcards->getPokerOwner() == this || _lastOutcards->getPokerValueType() == NONE){
-		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* ÕâÑùĞ´»áµ¼ÖÂµçÄÔÔÚÕÒ²»µ½µ¥ÕÅºóÒ»Ö±¿¨ÔÚÕâ¸öµØ·½ */ 
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* è¿™æ ·å†™ä¼šå¯¼è‡´ç”µè„‘åœ¨æ‰¾ä¸åˆ°å•å¼ åä¸€ç›´å¡åœ¨è¿™ä¸ªåœ°æ–¹ */ 
 		_pokers = GameRules::getInstance()->searchProperPokers(this->getPoker());
 	}
 	else{
@@ -98,9 +98,9 @@ Vector<Poker*> ComputerPlayer::searchOutCard(OutCards* _lastOutcards){
 				_pokers = GameRules::getInstance()->calcPokerWithValueType(
 					this->getPoker(), _lastOutcards->getPokerValueType(), _lastOutcards->getLowestPoker(), _lastOutcards->getTotalLength());
 
-				if (_pokers.size() == 0){ /* Èç¹ûÕÒ²»µ½¶ÔÓ¦µÄÅÆ£¬¾ÍÕÒÕ¨µ¯ */
+				if (_pokers.size() == 0){ /* å¦‚æœæ‰¾ä¸åˆ°å¯¹åº”çš„ç‰Œï¼Œå°±æ‰¾ç‚¸å¼¹ */
 					_pokers = GameRules::getInstance()->calcPokerWithValueType(this->getPoker(), BOMB, nullptr);
-					if (_pokers.size() == 0){	/* Èç¹ûÕÒ²»µ½ÆÕÍ¨µÄÕ¨£¬¾ÍÕÒÍõÕ¨ */
+					if (_pokers.size() == 0){	/* å¦‚æœæ‰¾ä¸åˆ°æ™®é€šçš„ç‚¸ï¼Œå°±æ‰¾ç‹ç‚¸ */
 						_pokers = GameRules::getInstance()->calcPokerWithValueType(this->getPoker(), KINGBOMB);
 					}
 				}

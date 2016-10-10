@@ -343,8 +343,9 @@ obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/AppDelegate.o: \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCSet.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCString.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h \
- jni/../../Classes/GameScene.h jni/../../Classes/Poker.h \
- jni/../../Classes/GlobalDefine.h jni/../../Classes/LoadScene.h
+ jni/../../Classes/GameScene.h jni/../../Classes/Player.h \
+ jni/../../Classes/GlobalFunc.h jni/../../Classes/GlobalDefine.h \
+ jni/../../Classes/Poker.h jni/../../Classes/LoadScene.h
 
 jni/../../Classes/AppDelegate.h:
 
@@ -1036,8 +1037,12 @@ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDepr
 
 jni/../../Classes/GameScene.h:
 
-jni/../../Classes/Poker.h:
+jni/../../Classes/Player.h:
+
+jni/../../Classes/GlobalFunc.h:
 
 jni/../../Classes/GlobalDefine.h:
+
+jni/../../Classes/Poker.h:
 
 jni/../../Classes/LoadScene.h:

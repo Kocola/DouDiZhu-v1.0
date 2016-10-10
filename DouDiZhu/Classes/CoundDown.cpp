@@ -1,4 +1,4 @@
-#include "CountDown.h"
+ï»¿#include "CountDown.h"
 
 const float DEFAULTCOUNTDOWNUPPER = 15.0f;
 
@@ -12,7 +12,7 @@ bool CountDown::init(){
 
 	totalSpriteNum = 2;
 	curSpriteIndex = 0;
-	countDownUpper = DEFAULTCOUNTDOWNUPPER; /* µ¹¼ÆÊ±Ä¬ÈÏÊÇ15S */
+	countDownUpper = DEFAULTCOUNTDOWNUPPER; /* å€’è®¡æ—¶é»˜è®¤æ˜¯15S */
 	counting = countDownUpper;
 
 	sprite = Sprite::create();
@@ -22,7 +22,7 @@ bool CountDown::init(){
 	sprite->setSpriteFrame(spriteFrame);
 
 	labelAtlas = LabelAtlas::create(StringUtils::format("%d", countDownUpper), "clock/clock_num.png", 38, 37, '0');
-	labelAtlas->setAnchorPoint(Point(0.5, 0.5));	/* ÖØÐÂÉèÖÃÃªµã */
+	labelAtlas->setAnchorPoint(Point(0.5, 0.5));	/* é‡æ–°è®¾ç½®é”šç‚¹ */
 	this->addChild(labelAtlas, 1);
 
 	return true;
@@ -31,7 +31,7 @@ bool CountDown::init(){
 void CountDown::countDown(float delta){
 	counting -= delta;
 
-	/* ´óÓÚ0Ð¡ÓÚ5Ê±£¬ÏÔÊ¾ÉÁË¸Ð§¹û */
+	/* å¤§äºŽ0å°äºŽ5æ—¶ï¼Œæ˜¾ç¤ºé—ªçƒæ•ˆæžœ */
 	if (counting >0 && counting <= 5){
 		curSpriteIndex = (curSpriteIndex + 1) % totalSpriteNum;
 		auto _spriteFrameCache = SpriteFrameCache::getInstance();
@@ -39,7 +39,7 @@ void CountDown::countDown(float delta){
 			StringUtils::format("clock%d.png", curSpriteIndex)));
 	}
 
-	/* ¼ÆÊ±Ê±¼äÒÑµ½ */
+	/* è®¡æ—¶æ—¶é—´å·²åˆ° */
 	if (counting <= 0){
 		callbackFunc();
 		this->stopCountDown();
@@ -54,7 +54,7 @@ void CountDown::resetCallback(){
 
 void CountDown::startCountDown(const std::function<void(void)>& _callback /* = []() */){
 	this->setCallback(_callback);
-	this->counting = countDownUpper;	/* Ã¿´ÎÏÔÊ¾Ç°¶¼ÒªÖØÖÃ¼ÆÊý */
+	this->counting = countDownUpper;	/* æ¯æ¬¡æ˜¾ç¤ºå‰éƒ½è¦é‡ç½®è®¡æ•° */
 	this->schedule(schedule_selector(CountDown::countDown), 0.2f);
 }
 

@@ -2,7 +2,7 @@ obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/GameScene.o: \
  jni/../../Classes/GameScene.cpp \
  E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm \
  E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/ctime \
- jni/../../Classes/GameAnimation.h \
+ jni/../../Classes/ComputerPlayer.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../cocos2d.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../base/ccConfig.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../platform/CCPlatformConfig.h \
@@ -338,19 +338,20 @@ obj/local/armeabi/objs-debug/cocos2dcpp_shared/__/__/Classes/GameScene.o: \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCSet.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCString.h \
  C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h \
- jni/../../Classes/GameRules.h jni/../../Classes/Poker.h \
- jni/../../Classes/GlobalDefine.h jni/../../Classes/PokerValueType.h \
- jni/../../Classes/GameScene.h jni/../../Classes/GlobalFunc.h \
- jni/../../Classes/HeadImage.h jni/../../Classes/Lobby.h \
- jni/../../Classes/MusicController.h jni/../../Classes/OutCards.h \
- jni/../../Classes/Player.h jni/../../Classes/PlayerOrder.h \
+ jni/../../Classes/Player.h jni/../../Classes/GlobalFunc.h \
+ jni/../../Classes/GlobalDefine.h jni/../../Classes/Poker.h \
+ jni/../../Classes/GameAnimation.h jni/../../Classes/GameRules.h \
+ jni/../../Classes/PokerValueType.h jni/../../Classes/GameScene.h \
+ jni/../../Classes/HeadImage.h jni/../../Classes/HolderPlayer.h \
+ jni/../../Classes/Lobby.h jni/../../Classes/MusicController.h \
+ jni/../../Classes/OutCards.h jni/../../Classes/PlayerOrder.h \
  jni/../../Classes/PokerController.h
 
 E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/algorithm:
 
 E:/android-ndk-r10d/sources/cxx-stl/gnu-libstdc++/4.9/include/ctime:
 
-jni/../../Classes/GameAnimation.h:
+jni/../../Classes/ComputerPlayer.h:
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../cocos2d.h:
 
@@ -1022,27 +1023,31 @@ C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCStri
 
 C:\Cocos\frameworks/cocos2d-x-3.8.1/cocos/3d/prebuilt-mk/../../deprecated/CCDeprecated.h:
 
-jni/../../Classes/GameRules.h:
+jni/../../Classes/Player.h:
+
+jni/../../Classes/GlobalFunc.h:
+
+jni/../../Classes/GlobalDefine.h:
 
 jni/../../Classes/Poker.h:
 
-jni/../../Classes/GlobalDefine.h:
+jni/../../Classes/GameAnimation.h:
+
+jni/../../Classes/GameRules.h:
 
 jni/../../Classes/PokerValueType.h:
 
 jni/../../Classes/GameScene.h:
 
-jni/../../Classes/GlobalFunc.h:
-
 jni/../../Classes/HeadImage.h:
+
+jni/../../Classes/HolderPlayer.h:
 
 jni/../../Classes/Lobby.h:
 
 jni/../../Classes/MusicController.h:
 
 jni/../../Classes/OutCards.h:
-
-jni/../../Classes/Player.h:
 
 jni/../../Classes/PlayerOrder.h:
 

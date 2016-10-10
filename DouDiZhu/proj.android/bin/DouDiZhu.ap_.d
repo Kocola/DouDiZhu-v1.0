@@ -6,10 +6,16 @@ F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\res\values\strings.xml \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\bin\res\drawable-hdpi\icon.png \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\bin\res\drawable-ldpi\icon.png \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\bin\res\drawable-mdpi\icon.png \
+F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\clock \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\game_share.png \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\Image \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\music \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\res \
+F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\clock\clock.plist \
+F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\clock\clock.png \
+F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\clock\clock0.png \
+F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\clock\clock1.png \
+F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\clock\clock_num.png \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\Image\Animation \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\Image\background.png \
 F:\MyCocos\DouDiZhu_2\DouDiZhu\proj.android\assets\Image\btn_hint.png \

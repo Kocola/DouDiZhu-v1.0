@@ -1,4 +1,4 @@
-#include "GameScene.h"
+ï»¿#include "GameScene.h"
 #include "GameRules.h"
 #include "HolderPlayer.h"
 #include "MusicController.h"
@@ -33,15 +33,15 @@ void HolderPlayer::initResource(){
 }
 
 void HolderPlayer::initObserver(){
-	/* Ìí¼ÓÏò´ı³öÅÆÈİÆ÷Ìí¼ÓÅÆµÄ¹Û²ìÕß */
+	/* æ·»åŠ å‘å¾…å‡ºç‰Œå®¹å™¨æ·»åŠ ç‰Œçš„è§‚å¯Ÿè€… */
 	NotificationCenter::getInstance()->addObserver(this,
 		callfuncO_selector(HolderPlayer::addCardForWaitOut),
 		ADDCARDFORWAITOUT, nullptr);
-	/* Ìí¼ÓÏò´ı³öÅÆÈİÆ÷É¾³ıÅÆµÄ¹Û²ìÕß */
+	/* æ·»åŠ å‘å¾…å‡ºç‰Œå®¹å™¨åˆ é™¤ç‰Œçš„è§‚å¯Ÿè€… */
 	NotificationCenter::getInstance()->addObserver(this,
 		callfuncO_selector(HolderPlayer::deleteCardForWaitOut),
 		DELETECARDFORWAITOUT, nullptr);
-	/* ¸üĞÂ³öÅÆ×´Ì¬ */
+	/* æ›´æ–°å‡ºç‰ŒçŠ¶æ€ */
 	NotificationCenter::getInstance()->addObserver(this,
 		callfuncO_selector(HolderPlayer::updateOutState),
 		UPDATEOUTSTATE, nullptr);
@@ -54,90 +54,90 @@ void HolderPlayer::initCardPos(){
 }
 
 void HolderPlayer::initMenuItemSprite(){
-	auto visibleSize = Director::getInstance()->getVisibleSize();	/* ÆÁÄ»³ß´ç */
+	auto visibleSize = Director::getInstance()->getVisibleSize();	/* å±å¹•å°ºå¯¸ */
 
 	auto _menu = Menu::create();
-	_menu->setPosition(Point(0, 0));	/* Menu´´½¨Ê±ĞèÒª½«ÆäÎ»ÖÃÄ¬ÈÏ±äÎª0 */
+	_menu->setPosition(Point(0, 0));	/* Menuåˆ›å»ºæ—¶éœ€è¦å°†å…¶ä½ç½®é»˜è®¤å˜ä¸º0 */
 
-	/* ¿ªÊ¼°´Å¥µÄ²Ëµ¥ */
+	/* å¼€å§‹æŒ‰é’®çš„èœå• */
 	auto _start = Sprite::create("Image/btn_start.png");
 	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
 	startMenuItem = MenuItemSprite::create(_start, _start_pressed, 
 		CC_CALLBACK_1(HolderPlayer::startCallback, this));
 
-	/* ²»³ö°´Å¥ */
+	/* ä¸å‡ºæŒ‰é’® */
 	auto _pass = Sprite::create("Image/btn_pass.png");
-	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* ÀûÓÃ¾«ÁéÖ¡À´¸´ÖÆ´´½¨Ò»¸ö¾«Áé */
+	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* åˆ©ç”¨ç²¾çµå¸§æ¥å¤åˆ¶åˆ›å»ºä¸€ä¸ªç²¾çµ */
 	auto _pass_disabled = Sprite::create("Image/btn_pass.png");
 	passMenuItem = MenuItemSprite::create(_pass, _pass_pressed, 
 		CC_CALLBACK_1(HolderPlayer::passCallback, this));
-	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* ÕâÑùĞ´»á³ö´í£¬ÎªÊ²Ã´£¿*/ 
+	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* è¿™æ ·å†™ä¼šå‡ºé”™ï¼Œä¸ºä»€ä¹ˆï¼Ÿ*/ 
 
-	/* ÌáÊ¾°´Å¥ */
+	/* æç¤ºæŒ‰é’® */
 	auto _hint = Sprite::create("Image/btn_hint.png");
 	auto _hint_pressed = Sprite::create("Image/btn_hint_selected.png");
 	auto _hint_disabled = Sprite::create("Image/btn_hint_disabled.png");
 	hintMenuItem = MenuItemSprite::create(_hint, _hint_pressed, 
 		CC_CALLBACK_1(HolderPlayer::hintCallback, this));
 	hintMenuItem->setDisabledImage(_hint_disabled);
-	hintMenuItem->setEnabled(false);		/* ÌáÊ¾ÊÇ·ñ¿ÉÒÔµã»÷ÊÇÒÀ¾İµãÇ°ÊÇ·ñ´æÔÚ´óÓÚÉÏÒ»¼ÒµÄÅÆ */
+	hintMenuItem->setEnabled(false);		/* æç¤ºæ˜¯å¦å¯ä»¥ç‚¹å‡»æ˜¯ä¾æ®ç‚¹å‰æ˜¯å¦å­˜åœ¨å¤§äºä¸Šä¸€å®¶çš„ç‰Œ */
 
-	/* ³öÅÆ°´Å¥ */
+	/* å‡ºç‰ŒæŒ‰é’® */
 	auto _out = Sprite::create("Image/btn_out.png");
 	auto _out_pressed = Sprite::create("Image/btn_out_selected.png");
 	auto _out_disabled = Sprite::create("Image/btn_out_disabled.png");
 	outMenuItem = MenuItemSprite::create(_out, _out_pressed, 
 		CC_CALLBACK_1(HolderPlayer::outCallback, this));
 	outMenuItem->setDisabledImage(_out_disabled);
-	outMenuItem->setEnabled(false);		/* ³õÊ¼»¯Ê±ÉèÖÃ ³öÅÆ °´Å¥²»¿É°´ÏÂ*/
+	outMenuItem->setEnabled(false);		/* åˆå§‹åŒ–æ—¶è®¾ç½® å‡ºç‰Œ æŒ‰é’®ä¸å¯æŒ‰ä¸‹*/
 
-	/* ²»½Ğ²Ëµ¥ */
+	/* ä¸å«èœå• */
 	auto _nocall = Sprite::create("Image/btn_nocall.png");
 	auto _nocall_pressed = Sprite::create("Image/btn_nocall_selected.png");
 	noCallMenuItem = MenuItemSprite::create(_nocall, _nocall_pressed, 
 		CC_CALLBACK_1(HolderPlayer::noCallCallback, this));
 
-	/* Ò»·Ö²Ëµ¥ */
+	/* ä¸€åˆ†èœå• */
 	auto _call_one = Sprite::create("Image/btn_one.png");
 	auto _call_one_selected = Sprite::create("Image/btn_one_selected.png");
 	oneScoreMenuItem = MenuItemSprite::create(_call_one, _call_one_selected, 
 		CC_CALLBACK_1(HolderPlayer::oneScoreCallback, this));
 
-	/* ¶ş·Ö²Ëµ¥ */
+	/* äºŒåˆ†èœå• */
 	auto _call_two = Sprite::create("Image/btn_two.png");
 	auto _call_two_selected = Sprite::create("Image/btn_two_selected.png");
 	twoScoreMenuItem = MenuItemSprite::create(_call_two, _call_two_selected, 
 		CC_CALLBACK_1(HolderPlayer::twoScoreCallback, this));
 
-	/* Èı·Ö²Ëµ¥ */
+	/* ä¸‰åˆ†èœå• */
 	auto _call_three = Sprite::create("Image/btn_three.png");
 	auto _call_three_selected = Sprite::create("Image/btn_three_selected.png");
 	threeScoreMenuItem = MenuItemSprite::create(_call_three, _call_three_selected, 
 		CC_CALLBACK_1(HolderPlayer::threeScoreCallback, this));
 
-	/*                          ¿ªÊ¼°´Å¥                                            */
+	/*                          å¼€å§‹æŒ‰é’®                                            */
 
-	/* ÉèÖÃ¿ªÊ¼°´Å¥²»¿É¼û */
+	/* è®¾ç½®å¼€å§‹æŒ‰é’®ä¸å¯è§ */
 	startMenuItem->setVisible(false);
 
-	/* ÉèÖÃ¿ªÊ¼°´Å¥Î»ÖÃ £º ¿íÔÚÆÁÄ»ÖĞ¼ä£¬¸ß¶ÈºÍÍæ¼ÒÍ·Ïñ¶ÔÆë*/
+	/* è®¾ç½®å¼€å§‹æŒ‰é’®ä½ç½® ï¼š å®½åœ¨å±å¹•ä¸­é—´ï¼Œé«˜åº¦å’Œç©å®¶å¤´åƒå¯¹é½*/
 	auto start_pos = Point(visibleSize.width / 2,
 		DISPLAYCARDHEIGHT + POKER_HEIGHT + 20 + startMenuItem->getContentSize().height / 2);
 	start_pos = this->convertToNodeSpace(start_pos);
 	startMenuItem->setPosition(start_pos);
 
-	/* ½« ¿ªÊ¼  MenuItemSpriteÌí¼Óµ½MenuÀïÏÔÊ¾ */
+	/* å°† å¼€å§‹  MenuItemSpriteæ·»åŠ åˆ°Menué‡Œæ˜¾ç¤º */
 	_menu->addChild(startMenuItem);
 
-	/*                               ½Ğ·Ö°´Å¥                                       */
+	/*                               å«åˆ†æŒ‰é’®                                       */
 
-	/* ½Ğ·Ö°´Å¥È«²¿ÉèÖÃÎ»²»¿É¼û */
+	/* å«åˆ†æŒ‰é’®å…¨éƒ¨è®¾ç½®ä½ä¸å¯è§ */
 	noCallMenuItem->setVisible(false);
 	oneScoreMenuItem->setVisible(false);
 	twoScoreMenuItem->setVisible(false);
 	threeScoreMenuItem->setVisible(false);
 
-	/* ÉèÖÃ°´Å¥Î»ÖÃ */
+	/* è®¾ç½®æŒ‰é’®ä½ç½® */
 	auto _nocall_pos = Point(visibleSize.width / 2 - oneScoreMenuItem->getContentSize().width - BUTTON_INTERVAL - noCallMenuItem->getContentSize().width / 2 - BUTTON_INTERVAL / 2,
 		POKER_HEIGHT + DISPLAYCARDHEIGHT + noCallMenuItem->getContentSize().height / 2 + 15);
 	_nocall_pos = this->convertToNodeSpace(_nocall_pos);
@@ -155,19 +155,19 @@ void HolderPlayer::initMenuItemSprite(){
 	_call_three_pos = this->convertToNodeSpace(_call_three_pos);
 	threeScoreMenuItem->setPosition(_call_three_pos);
 
-	/* ½«MenuItemSpriteÌí¼Óµ½MenuÀïÏÔÊ¾ */
+	/* å°†MenuItemSpriteæ·»åŠ åˆ°Menué‡Œæ˜¾ç¤º */
 	_menu->addChild(noCallMenuItem);
 	_menu->addChild(oneScoreMenuItem);
 	_menu->addChild(twoScoreMenuItem);
 	_menu->addChild(threeScoreMenuItem);
 
-	/*                                ²»³ö£¬ÌáÊ¾£¬³öÅÆ°´Å¥                                      */
+	/*                                ä¸å‡ºï¼Œæç¤ºï¼Œå‡ºç‰ŒæŒ‰é’®                                      */
 
 	passMenuItem->setVisible(false);
 	hintMenuItem->setVisible(false);
-	outMenuItem->setVisible(false);/* ³õÊ¼»¯Ê±ÉèÖÃ Á½¸ö°´Å¥ ²»¿É¼û */
+	outMenuItem->setVisible(false);/* åˆå§‹åŒ–æ—¶è®¾ç½® ä¸¤ä¸ªæŒ‰é’® ä¸å¯è§ */
 
-	/* ÉèÖÃ°´Å¥Î»ÖÃ */
+	/* è®¾ç½®æŒ‰é’®ä½ç½® */
 	auto _posY = POKER_HEIGHT + DISPLAYCARDHEIGHT + passMenuItem->getContentSize().height / 2 + 15;
 	auto _hint_width = hintMenuItem->getContentSize().width;
 	auto _pass_pos = Point(visibleSize.width / 2 - (_hint_width / 2 + BUTTON_INTERVAL + _pass->getContentSize().width / 2), _posY);
@@ -180,35 +180,35 @@ void HolderPlayer::initMenuItemSprite(){
 	hintMenuItem->setPosition(_hint_pos);
 	outMenuItem->setPosition(_out_pos);
 
-	/* ½«MenuItemSpriteÌí¼Óµ½MenuÀïÏÔÊ¾ */
+	/* å°†MenuItemSpriteæ·»åŠ åˆ°Menué‡Œæ˜¾ç¤º */
 	_menu->addChild(passMenuItem);
 	_menu->addChild(hintMenuItem);
 	_menu->addChild(outMenuItem);
 
-	this->addChild(_menu);	/* MenuItemSprite¶ÔÏó±ØĞë´æ·ÅÔÚMenuÖĞ²ÅÄÜÕı³£Ê¹ÓÃ */
+	this->addChild(_menu);	/* MenuItemSpriteå¯¹è±¡å¿…é¡»å­˜æ”¾åœ¨Menuä¸­æ‰èƒ½æ­£å¸¸ä½¿ç”¨ */
 }
 
 void HolderPlayer::initPassHintSprite(){
-	passHintSprite = Sprite::create("Image/passhint.png");	/* ÎŞÅÆ´òµÃ¹ıÉÏ¼ÒµÄÌáÊ¾ ¾«Áé */
+	passHintSprite = Sprite::create("Image/passhint.png");	/* æ— ç‰Œæ‰“å¾—è¿‡ä¸Šå®¶çš„æç¤º ç²¾çµ */
 	auto _hint_btn_pos = hintMenuItem->getPosition();
 	auto _hint_btn_size = hintMenuItem->getContentSize();
 	auto _pass_hint_pos = Point(_hint_btn_pos.x, _hint_btn_pos.y + _hint_btn_size.height / 2 + 15 + passHintSprite->getContentSize().height / 2);
 	//_pass_hint_pos = this->convertToNodeSpace(_pass_hint_pos);
 	passHintSprite->setPosition(_pass_hint_pos);
 	this->addChild(passHintSprite);
-	passHintSprite->setVisible(false);	/* ³õÊ¼²»¿É¼û */
+	passHintSprite->setVisible(false);	/* åˆå§‹ä¸å¯è§ */
 }
 
 void HolderPlayer::updateOutState(){
-	/* ÕâÀïµÄlastOutCardÃ¿´ÎÖ»ÓĞ´ıÂÖµ½×Ô¼º³öÅÆÊ±²Å»á·Ç¿Õ£¬Èç¹û²»ÊÇ×Ô¼º³öÅÆ±ØĞëÖÃ¿Õ */
+	/* è¿™é‡Œçš„lastOutCardæ¯æ¬¡åªæœ‰å¾…è½®åˆ°è‡ªå·±å‡ºç‰Œæ—¶æ‰ä¼šéç©ºï¼Œå¦‚æœä¸æ˜¯è‡ªå·±å‡ºç‰Œå¿…é¡»ç½®ç©º */
 
 	OutCards* _lastOutCard = this->lastOutCard;
-	if (_lastOutCard == nullptr) return;	/* Èç¹ûµ±Ç°»¹²»ÊÇ³öÅÆ×´Ì¬£¬ÄÇÃ´Ö±½Ó·µ»Ø */
-	/* Èç¹ûµ±Ç°³öÅÆÍæ¼Ò²»ÊÇplayer£¬ÄÇÃ´²»ĞèÒª¸üĞÂ³öÅÆ°´Å¥µÄ¿É°´ĞÔ */
+	if (_lastOutCard == nullptr) return;	/* å¦‚æœå½“å‰è¿˜ä¸æ˜¯å‡ºç‰ŒçŠ¶æ€ï¼Œé‚£ä¹ˆç›´æ¥è¿”å› */
+	/* å¦‚æœå½“å‰å‡ºç‰Œç©å®¶ä¸æ˜¯playerï¼Œé‚£ä¹ˆä¸éœ€è¦æ›´æ–°å‡ºç‰ŒæŒ‰é’®çš„å¯æŒ‰æ€§ */
 	//if (_lastOutCard->getPokerOwner() != this) return;
 	if (_lastOutCard->getPokerValueType() == NONE || _lastOutCard->getPokerOwner() == this){
-		/* Èç¹ûÉÏÒ»´ÎµÄ³öÅÆÊÇNONE£¨±íÊ¾¸Õ¿ªÊ¼£©»òÕß ÉÏÒ»´Î³öÅÆµÄ³ÖÓĞÕß»¹ÊÇplayer£¬
-		ÄÇÃ´ÅĞ¶Ïµ±Ç°´ı³öµÄÅÆÊÇ²»ÊÇÕıÈ·µÄÅÆĞÍ£¬Èç¹ûÊÇ£¬¾ÍÁî³öÅÆ°´Å¥¿É°´£¬·ñÔò²»¿É°´ */
+		/* å¦‚æœä¸Šä¸€æ¬¡çš„å‡ºç‰Œæ˜¯NONEï¼ˆè¡¨ç¤ºåˆšå¼€å§‹ï¼‰æˆ–è€… ä¸Šä¸€æ¬¡å‡ºç‰Œçš„æŒæœ‰è€…è¿˜æ˜¯playerï¼Œ
+		é‚£ä¹ˆåˆ¤æ–­å½“å‰å¾…å‡ºçš„ç‰Œæ˜¯ä¸æ˜¯æ­£ç¡®çš„ç‰Œå‹ï¼Œå¦‚æœæ˜¯ï¼Œå°±ä»¤å‡ºç‰ŒæŒ‰é’®å¯æŒ‰ï¼Œå¦åˆ™ä¸å¯æŒ‰ */
 		if (GameRules::getInstance()->isPokerValueType(cardsForWaitOut) == true){
 			outMenuItem->setEnabled(true);
 		}else{
@@ -218,7 +218,7 @@ void HolderPlayer::updateOutState(){
 	}
 	else{
 		PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(cardsForWaitOut);
-		if (_pokerValueType == NONE){	/* Èç¹ûµ±Ç°²»ÊÇÈÎºÎÅÆĞÍ */
+		if (_pokerValueType == NONE){	/* å¦‚æœå½“å‰ä¸æ˜¯ä»»ä½•ç‰Œå‹ */
 			outMenuItem->setEnabled(false);
 		}else{
 			outMenuItem->setEnabled(GameRules::getInstance()->canOutCards(cardsForWaitOut, _lastOutCard));
@@ -227,31 +227,31 @@ void HolderPlayer::updateOutState(){
 }
 
 void HolderPlayer::callLandlord(){
-	/* ÏÔÊ¾ËùÓĞ½Ğ·Ö°´Å¥ */
+	/* æ˜¾ç¤ºæ‰€æœ‰å«åˆ†æŒ‰é’® */
 	this->setCallLandLordMenuItemVisible(true);
-	/* µÈ´ı½Ğ·Ö */
+	/* ç­‰å¾…å«åˆ† */
 }
 
 void HolderPlayer::outCard(OutCards* _lastOutcards){
 	CC_ASSERT(_lastOutcards != nullptr);
 
-	this->deleteOutcardInScene();	/* É¾³ıÖ®Ç°µÄÅÆ */
+	this->deleteOutcardInScene();	/* åˆ é™¤ä¹‹å‰çš„ç‰Œ */
 
-	/* ÉèÖÃ³ÉÔ±±äÁ¿lastOutcards£¬³öÍêÅÆºó±ØĞëÉèÖÃÎªnullptr */
+	/* è®¾ç½®æˆå‘˜å˜é‡lastOutcardsï¼Œå‡ºå®Œç‰Œåå¿…é¡»è®¾ç½®ä¸ºnullptr */
 	this->setLastOutCard(_lastOutcards);
 
-	/* ÈÃ²»³ö£¬ÌáÊ¾ºÍ³öÅÆ°´Å¥ÏÔÊ¾³öÀ´£¬³öÅÆ°´Å¥²»¿É°´ÓÉ³öÅÆºÍ²»³ö°´Å¥µÄ´¥·¢ÊÂ¼ş¿ØÖÆ */
+	/* è®©ä¸å‡ºï¼Œæç¤ºå’Œå‡ºç‰ŒæŒ‰é’®æ˜¾ç¤ºå‡ºæ¥ï¼Œå‡ºç‰ŒæŒ‰é’®ä¸å¯æŒ‰ç”±å‡ºç‰Œå’Œä¸å‡ºæŒ‰é’®çš„è§¦å‘äº‹ä»¶æ§åˆ¶ */
 	passMenuItem->setVisible(true);
 	hintMenuItem->setVisible(true);
 	outMenuItem->setVisible(true);
-	/* ÖÇÄÜ¼ì²éÊÇ·ñÓĞÅÆ´òµÃ¹ıÉÏ¼Ò£¬¿ØÖÆÌáÊ¾°´Å¥ÊÇ·ñ¿É°´ÏÂ£¬ÌáÊ¾µÄÆË¿ËÉè¼Æ³É³ÉÔ±±äÁ¿£¬
-	Ä¿µÄÊÇ°´ÏÂÌáÊ¾°´Å¥Ê±£¬²»ĞèÒªÔÙµ÷ÓÃsearchOutCardº¯Êı */
+	/* æ™ºèƒ½æ£€æŸ¥æ˜¯å¦æœ‰ç‰Œæ‰“å¾—è¿‡ä¸Šå®¶ï¼Œæ§åˆ¶æç¤ºæŒ‰é’®æ˜¯å¦å¯æŒ‰ä¸‹ï¼Œæç¤ºçš„æ‰‘å…‹è®¾è®¡æˆæˆå‘˜å˜é‡ï¼Œ
+	ç›®çš„æ˜¯æŒ‰ä¸‹æç¤ºæŒ‰é’®æ—¶ï¼Œä¸éœ€è¦å†è°ƒç”¨searchOutCardå‡½æ•° */
 	this->hintCards = searchHintCard(_lastOutcards);
 	if (this->hintCards.size() != 0){
-		hintMenuItem->setEnabled(true);		/* Èç¹ûÓĞ¿ÉÒÔ³öµÄÅÆ£¬ÄÇÃ´ÌáÊ¾°´Å¥¿É°´ÏÂ */
+		hintMenuItem->setEnabled(true);		/* å¦‚æœæœ‰å¯ä»¥å‡ºçš„ç‰Œï¼Œé‚£ä¹ˆæç¤ºæŒ‰é’®å¯æŒ‰ä¸‹ */
 	}
 	else{
-		passHintSprite->setVisible(true);	/* Èç¹ûÃ»ÓĞ¿ÉÒÔ³öµÄÅÆ£¬¾ÍÏÔÊ¾"Ã»ÓĞÅÆ´òµÃ¹ıÉÏ¼Ò" */
+		passHintSprite->setVisible(true);	/* å¦‚æœæ²¡æœ‰å¯ä»¥å‡ºçš„ç‰Œï¼Œå°±æ˜¾ç¤º"æ²¡æœ‰ç‰Œæ‰“å¾—è¿‡ä¸Šå®¶" */
 	}
 
 	float _outCardDuration = 15.0f;
@@ -259,15 +259,15 @@ void HolderPlayer::outCard(OutCards* _lastOutcards){
 
 	this->startCountDown(_outCardDuration, [&](){ this->pass(); });
 
-	/* ÂÖµ½Íæ¼Ò³öÅÆÊ±£¬Íæ¼Ò¿ÉÄÜÒÑ¾­×¼±¸ºÃÒª³öµÄÅÆ£¬Òò´ËÂÖµ½Íæ¼Ò³öÅÆÊ±£¬ĞèÒª¶Ô´Ë×öÒ»´Î¸üĞÂ */
+	/* è½®åˆ°ç©å®¶å‡ºç‰Œæ—¶ï¼Œç©å®¶å¯èƒ½å·²ç»å‡†å¤‡å¥½è¦å‡ºçš„ç‰Œï¼Œå› æ­¤è½®åˆ°ç©å®¶å‡ºç‰Œæ—¶ï¼Œéœ€è¦å¯¹æ­¤åšä¸€æ¬¡æ›´æ–° */
 	this->updateOutState();
 }
 
 Vector<Poker*> HolderPlayer::searchHintCard(OutCards* _lastOutcards){
 	Vector<Poker*> _pokers;
-	/* Èç¹ûÉÏÒ»ÊÖÅÆÒ²ÊÇ×Ô¼ºµÄ */
+	/* å¦‚æœä¸Šä¸€æ‰‹ç‰Œä¹Ÿæ˜¯è‡ªå·±çš„ */
 	if (_lastOutcards->getPokerOwner() ==  this || _lastOutcards->getPokerValueType() == NONE){
-		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* ÕâÑùĞ´»áµ¼ÖÂµçÄÔÔÚÕÒ²»µ½µ¥ÕÅºóÒ»Ö±¿¨ÔÚÕâ¸öµØ·½ */ 
+		//_pokers = GameRules::getInstance()->calcPokerWithValueType(_computer->getPoker(), SINGLE, nullptr);	/* è¿™æ ·å†™ä¼šå¯¼è‡´ç”µè„‘åœ¨æ‰¾ä¸åˆ°å•å¼ åä¸€ç›´å¡åœ¨è¿™ä¸ªåœ°æ–¹ */ 
 		_pokers = GameRules::getInstance()->searchProperPokers(this->getPoker());
 	}
 	else{
@@ -281,9 +281,9 @@ Vector<Poker*> HolderPlayer::searchHintCard(OutCards* _lastOutcards){
 				_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(
 					this->getPoker(), _lastOutcards->getPokerValueType(), _lastOutcards->getLowestPoker(), _lastOutcards->getTotalLength());
 
-				if (_pokers.size() == 0){ /* Èç¹ûÕÒ²»µ½¶ÔÓ¦µÄÅÆ£¬¾ÍÕÒÕ¨µ¯ */
+				if (_pokers.size() == 0){ /* å¦‚æœæ‰¾ä¸åˆ°å¯¹åº”çš„ç‰Œï¼Œå°±æ‰¾ç‚¸å¼¹ */
 					_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(this->getPoker(), BOMB, nullptr);
-					if (_pokers.size() == 0){	/* Èç¹ûÕÒ²»µ½ÆÕÍ¨µÄÕ¨£¬¾ÍÕÒÍõÕ¨ */
+					if (_pokers.size() == 0){	/* å¦‚æœæ‰¾ä¸åˆ°æ™®é€šçš„ç‚¸ï¼Œå°±æ‰¾ç‹ç‚¸ */
 						_pokers = GameRules::getInstance()->calcPokerWithValueTypeInSplit(this->getPoker(), KINGBOMB);
 					}
 				}
@@ -294,34 +294,34 @@ Vector<Poker*> HolderPlayer::searchHintCard(OutCards* _lastOutcards){
 }
 
 void HolderPlayer::pass(){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPassEffect();
 
-	passMenuItem->setVisible(false);		/* ²»³ö°´Å¥²»¿É¼û */
-	hintMenuItem->setVisible(false);		/* ÌáÊ¾°´Å¥²»¿É¼û */
-	hintMenuItem->setEnabled(false);	/* ÌáÊ¾°´Å¥²»¿É°´ÏÂ */
-	outMenuItem->setVisible(false);		/* ³öÅÆ°´Å¥²»¿É¼û */
-	outMenuItem->setEnabled(false);	/* Ã¿´Î³öÅÆ»òÕßpassºó£¬½«out°´Å¥ÉèÎª²»¿É°´ */
+	passMenuItem->setVisible(false);		/* ä¸å‡ºæŒ‰é’®ä¸å¯è§ */
+	hintMenuItem->setVisible(false);		/* æç¤ºæŒ‰é’®ä¸å¯è§ */
+	hintMenuItem->setEnabled(false);	/* æç¤ºæŒ‰é’®ä¸å¯æŒ‰ä¸‹ */
+	outMenuItem->setVisible(false);		/* å‡ºç‰ŒæŒ‰é’®ä¸å¯è§ */
+	outMenuItem->setEnabled(false);	/* æ¯æ¬¡å‡ºç‰Œæˆ–è€…passåï¼Œå°†outæŒ‰é’®è®¾ä¸ºä¸å¯æŒ‰ */
 
 	passHintSprite->setVisible(false);
 
-	this->getPlayerOrder()->setPlayerOrderState(PASS);	/* ÏÔÊ¾²»³öµÄ×´Ì¬ */
+	this->getPlayerOrder()->setPlayerOrderState(PASS);	/* æ˜¾ç¤ºä¸å‡ºçš„çŠ¶æ€ */
 	this->getPlayerOrder()->setVisible(true);
 
-	this->setLastOutCardNull();	/* ²»³öºóÖÃlastOutcard³ÉÔ±±äÁ¿Îªnullptr */
-	this->updateOutOrder();	/* ¸üĞÂ³öÅÆË³Ğò */
+	this->setLastOutCardNull();	/* ä¸å‡ºåç½®lastOutcardæˆå‘˜å˜é‡ä¸ºnullptr */
+	this->updateOutOrder();	/* æ›´æ–°å‡ºç‰Œé¡ºåº */
 }
 
 void HolderPlayer::updateCardPos(){
 	Vector<Poker*> _pokers = this->getPoker();
-	if (_pokers.size() == 0) return;	/* Èç¹ûÃ»ÓĞÆË¿ËÁË£¬Ö±½Ó·µ»Ø£¬Ò»°ã²»»áÔËĞĞÕâ¾äµÄ */
+	if (_pokers.size() == 0) return;	/* å¦‚æœæ²¡æœ‰æ‰‘å…‹äº†ï¼Œç›´æ¥è¿”å›ï¼Œä¸€èˆ¬ä¸ä¼šè¿è¡Œè¿™å¥çš„ */
 	float _displayCardMaxWidth = Director::getInstance()->getVisibleSize().width * 5.0 / 6;
 	float _displayCardY = 0;
 	displayCard(_pokers, _displayCardMaxWidth, displayCardStartX, displayCardMiddleX, _displayCardY, true);
 }
 
 /************************************************************************/
-/*                              »Øµ÷º¯Êı                                        */
+/*                              å›è°ƒå‡½æ•°                                        */
 /************************************************************************/
 void HolderPlayer::setCallLandLordMenuItemVisible(bool _visible){
 	noCallMenuItem->setVisible(_visible);
@@ -331,12 +331,12 @@ void HolderPlayer::setCallLandLordMenuItemVisible(bool _visible){
 }
 
 void HolderPlayer::startCallback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPressButtonEffect();
 
 	this->getPlayerOrder()->setVisible(true);
 	startMenuItem->setVisible(false);
-	Player::setReady(true);	/* ÉèÖÃÊÖ¶¯Íæ¼ÒÒÑ¾­×¼±¸ºÃ */
+	Player::setReady(true);	/* è®¾ç½®æ‰‹åŠ¨ç©å®¶å·²ç»å‡†å¤‡å¥½ */
 }
 
 void HolderPlayer::passCallback(Ref*){
@@ -345,66 +345,66 @@ void HolderPlayer::passCallback(Ref*){
 }
 
 void HolderPlayer::hintCallback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPressButtonEffect();
 
-	/* Èç¹ûµã»÷ÌáÊ¾°´Å¥£¬ÄÇÃ´Ê×ÏÈÒª½«×Ô¼ºµã»÷µÄÅÆ»Ö¸´µ½Õı³£Î»ÖÃ */
+	/* å¦‚æœç‚¹å‡»æç¤ºæŒ‰é’®ï¼Œé‚£ä¹ˆé¦–å…ˆè¦å°†è‡ªå·±ç‚¹å‡»çš„ç‰Œæ¢å¤åˆ°æ­£å¸¸ä½ç½® */
 	Vector<Poker*> _pokers = this->cardsForWaitOut;
 	for (int i = 0; i < _pokers.size(); ++i){
 		auto _poker = _pokers.at(i);
-		_poker->selectedCardBack();		/* ÒÑ³öµÄÅÆ»Ö¸´Î»ÖÃ */
+		_poker->selectedCardBack();		/* å·²å‡ºçš„ç‰Œæ¢å¤ä½ç½® */
 	}
-	//this->arrWaitPlayOut.clear();	/* Çå¿Õ´ı³ö°´Å¥ */
+	//this->arrWaitPlayOut.clear();	/* æ¸…ç©ºå¾…å‡ºæŒ‰é’® */
 
-	/* ½«ÌáÊ¾µÄÆË¿ËÉÏÒÆ£¬±ä³É´ı³öµÄ×´Ì¬ */
+	/* å°†æç¤ºçš„æ‰‘å…‹ä¸Šç§»ï¼Œå˜æˆå¾…å‡ºçš„çŠ¶æ€ */
 	for (int i = 0; i < this->hintCards.size(); ++i){
 		auto _poker = this->hintCards.at(i);
-		_poker->selectedCardOut();	/* ÆË¿Ë±ä³É´ı³ö×´Ì¬ */
+		_poker->selectedCardOut();	/* æ‰‘å…‹å˜æˆå¾…å‡ºçŠ¶æ€ */
 	}
-	this->updateOutState();	/* ÌáÊ¾°´Å¥ºó£¬¸üĞÂ³öÅÆ°´Å¥µÄ×´Ì¬£¬ÕâÀïÖ±½Óµ÷ÓÃupdateOutState£¬¶ø²»ÊÇÖ±½ÓÖÃ³öÅÆ°´Å¥¿É°´ */
+	this->updateOutState();	/* æç¤ºæŒ‰é’®åï¼Œæ›´æ–°å‡ºç‰ŒæŒ‰é’®çš„çŠ¶æ€ï¼Œè¿™é‡Œç›´æ¥è°ƒç”¨updateOutStateï¼Œè€Œä¸æ˜¯ç›´æ¥ç½®å‡ºç‰ŒæŒ‰é’®å¯æŒ‰ */
 }
 
 void HolderPlayer::outCallback(Ref*){
-	/* ²¥·Åµã»÷°´Å¥µÄÒôĞ§ */
+	/* æ’­æ”¾ç‚¹å‡»æŒ‰é’®çš„éŸ³æ•ˆ */
 	MusicController::getInstance()->playPressButtonEffect();
 
-	passMenuItem->setVisible(false);		/* ²»³ö°´Å¥²»¿É¼û */
-	hintMenuItem->setVisible(false);		/* ÌáÊ¾°´Å¥²»¿É¼û */
-	hintMenuItem->setEnabled(false);	/* ÌáÊ¾°´Å¥²»¿É°´ÏÂ */
-	outMenuItem->setVisible(false);		/* ³öÅÆ°´Å¥²»¿É¼û */
-	outMenuItem->setEnabled(false);	/* Ã¿´Î³öÅÆ»òÕßpassºó£¬½«out°´Å¥ÉèÎª²»¿É°´ */
+	passMenuItem->setVisible(false);		/* ä¸å‡ºæŒ‰é’®ä¸å¯è§ */
+	hintMenuItem->setVisible(false);		/* æç¤ºæŒ‰é’®ä¸å¯è§ */
+	hintMenuItem->setEnabled(false);	/* æç¤ºæŒ‰é’®ä¸å¯æŒ‰ä¸‹ */
+	outMenuItem->setVisible(false);		/* å‡ºç‰ŒæŒ‰é’®ä¸å¯è§ */
+	outMenuItem->setEnabled(false);	/* æ¯æ¬¡å‡ºç‰Œæˆ–è€…passåï¼Œå°†outæŒ‰é’®è®¾ä¸ºä¸å¯æŒ‰ */
 
 	passHintSprite->setVisible(false);
 
 	auto _lastOutCard = OutCards::create(this, GameRules::getInstance()->analysePokerValueType(cardsForWaitOut),
 		cardsForWaitOut.size(), cardsForWaitOut.at(cardsForWaitOut.size() - 1));
-	_lastOutCard->retain();		/* ·ÀÖ¹±»ÄÚ´æ¹ÜÀíÆ÷»ØÊÕ */
+	_lastOutCard->retain();		/* é˜²æ­¢è¢«å†…å­˜ç®¡ç†å™¨å›æ”¶ */
 	CC_ASSERT(_lastOutCard != nullptr);
 	this->updateLastOutCards(_lastOutCard);
 
-	this->deleteOutcardInScene();	/* ÔÚ½«cardInScene´æ·ÅĞÂµÄÆË¿ËÊ±£¬ÏÈ½«ÒÔÇ°µÄÔÚSceneµÄÆË¿ËÉ¾³ı */
+	this->deleteOutcardInScene();	/* åœ¨å°†cardInSceneå­˜æ”¾æ–°çš„æ‰‘å…‹æ—¶ï¼Œå…ˆå°†ä»¥å‰çš„åœ¨Sceneçš„æ‰‘å…‹åˆ é™¤ */
 
-	this->setOutcardInScene(cardsForWaitOut);/* ½«³öµÄÅÆ·Åµ½³öÅÆµÄÈİÆ÷Àï£¬´ıÔÚ³öÅÆÇøÓòÏÔÊ¾ */
+	this->setOutcardInScene(cardsForWaitOut);/* å°†å‡ºçš„ç‰Œæ”¾åˆ°å‡ºç‰Œçš„å®¹å™¨é‡Œï¼Œå¾…åœ¨å‡ºç‰ŒåŒºåŸŸæ˜¾ç¤º */
 
 	for (int i = 0; i < cardsForWaitOut.size(); ++i){
 		cardsForWaitOut.at(i)->removeFromParent();
 		this->removeCard(cardsForWaitOut.at(i));
 		this->updateCardPos();
 	}
-	cardsForWaitOut.clear();	/* ´ı³öµÄÅÆ³öÁË£¬¾ÍÒª½«´ı³öÅÆÈİÆ÷Çå¿Õ£¬²»È»ºÍÏÂ´ÎµÄÖØ¸´ÔÚÒ»Æğ»áµ¼ÖÂ´íÎó */
+	cardsForWaitOut.clear();	/* å¾…å‡ºçš„ç‰Œå‡ºäº†ï¼Œå°±è¦å°†å¾…å‡ºç‰Œå®¹å™¨æ¸…ç©ºï¼Œä¸ç„¶å’Œä¸‹æ¬¡çš„é‡å¤åœ¨ä¸€èµ·ä¼šå¯¼è‡´é”™è¯¯ */
 
 	this->showOutcardInScene();
-	this->playOutCardInSceneMusic();	/* ²¥·Å³öÅÆÒôÀÖ */
+	this->playOutCardInSceneMusic();	/* æ’­æ”¾å‡ºç‰ŒéŸ³ä¹ */
 
-	/* Èç¹ûÍæ¼ÒÒÑ¾­³öÍêÅÆ£¬ÓÎÏ·½áÊø */
+	/* å¦‚æœç©å®¶å·²ç»å‡ºå®Œç‰Œï¼Œæ¸¸æˆç»“æŸ */
 	if (this->getPoker().size() == 0){
 		this->setGameOver();
 		return;
 	}
 
 	this->stopCountDown();
-	this->setLastOutCardNull();	/* ³öÅÆºó±ØĞëÉèÖÃlastOutcardÎª¿Õ£¬²»È»ÓÎÏ·Âß¼­»á³ö´í */
-	this->updateOutOrder();	/* ¸üĞÂ³öÅÆË³Ğò */
+	this->setLastOutCardNull();	/* å‡ºç‰Œåå¿…é¡»è®¾ç½®lastOutcardä¸ºç©ºï¼Œä¸ç„¶æ¸¸æˆé€»è¾‘ä¼šå‡ºé”™ */
+	this->updateOutOrder();	/* æ›´æ–°å‡ºç‰Œé¡ºåº */
 }
 
 void HolderPlayer::noCallCallback(Ref*){
@@ -440,20 +440,20 @@ void HolderPlayer::threeScoreCallback(Ref*){
 }
 
 /************************************************************************/
-/*                             ¹Û²ìÕß                                         */
+/*                             è§‚å¯Ÿè€…                                         */
 /************************************************************************/
 void HolderPlayer::addCardForWaitOut(Ref* _data){
-	auto _poker = dynamic_cast<Poker*>(_data);	/* ×ª»¯ÎªPoker*ÀàĞÍ */
+	auto _poker = dynamic_cast<Poker*>(_data);	/* è½¬åŒ–ä¸ºPoker*ç±»å‹ */
 	CC_ASSERT(_poker != nullptr);
 	cardsForWaitOut.pushBack(_poker);
-	GlobalFunc::sort(cardsForWaitOut);	/* ²åÈëºó½øĞĞÅÅĞò */
+	GlobalFunc::sort(cardsForWaitOut);	/* æ’å…¥åè¿›è¡Œæ’åº */
 }
 
 void HolderPlayer::deleteCardForWaitOut(Ref* _data){
 	auto _poker = dynamic_cast<Poker*>(_data);
 	CC_ASSERT(_poker != nullptr);
 	cardsForWaitOut.eraseObject(_poker);
-	/* É¾³ıÅÆ²»ĞèÒªÖØĞÂÅÅĞò */
+	/* åˆ é™¤ç‰Œä¸éœ€è¦é‡æ–°æ’åº */
 }
 
 void HolderPlayer::updateOutState(Ref*){
