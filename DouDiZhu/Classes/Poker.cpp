@@ -1,22 +1,20 @@
-﻿#include "GameScene.h"
-#include "MusicController.h"
+﻿#include "MusicController.h"
 #include "Player.h"
 #include "Poker.h"
 #include "PokerController.h"
 
-Poker::Poker(GameScene* _gameScene, PokerType type, int value){
+Poker::Poker(PokerType type, int value){
 	this->setCanClick(false);	/* 默认不可点击 */
 	this->setSelect(false);
 	this->setPokerType(type);
 	this->setValue(value);
-	this->setGameScene(_gameScene);
 
 	createSprite();		/* 创建两个扑克精灵 */
 	this->showBack();		/* 初始化时显示背面 */
 }
 
-Poker* Poker::create(GameScene* _gameScene, PokerType type, int value /* = 0 */){
-	auto poker = new Poker(_gameScene, type, value);
+Poker* Poker::create(PokerType type, int value /* = 0 */){
+	auto poker = new Poker(type, value);
 	if (poker && poker->init()){
 		poker->autorelease();
 		return poker;
@@ -28,14 +26,14 @@ Poker* Poker::create(GameScene* _gameScene, PokerType type, int value /* = 0 */)
 }
 
 Poker *Poker::clone() const{
-	return create(gameScene, pokerType, value);
+	return create(pokerType, value);
 }
 
 void Poker::createSprite(){
-	auto sprite = PokerController::getInstance()->getPokerWithValue(pokerType, value);
+	auto sprite = PokerController::getInstance()->getCardWithValue(pokerType, value);
 	this->setPoker(sprite);
 	this->addChild(poker);
-	backPoker = PokerController::getInstance()->getPokerWithValue(BACK);		/* 获取背面扑克精灵 */
+	backPoker = PokerController::getInstance()->getCardWithValue(BACK);		/* 获取背面扑克精灵 */
 	this->addChild(backPoker);
 
 	/* 将无长宽的Node设置成和Sprite一样长宽 */
@@ -88,14 +86,14 @@ bool Poker::init(){
 void Poker::selectedCardOut(){
 	this->isSelect = true;
 	this->setPosition(Point(this->getPositionX(), this->getPositionY() + 10));
-	NotificationCenter::getInstance()->postNotification(ADDCARDFORWAITOUT);
+	NotificationCenter::getInstance()->postNotification(ADDCARDFORWAITOUT, this);
 }
 
 void Poker::selectedCardBack(){
 	/* 从出牌中移除该张牌 */
 	isSelect = false;
 	this->setPosition(Point(this->getPositionX(), this->getPositionY() - 10));
-	NotificationCenter::getInstance()->postNotification(DELETECARDFORWAITOUT);
+	NotificationCenter::getInstance()->postNotification(DELETECARDFORWAITOUT, this);
 }
 
 void Poker::showFront(){

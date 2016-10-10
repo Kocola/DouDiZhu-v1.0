@@ -10,10 +10,10 @@ class GameScene;
 
 class Poker : public Node{
 private:
-	Poker(GameScene* _gameScene, PokerType type, int value);
+	Poker(PokerType type, int value);
 public:
 	virtual bool init();
-	static Poker* create(GameScene* _gameScene, PokerType type, int value = 0);
+	static Poker* create(PokerType type, int value = 0);
 	/* 克隆一个当前类的实例 */
 	Poker* clone() const;
 public:
@@ -23,7 +23,7 @@ public:
 	void selectedCardBack();	/* 选择的牌已经被选择，那么将该牌放回 */
 private:
 	CC_SYNTHESIZE(bool, isSelect, Select);		/* 是否已选 */
-	CC_SYNTHESIZE(GameScene*, gameScene, GameScene);		/* 设置游戏场景 */
+	//CC_SYNTHESIZE(GameScene*, gameScene, GameScene);		/* 设置游戏场景 */
 	CC_SYNTHESIZE(bool, canClick, CanClick);		/* 是否能被点击 */
 	CC_SYNTHESIZE(PokerType, pokerType, PokerType);		/* 花色 */
 	CC_SYNTHESIZE(int, value, Value);		/* 牌值 */

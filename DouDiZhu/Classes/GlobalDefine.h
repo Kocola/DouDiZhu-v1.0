@@ -13,11 +13,17 @@
 #define HEIGHTBETWEENHEADIMAGEANDPLAYER 0		/* 玩家和头像之间高度 */
 #define BUTTON_INTERVAL 20		/* 按钮之间的间隙 */
 #define WIDTHBETWEENSCREENANDHEADIMAGE (cocos2d::Director::getInstance()->getVisibleSize().width / 12)
+#define MAXCALLLANDLORDSCORE 3
 
 const std::string UPDATEOUTSTATE = "UpdateOutState";
 const std::string DELETECARDFORWAITOUT = "DeleteCardForWaitOut";
 const std::string ADDCARDFORWAITOUT = "AddCardForWaitOut";
 const std::string UPDATELASTOUTCARD = "UpdateLastOutCard";
+const std::string UPDATECALLLANDLORDORDER = "UpdateCallLandlordOrder";
+const std::string UPDATEOUTCARDORDER = "UpdateOutcardOrder";
+const std::string SETGAMEOVER = "SetGameOver";
+const std::string SETGAMESTATECHOOSELANDLORD = "SetGameStateChooseLandlord";
+const std::string PLAYEROUTCARDINSCENEMUSIC = "PlayOutCardInSceneMusic";
 
 enum PokerType{
 	DIAMOND = 0,		/* 方块 */

@@ -3,6 +3,7 @@
 #include "GlobalFunc.h"
 #include "HeadImage.h"
 #include "MusicController.h"
+#include "OutCards.h"
 #include "Player.h"
 #include "PlayerOrder.h"
 
@@ -14,14 +15,9 @@
 
 #define HORIZONAL_INTERVAL_HEADIMAGE_PLAYERORDER 10	/* 头像和玩家命令之间的水平空隙是10 */
 
-Player::Player(GameScene* _gameScene, PlayerPosType _playerPosType){
-	this->gameScene = _gameScene;
-	this->playerPosType = _playerPosType;
-}
-
-Player* Player::create(GameScene* _gameScene, PlayerPosType _playerPosType){
-	auto pRet = new(std::nothrow) Player(_gameScene, _playerPosType);
-	if (pRet && pRet->init()){
+Player* Player::create(PlayerPosType _playerPosType){
+	auto pRet = new(std::nothrow) Player();
+	if (pRet && pRet->init(_playerPosType)){
 		pRet->autorelease();
 		return pRet;
 	}else{
@@ -31,19 +27,26 @@ Player* Player::create(GameScene* _gameScene, PlayerPosType _playerPosType){
 	}
 }
 
-bool Player::init(){
+bool Player::init(PlayerPosType _playerPosType){
+	this->playerPosType = _playerPosType;
+
 	isCall = false;
 	callLandlordScore = 0; /* 初始化叫地主的分数是0 */
 	isLandlord = false;
 	isOutPoker = false;
 
-	initPos();	/* 初始化所有位置相关的数据 */
-
-	initHeadImage();
-	initPlayerOrder();
-	initCountDown();
-
 	displayOutcardMaxWidth = 280;		/* 出牌显示的最大宽度 */
+
+	/* 这些的初始化顺序要特别小心 */
+	initHeadImagePos();
+	initHeadImage();
+
+	initOutcardPos();
+
+	initPlayerOrder();
+
+	initCountDownPos();
+	initCountDown();
 
 	return true;
 }
@@ -74,12 +77,7 @@ void Player::initCountDown(){
 	this->addChild(countDown);
 	//countDown->setScale(0.5);	/* countDown本身无大小，因此直接调用setScale会出现意想不到的错误 */ 
 	countDown->setCountDownScale(0.7);
-}
-
-void Player::initPos(){
-	initHeadImagePos();
-	initOutcardPos();
-	initTimerPos();
+	countDown->setVisible(false);
 }
 
 void Player::initHeadImagePos(){
@@ -92,18 +90,36 @@ void Player::initHeadImagePos(){
 		return;
 	}
 
-	auto _cardSize = PokerController::getInstance()->getPokerSize();
-	auto _headBoxSize = HeadImage::create()->getHeadBoxSize();	/* 获取头像框的大小 */
+	//auto _cardSize = PokerController::getInstance()->getPokerSize();
+	//auto _headBoxSize = HeadImage::create()->getHeadBoxSize();	/* 获取头像框的大小 */
 
-	auto _curPlayerWorldPosY = this->convertToWorldSpace(this->getPosition()).y;	/* 获取当前Player中心点在世界坐标系的坐标 */
-	auto _headImageWorldPosY = _curPlayerWorldPosY + _cardSize.height / 2 + _headBoxSize.height / 2 + HEIGHTBETWEENHEADIMAGEANDPLAYER;
-	auto _headImageWorldPosX = WIDTHBETWEENSCREENANDHEADIMAGE;
+	//auto _curPlayerWorldPosY = 169;//BUG :  this->convertToWorldSpace(this->getPosition()).y;	/* 获取当前Player中心点在世界坐标系的坐标 */
+	//auto _headImageWorldPosY = _curPlayerWorldPosY + _cardSize.height / 2 + _headBoxSize.height / 2 + HEIGHTBETWEENHEADIMAGEANDPLAYER;
+	//auto _headImageWorldPosX = WIDTHBETWEENSCREENANDHEADIMAGE;
 
-	/* 计算头像相对于Player的坐标 */
-	auto _headImagePos = this->convertToNodeSpace(Point(_headImageWorldPosX, headImagePosY));
+	///* 计算头像相对于Player的坐标 */
+	//auto _headImagePos = this->convertToNodeSpace(Point(_headImageWorldPosX, _headImageWorldPosY));
 
-	headImagePosX = _headImagePos.x;
-	headImagePosY = _headImagePos.y;
+	//headImagePosX = _headImagePos.x;
+	//headImagePosY = _headImagePos.y;
+	headImagePosX = -400;
+	headImagePosY = 207;
+}
+
+void Player::initCountDownPos(){
+	const float INTERVALBETWEENTIMERANDHEADIMAGE = 30.0;	/*倒计时器的位置和头像之间的X轴距离，默认设置为20 */
+	auto _headImageX = headImage->getPosition().x;
+    auto _headBoxSize = HeadImage::create()->getHeadBoxSize();	/* 获取头像框的大小 */
+	switch (playerPosType){
+	case PLAYERINLEFT: displayTimerStartX = _headImageX + (_headBoxSize.width / 2 + INTERVALBETWEENTIMERANDHEADIMAGE);
+		break;
+	case PLAYERINMIDDLE: displayTimerStartX = 0;
+		break;
+	case PLAYERINRIGHT: displayTimerStartX = _headImageX - (_headBoxSize.width / 2 + INTERVALBETWEENTIMERANDHEADIMAGE);
+		break;
+	default:CC_ASSERT(0 != 0);
+		break;
+	}
 }
 
 void Player::initOutcardPos(){
@@ -119,7 +135,7 @@ void Player::initOutcardPos(){
 	case PLAYERINMIDDLE:
 		displayOutcardMiddleX = 0;
 		displayOutcardStartX = displayOutcardMiddleX - displayOutcardMaxWidth / 2;
-		displayOutcardY = this->headImage->getPosition().y + 15;
+		displayOutcardY = this->headImage->getPosition().y - _headImageWidth / 2;
 		break;
 	case PLAYERINRIGHT:
 		displayOutcardStartX = _headImagePosX - (_headImageWidth / 2 + INTERVALBETWEENOUTCARDANDHEADIMAGE + displayOutcardMaxWidth);
@@ -131,7 +147,7 @@ void Player::initOutcardPos(){
 }
 
 void Player::insertCards(const Vector<Poker*>& _pokers){
-	this->removeAllCards();	/* 删除所有已有的扑克 */
+	this->removeAllCardsFromParent();	/* 删除所有已有的扑克 */
 	for (auto it : _pokers){	/* 将新的扑克插入 */
 		pokers.pushBack(it);
 	}
@@ -153,11 +169,10 @@ void Player::removeCard(Poker* _poker){
 	pokers.eraseObject(_poker);
 }
 
-void Player::removeAllCards(){
+void Player::removeAllCardsFromParent(){
 	for (int i = 0; i < pokers.size(); ++i){
 		pokers.at(i)->removeFromParent();
 	}
-	pokers.clear();
 }
 
 void Player::setHeadImagePos(Point _pointInWorld){
@@ -170,22 +185,12 @@ void Player::setHeadImagePos(Point _pointInWorld){
 
 	/* 更新出牌位置和倒计时位置 */
 	this->initOutcardPos();
-	this->initTimerPos();
+	this->initCountDownPos();
 }
 
-void Player::initTimerPos(){
-	const float INTERVALBETWEENTIMERANDHEADIMAGE = 20.0;	/* 待出的牌的位置和头像之间的X轴距离，默认设置为20 */
-	auto _headImageX = headImage->getPosition().x;
-	switch (playerPosType){
-	case PLAYERINLEFT: displayTimerStartX = _headImageX + INTERVALBETWEENTIMERANDHEADIMAGE;
-		break;
-	case PLAYERINMIDDLE: displayTimerStartX = 0;
-		break;
-	case PLAYERINRIGHT: displayTimerStartX = _headImageX - INTERVALBETWEENTIMERANDHEADIMAGE;
-		break;
-	default:CC_ASSERT(0 != 0);
-		break;
-	}
+void Player::setOrderVisible(bool _isVisible){
+	CC_ASSERT(this->playerOrder != nullptr);
+	this->playerOrder->setVisible(_isVisible);
 }
 
 void Player::displayCard(const Vector<Poker*>& _pokers, float _displayMaxWidth, float _displayStartX, float _displayMiddleX, float _displayY, bool isAdded, const float SCALE /* = 1.0 */){
@@ -213,25 +218,30 @@ void Player::displayCard(const Vector<Poker*>& _pokers, float _displayMaxWidth, 
 														，那么获取其Y坐标，如果统一的Y坐标，那么会产生BUG*/
 		}
 		_pokers.at(i)->setScale(SCALE);
+		_pokers.at(i)->setVisible(true);
 		_pokers.at(i)->showFront();
 		_pokers.at(i)->setPosition(Point(_displayStartX + cardWidth / 2 + i * intervalBetweenCards, _displayY));
 	}
 }
 
 void Player::showOutcardInScene(){
-	if (outcardsInScene.size() == 0) return;	/* 如果卡牌数量是0，那么不需要排序 */
+	if (cardsInScene.size() == 0) return;	/* 如果卡牌数量是0，那么不需要排序 */
 	CC_ASSERT(headImage != nullptr);	/* 调用这个函数时，headImage必须已经设置好 */
 	const float SCALE = 0.6;
 	//float _displayOutcardMiddleX = displayOutcardStartX + displayOutcardMaxWidth / 2;	/* 计算显示出牌的中心位置 */
 	/* 将头像的底部Y坐标作为所出牌的中心Y坐标 */
 	//float _displayOutcardY = this->headImage->getPosition().y - this->headImage->getContentSize().height / 2;
-	displayCard(outcardsInScene, displayOutcardMaxWidth, displayOutcardStartX, displayOutcardMiddleX, displayOutcardY, false, SCALE);
+	displayCard(cardsInScene, displayOutcardMaxWidth, displayOutcardStartX, displayOutcardMiddleX, displayOutcardY, false, SCALE);
+	/* 已出的牌不可以点击 */
+	for (int i = 0; i < cardsInScene.size(); ++i){
+		cardsInScene.at(i)->setCanClick(false);
+	}
 }
 
-void Player::showCountDown(float _totalCount /* = 15 */){
-	countDown->setCountDownUpper(_totalCount);
-	countDown->startCountDown();
+void Player::startCountDown(float _totalCount /* = 15 */, const std::function<void(void)>& _callback /* = []() */){
 	countDown->setVisible(true);
+	countDown->setCountDownUpper(_totalCount);
+	countDown->startCountDown(_callback);
 }
 
 void Player::stopCountDown(){
@@ -241,14 +251,14 @@ void Player::stopCountDown(){
 }
 
 void Player::setOutcardInScene(const Vector<Poker*>& _pokers){
-	outcardsInScene = _pokers;
+	cardsInScene = _pokers;
 }
 
 void Player::deleteOutcardInScene(){
-	for (int i = 0; i < this->outcardsInScene.size(); ++i){
-		outcardsInScene.at(i)->removeFromParent();
+	for (int i = 0; i < this->cardsInScene.size(); ++i){
+		cardsInScene.at(i)->removeFromParent();
 	}
-	outcardsInScene.clear();
+	cardsInScene.clear();
 }
 
 void Player::updateCallLandlordState(){
@@ -273,7 +283,46 @@ void Player::updateCallLandlordState(){
 	playerOrder->setVisible(true);
 }
 
-//void Player::test(const Vector<Poker*>& _pokers){
-//	showOutcardInScene(_pokers);
-//	showCountDown(18);
-//}
+void Player::updateCallLandlordOrder(){
+	/* 发送消息更新叫地主的顺序 */
+	NotificationCenter::getInstance()->postNotification(UPDATECALLLANDLORDORDER);
+}
+
+void Player::updateOutOrder(){
+	/* 发送更新出牌顺序的消息 */
+	NotificationCenter::getInstance()->postNotification(UPDATEOUTCARDORDER);
+}
+
+void Player::setGameOver(){
+	/* 发送消息设置游戏状态为结束 */
+	NotificationCenter::getInstance()->postNotification(SETGAMEOVER);
+}
+
+void Player::setGameStateChooseLandlord(){
+	/* 发送消息设置游戏状态为选择地主 */
+	NotificationCenter::getInstance()->postNotification(SETGAMESTATECHOOSELANDLORD);
+}
+
+void Player::updateLastOutCards(OutCards* lastOutcard){
+	Ref* _lastOutcard = static_cast<Ref*>(lastOutcard);
+	NotificationCenter::getInstance()->postNotification(UPDATELASTOUTCARD, lastOutcard);
+}
+
+void Player::playOutCardInSceneMusic(){
+	NotificationCenter::getInstance()->postNotification(PLAYEROUTCARDINSCENEMUSIC);
+}
+
+void Player::updateHeadImage(){
+	PlayerPosType _playerPosType = this->getPlayerPosType();
+	HeadImageOrientation _headImageOrientation = _playerPosType != PLAYERINRIGHT ? RIGHT : LEFT;
+	if (this->getLandlord() == true){
+		headImage->setHeadImageType(LANDLORD, _headImageOrientation);
+	}else{
+		headImage->setHeadImageType(FARMER, _headImageOrientation);
+	}
+}
+
+void Player::setReady(bool _ready){
+	this->playerOrder->setVisible(true); 
+	this->ready = _ready; 
+}

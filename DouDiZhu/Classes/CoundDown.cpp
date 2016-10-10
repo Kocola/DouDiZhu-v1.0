@@ -1,5 +1,7 @@
 #include "CountDown.h"
 
+const float DEFAULTCOUNTDOWNUPPER = 15.0f;
+
 bool CountDown::init(){
 	if (!Layer::init()){
 		return false;
@@ -10,7 +12,7 @@ bool CountDown::init(){
 
 	totalSpriteNum = 2;
 	curSpriteIndex = 0;
-	countDownUpper = 15; /* 倒计时默认是15S */
+	countDownUpper = DEFAULTCOUNTDOWNUPPER; /* 倒计时默认是15S */
 	counting = countDownUpper;
 
 	sprite = Sprite::create();
@@ -39,20 +41,27 @@ void CountDown::countDown(float delta){
 
 	/* 计时时间已到 */
 	if (counting <= 0){
-		this->unschedule(schedule_selector(CountDown::countDown));
-		//counting = countDownUpper;	/* 重置计时初始值 */
+		callbackFunc();
+		this->stopCountDown();
 	}else{
 		labelAtlas->setString(StringUtils::format("%d", (int)counting));
 	}
 }
 
-void CountDown::startCountDown(){
+void CountDown::resetCallback(){
+	callbackFunc = [](){};
+}
+
+void CountDown::startCountDown(const std::function<void(void)>& _callback /* = []() */){
+	this->setCallback(_callback);
 	this->counting = countDownUpper;	/* 每次显示前都要重置计数 */
 	this->schedule(schedule_selector(CountDown::countDown), 0.2f);
 }
 
 void CountDown::stopCountDown(){
+	this->setVisible(false);
 	this->unschedule(schedule_selector(CountDown::countDown));
+	countDownUpper = DEFAULTCOUNTDOWNUPPER;
 }
 
 void CountDown::setCountDownScale(float _scale){

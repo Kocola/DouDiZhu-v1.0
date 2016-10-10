@@ -1,6 +1,7 @@
 ﻿#include "PokerController.h"
 
 PokerController* PokerController::pokerController = nullptr;
+Vector<Poker*> PokerController::pokers;
 
 PokerController* PokerController::getInstance(){
 	if (pokerController == nullptr){
@@ -29,7 +30,7 @@ bool PokerController::init(){
 	return true;
 }
 
-int PokerController::calcPokerValue(PokerType type, int order /* = 0 */){
+int PokerController::calcCardValue(PokerType type, int order /* = 0 */){
 	int result = 0;
 	switch (type){
 	case BLACKJOKER:
@@ -41,8 +42,54 @@ int PokerController::calcPokerValue(PokerType type, int order /* = 0 */){
 }
 
 /* 根据牌值返回对应的精灵，此精灵位置没有经过指定 */
-Sprite* PokerController::getPokerWithValue(PokerType type, int order){
-	int result = calcPokerValue(type, order);
+Sprite* PokerController::getCardWithValue(PokerType type, int order){
+	int result = calcCardValue(type, order);
 	std::string str = StringUtils::format("%d.png", result);
 	return Sprite::createWithSpriteFrameName(str);
-} 
+}
+
+Vector<Poker*> PokerController::getRandomCards(){
+	initCards();
+	randomCards();
+	return pokers;
+}
+
+void PokerController::initCards(){
+	pokers.clear();
+	/* 方块DIAMOND */
+	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
+		auto poker = Poker::create(DIAMOND, i);
+		pokers.pushBack(poker);
+	}
+	/* 梅花HEART */
+	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
+		auto poker = Poker::create(CLUB, i);
+		pokers.pushBack(poker);
+	}
+	/* 红桃HEART */
+	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
+		auto poker = Poker::create(HEART, i);
+		pokers.pushBack(poker);
+	}
+	/* 黑桃SPADE */
+	for (int i = 1; i <= SINGLETYPECARDNUM; ++i){
+		auto poker = Poker::create(SPADE, i);
+		pokers.pushBack(poker);
+	}
+	/* 大小王 */
+	pokers.pushBack(Poker::create(BLACKJOKER));
+	pokers.pushBack(Poker::create(REDJOKER));
+}
+
+int PokerController::randomInt(int begin, int end){
+	if (begin > end) std::swap(begin, end);
+	int ret = begin + rand() % (end - begin);
+	return ret;
+}
+
+void PokerController::randomCards(){
+	srand((unsigned)time(0));	/* 开启随机种子 */
+	for (int i = pokers.size(); i > 0; --i){
+		pokers.swap(i - 1, randomInt(0, i));
+	}
+}

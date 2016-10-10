@@ -2,173 +2,128 @@
 #define __GAME_SCENE_H__
 
 #include "cocos2d.h"
+#include "Player.h"
 #include "Poker.h"
 
 using namespace cocos2d;
 
-class Player;
+class ComputerPlayer;
 class GameRules;
 class OutCards;
 class HeadImage;
+class HolderPlayer;
 class PlayerOrder;
 
 class GameScene : public Layer{
 public:
-	GameScene();
-	~GameScene();
 	static Scene* createScene();
 	virtual bool init();
 	CREATE_FUNC(GameScene);
-
+public:
 	virtual void update(float delta);
-private:
-	bool initBackground();	/* 初始化背景 */
-	bool initPlayer();	/* 初始化玩家 */
-	bool initPoker();	/* 初始化扑克 */
-	bool shuffleCards();	/* 洗牌程序 */
-	bool initButton();	/* 创建按钮 */
-	bool initHeadImage();	/* 初始化头像，包含头像和头像框 */
-	bool initPlayerOrder();	/* 初始化玩家命令状态，初始化全部为 准备 */
-	bool initCallLandlord();	/* 初始化叫地主 */
 private:
 	void initObserver();	/* 初始化观察者 */
 private:
-	bool deletePoker();	/* 游戏结束时，清理Poker资源 */
-	bool deletePlayer();	/* 游戏结束时，清理Player资源 */
-	bool deleteHeadImage();	/* 游戏结束时，清理玩家头像资源 */
-	bool deletPlayerOrder();	/* 游戏结束时，清理玩家命令状态 */
+	void initBackground();	/* 初始化背景 */
 private:
-	/* 准备 */
+	/************************************************************************/
+	/*                                   游戏开始                                                 */
+	/************************************************************************/
+	void initPlayer();	/* 初始化玩家 */
+	void initPoker();	/* 初始化扑克 */
+	void initCallLandlord() { this->callLandlordOrder = 0; }	/* 初始化叫地主 */
+	void gameStart(float delta);/* 游戏开始，或者重新开始 */
+	void gameStart();
+private:
+	/************************************************************************/
+	/*                                 游戏运行                                                           */
+	/************************************************************************/
+	/*                                     准备                                                              */
 	void ready();
 	bool checkAllReady();	/* 检查所有人是否都准备好 */
-	/* 发牌 */
+	/*                                    发牌                                                               */
 	void dealCard();	/* 发牌 */
-	//void dealCard(Player* _player, Vector<Poker*>& _pokers, bool displayFront = false);/*Player::insertCards替代 */
 	void initLandlordCard();	/* 初始化属于地主的三张牌 */
 	void displayLandlordCard();	/*在某个位置显示属于地主的三张牌 */
-	/* 叫地主 */
-	void setCallLandlordOrderState(Player* _player, int _score);	/* 设置叫地主时玩家的命令状态 */
-	void computerCallLandlord(Player* _computer);
-	void playerCallLandlord();	/* 手动玩家叫地主 */
+	/*                                  叫地主                                                              */
 	void callLandlord();	/* 叫地主模块 */
-	/* 选择地主 */
+	/*                                选择地主                                                             */
 	void chooseLandlord();
-	void outLandlordCard();	/* 发放属于地主的三张牌 */
-	/* 出牌 */
-	void initOutCardOrder();
-	Vector<Poker*> searchOutCardForComputer(Player* _player);	/* 电脑：针对上家的出牌，检查是否有能够出的牌，返回能出的牌的集合 */
-	Vector<Poker*> searchOutCardForPlayer(Player* _player);	/* 玩家：针对上家的出牌，检查是否有能够出的牌，返回能出的牌的集合 */
+	void updateHeadImage();
+	void outCardForLandlord();	/* 发放属于地主的三张牌 */
+	/*                                  出牌                                                                 */
+	void initOutCardOrder();	/* 初始化第一个出牌的是Players的第0个 */
+	void initPlayerVector();	/* 初始化玩家容器，这是为了通过outCardOrder控制出牌， 便于管理*/
+	void initLastOutCard();	/* 初始化上一手牌 */
 	void outCardInOrder(float delta);
-	void outCardForPlayer(Player* _player);	/* 轮到玩家出牌 */
-	void outCardForComputer(Player* _computer);	/* 轮到电脑出牌 */
-	void outCardForLandlord();	/* 给地主出牌 */
+public:
+	void outCardInSceneMusic();/* 播放出牌在场景上时的音效 */
+	void deleteCardInScene();/* 当前玩家出牌时，删除留在场景中的上一手扑克 */
+	
 private:
-	/* 回调函数 */
-	void start_callback(Ref*);
-
-	void hint_callback(Ref*);
-	void out_callback(Ref*);
-
-public:
-	CC_SYNTHESIZE(Vector<Poker*>, arrWaitPlayOut, ArrWaitPlayOut);
-public:
-	void addWaitPlayOut(Poker* poker) { this->arrWaitPlayOut.pushBack(poker); }
-	void deleteWaitPlayOut(Poker* poker) { this->arrWaitPlayOut.eraseObject(poker); }
-
-	void sort();	/* 对扑克进行排序 */
-	/* 更新出牌按钮的状态，该函数供Poker::updateOutState调用 */
-	void updateOutState();
-	/* 更新出牌按钮的状态*/
-	void setOutState(bool state){ this->out->setEnabled(state); }
-	/* 隐藏叫分按钮 */
-	void setCallLandlordButtonUnVisible();
-	/* 隐藏玩家命令状态 */
-	void setPlayerOrderStateUnVisible();
-public:
-	/* 出牌，将牌放在场景上 */
-	void outCardInScene();
-	/* 播放出牌在场景上时的音效 */
-	void outCardInSceneMusic();
-	/* 当前玩家出牌时，删除留在场景中的上一手扑克 */
-	void deleteCardInScene();
-	/* 游戏开始，或者重新开始 */
-	void gameStart(float delta);
-	/* 游戏结束 */
-	void gameOver();
-public:
-	/* 手动玩家，这里值的是持有设备的玩家自己 */
-	Player* getManualPlayer() const { return player; }
-	/* 当前出牌者是否是持有当前设备的玩家，即可按出牌和不出按钮的玩家 */
-	bool isCurAndManualPlayer() const;
-	/* 修改结构添加的代码 */
-public:
-	void updateLastOutcards(OutCards* _outCards) { this->lastOutCard = _outCards; }
-	void updateOutOrder() { this->outcardOrder = (this->outcardOrder + 1) % 3; }
-	void playerOutCards(Player* _player, std::function<void(OutCards*)>& _updateLastOutcards, std::function<void(void)>& _updateOutOrder);
+	/************************************************************************/
+	/*                                        游戏结束                                                    */
+	/************************************************************************/
+	bool isWin();	/* 判断玩家是胜利还是输 */
+	void deletePlayer();	/* 游戏结束时，清理Player资源 */
+	void deleteCardInTop();		/* 删除显示在屏幕顶部的扑克 */
+	void gameOver();/* 游戏结束 */
 private:
-	/* discarded */
-	//bool cmp_sort(const Poker* a, const Poker* b);		/* 扑克排序依赖的函数 */
-	void updatePokerPosAndRemovePoker(Ref* data);
-	int randomInt(int begin, int end);
-	//void Knuth_Durstenfeld_Shuffle();		/* 洗牌算法 */
+	/************************************************************************/
+	/*                                        游戏动画                                                    */
+	/************************************************************************/
 	void runWinAnimation();
 	void runLostAnimation();
-
-	void updateHeadImage(); /* 更新头像 */
-
-	void deleteCardInTop();		/* 删除显示在屏幕顶部的扑克 */
-private:
-	/* 判断最高分，使得当某个玩家喊出最高分时可以终止叫分 */
-	void isMaxCallLandlordScore(Player* player);
-	/* 电脑端叫分程序 */
-	int automaticCallLandlord();
-
 public:
+	/************************************************************************/
+	/*                                       获取和设置状态                                          */
+	/************************************************************************/
+	/* 获取当前游戏状态 */
+	GAMESTATE getGameState() const { return this->gameState; }
+	void setGameState(GAMESTATE _gameState) { this->gameState = _gameState; }
+	/* 获取当前的游戏玩家 */
+	Player* getCurPlayer() const { CC_ASSERT(players.size() != 0); return players.at(outcardOrder); }
+	/* 获取上一手扑克 */
+	OutCards* getLastOutCard() const { CC_ASSERT(lastOutCard != nullptr); return this->lastOutCard; }
+	void setPlayerOrderStateUnVisible();
+public:
+	/************************************************************************/
+	/*                              观察者回调函数                                        */
+	/************************************************************************/
 	/* 更新叫分的ID，使下一个人叫分，如果当前顺序是4，那么进入决定地主阶段 */
 	void updateCallLandlordOrder(Ref*);
 	/* 更新出牌的顺序 */
 	void updateOutCardOrder(Ref*);
 	/* 更新桌面上一手牌 */
 	void updateLastOutCards(Ref* _data);
-
+	/* 设置游戏结束的状态 */
+	void setGameOver(Ref*);
+	/* 设置游戏状态为选择地主的状态 */
+	void setGameStateChooseLandlord(Ref*);
+	/* 播放出牌在桌面上的对应音乐 */
+	void playOutCardInSceneMusic(Ref*);
+	/************************************************************************/
+	/*                                成员变量                                      */
+	/************************************************************************/
 private:
-	Player* player;	/* 手动玩家 */
-	HeadImage* playerHeadImage;		/* 手动玩家头像 */
-	PlayerOrder* playerOrder;	/* 手动玩家的当前命令状态，包含准备，不出，叫分等 */
-	Player* computerPlayer_one;	/* 电脑玩家1 */
-	HeadImage* computerPlayer_one_headImage;		/* 电脑玩家1头像 */
-	PlayerOrder* computerPlayer_one_order;	/* 电脑玩家1命令状态 */
-	Player* computerPlayer_two;	/* 电脑玩家2 */
-	HeadImage* computerPlayer_two_headImage;		/* 电脑玩家2头像 */
-	PlayerOrder* computerPlayer_two_order;	/* 电脑玩家2命令状态 */
+	HolderPlayer* player;	/* 手动玩家 */
+	ComputerPlayer* computerPlayer_one;	/* 电脑玩家1 */
+	ComputerPlayer* computerPlayer_two;	/* 电脑玩家2 */
 
 	Player* landlordPlayer;	/* 保存地主指针 */
-
 	Vector<Player*> players;	/* 存放当前所有的三位玩家，其中第一个是地主 */
+private:
 	int outcardOrder; /* 当前应该出牌的玩家，和players协作 */
-	Vector<Poker*> pokers;	/* 扑克 */
-	Vector<Poker*> hintPokers;		/* 提示要出的牌 */
 	int callLandlordOrder;	/* 叫地主顺序 */
-private:
-	MenuItemSprite* pass;	/* 不出按钮 */
-	MenuItemSprite* hint;	/* 提示按钮 */
-	MenuItemSprite* out;	/* 出牌按钮 */
-
-	MenuItemSprite* nocall;	/* 不叫按钮 */
-	MenuItemSprite* call_one;	/* 叫一分 */
-	MenuItemSprite* call_two;	/* 叫二分 */
-	MenuItemSprite* call_three;	/* 叫三分 */
-
-	MenuItemSprite* btn_start;	/* 开始游戏按钮 */
-private:
 	GAMESTATE gameState;
+private:
+	Vector<Poker*> pokers;	/* 扑克 */
 	OutCards* lastOutCard;	/* 上一次的出牌信息 */
-	Vector<Poker*> cardsInScene;	/* 出在Scene的牌集合 */
 	Vector<Poker*> cardForLandlord;	 /* 属于地主的多余三张牌 */
 	Vector<Poker*> cardDisplayInTop;	/* 显示在屏幕顶部的属于地主的三张牌 */
+private:
 	Sprite* winSprite;
 	Sprite* lostSprite;
-	Sprite* passHint;	/* 没有牌打得过上家的提示 */
 };
 
 #endif

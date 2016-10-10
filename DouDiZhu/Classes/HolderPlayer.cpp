@@ -5,6 +5,33 @@
 #include "OutCards.h"
 #include "PlayerOrder.h"
 
+HolderPlayer* HolderPlayer::create(PlayerPosType _playerPosType){
+	auto pRet = new HolderPlayer();
+	if (pRet && pRet->init(_playerPosType)){
+		pRet->autorelease();
+		return pRet;
+	}else{
+		delete pRet;
+		pRet = nullptr;
+		return nullptr;
+	}
+}
+
+bool HolderPlayer::init(PlayerPosType _playerPosType){
+	if (!Player::init(_playerPosType)) return false;
+
+	lastOutCard = nullptr;
+
+	return true;
+}
+
+void HolderPlayer::initResource(){
+	initObserver();
+	initCardPos();
+	initMenuItemSprite();
+	initPassHintSprite();
+}
+
 void HolderPlayer::initObserver(){
 	/* 添加向待出牌容器添加牌的观察者 */
 	NotificationCenter::getInstance()->addObserver(this,
@@ -37,14 +64,6 @@ void HolderPlayer::initMenuItemSprite(){
 	auto _start_pressed = Sprite::create("Image/btn_start_selected.png");
 	startMenuItem = MenuItemSprite::create(_start, _start_pressed, 
 		CC_CALLBACK_1(HolderPlayer::startCallback, this));
-
-	/* 不出按钮 */
-	auto _pass = Sprite::create("Image/btn_pass.png");
-	auto _pass_pressed = Sprite::create("Image/btn_pass_selected.png");// Sprite::createWithSpriteFrame(_pass->getSpriteFrame());	/* 利用精灵帧来复制创建一个精灵 */
-	auto _pass_disabled = Sprite::create("Image/btn_pass.png");
-	passMenuItem = MenuItemSprite::create(_pass, _pass_pressed, 
-		CC_CALLBACK_1(HolderPlayer::passCallback, this));
-	//out->setCallback(CC_CALLBACK_1(GameScene::pass_callback, this)); /* 这样写会出错，为什么？*/ 
 
 	/* 不出按钮 */
 	auto _pass = Sprite::create("Image/btn_pass.png");
@@ -130,9 +149,10 @@ void HolderPlayer::initMenuItemSprite(){
 	auto _call_two_pos = Point(visibleSize.width / 2 + twoScoreMenuItem->getContentSize().width / 2 + BUTTON_INTERVAL / 2,
 		POKER_HEIGHT + DISPLAYCARDHEIGHT + twoScoreMenuItem->getContentSize().height / 2 + 15);
 	_call_two_pos = this->convertToNodeSpace(_call_two_pos);
-	oneScoreMenuItem->setPosition(_call_two_pos);
+	twoScoreMenuItem->setPosition(_call_two_pos);
 	auto _call_three_pos = Point(visibleSize.width / 2 + BUTTON_INTERVAL / 2 + twoScoreMenuItem->getContentSize().width + BUTTON_INTERVAL + threeScoreMenuItem->getContentSize().width / 2,
 		POKER_HEIGHT + DISPLAYCARDHEIGHT + threeScoreMenuItem->getContentSize().height / 2 + 15);
+	_call_three_pos = this->convertToNodeSpace(_call_three_pos);
 	threeScoreMenuItem->setPosition(_call_three_pos);
 
 	/* 将MenuItemSprite添加到Menu里显示 */
@@ -172,15 +192,75 @@ void HolderPlayer::initPassHintSprite(){
 	passHintSprite = Sprite::create("Image/passhint.png");	/* 无牌打得过上家的提示 精灵 */
 	auto _hint_btn_pos = hintMenuItem->getPosition();
 	auto _hint_btn_size = hintMenuItem->getContentSize();
-	auto _pass_hint_pos = Point(_hint_btn_pos.x, _hint_btn_pos.y + _hint_btn_size.height / 2 + 15 + passHint->getContentSize().height / 2);
-	_pass_hint_pos = this->convertToNodeSpace(_pass_hint_pos);
-	passHint->setPosition();
-	this->addChild(passHint);
-	passHint->setVisible(false);	/* 初始不可见 */
+	auto _pass_hint_pos = Point(_hint_btn_pos.x, _hint_btn_pos.y + _hint_btn_size.height / 2 + 15 + passHintSprite->getContentSize().height / 2);
+	//_pass_hint_pos = this->convertToNodeSpace(_pass_hint_pos);
+	passHintSprite->setPosition(_pass_hint_pos);
+	this->addChild(passHintSprite);
+	passHintSprite->setVisible(false);	/* 初始不可见 */
 }
 
-void HolderPlayer::outCard(OutCards* _lastOutcards, std::function<void(OutCards*)>& _updateOutcardsCallback, std::function<void>& _updateOutcardOrderCallback){
+void HolderPlayer::updateOutState(){
+	/* 这里的lastOutCard每次只有待轮到自己出牌时才会非空，如果不是自己出牌必须置空 */
 
+	OutCards* _lastOutCard = this->lastOutCard;
+	if (_lastOutCard == nullptr) return;	/* 如果当前还不是出牌状态，那么直接返回 */
+	/* 如果当前出牌玩家不是player，那么不需要更新出牌按钮的可按性 */
+	//if (_lastOutCard->getPokerOwner() != this) return;
+	if (_lastOutCard->getPokerValueType() == NONE || _lastOutCard->getPokerOwner() == this){
+		/* 如果上一次的出牌是NONE（表示刚开始）或者 上一次出牌的持有者还是player，
+		那么判断当前待出的牌是不是正确的牌型，如果是，就令出牌按钮可按，否则不可按 */
+		if (GameRules::getInstance()->isPokerValueType(cardsForWaitOut) == true){
+			outMenuItem->setEnabled(true);
+		}else{
+			outMenuItem->setEnabled(false);
+		}
+		return;
+	}
+	else{
+		PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(cardsForWaitOut);
+		if (_pokerValueType == NONE){	/* 如果当前不是任何牌型 */
+			outMenuItem->setEnabled(false);
+		}else{
+			outMenuItem->setEnabled(GameRules::getInstance()->canOutCards(cardsForWaitOut, _lastOutCard));
+		}
+	}
+}
+
+void HolderPlayer::callLandlord(){
+	/* 显示所有叫分按钮 */
+	this->setCallLandLordMenuItemVisible(true);
+	/* 等待叫分 */
+}
+
+void HolderPlayer::outCard(OutCards* _lastOutcards){
+	CC_ASSERT(_lastOutcards != nullptr);
+
+	this->deleteOutcardInScene();	/* 删除之前的牌 */
+
+	/* 设置成员变量lastOutcards，出完牌后必须设置为nullptr */
+	this->setLastOutCard(_lastOutcards);
+
+	/* 让不出，提示和出牌按钮显示出来，出牌按钮不可按由出牌和不出按钮的触发事件控制 */
+	passMenuItem->setVisible(true);
+	hintMenuItem->setVisible(true);
+	outMenuItem->setVisible(true);
+	/* 智能检查是否有牌打得过上家，控制提示按钮是否可按下，提示的扑克设计成成员变量，
+	目的是按下提示按钮时，不需要再调用searchOutCard函数 */
+	this->hintCards = searchHintCard(_lastOutcards);
+	if (this->hintCards.size() != 0){
+		hintMenuItem->setEnabled(true);		/* 如果有可以出的牌，那么提示按钮可按下 */
+	}
+	else{
+		passHintSprite->setVisible(true);	/* 如果没有可以出的牌，就显示"没有牌打得过上家" */
+	}
+
+	float _outCardDuration = 15.0f;
+	if (this->hintCards.size() == 0) _outCardDuration = 3.0f;
+
+	this->startCountDown(_outCardDuration, [&](){ this->pass(); });
+
+	/* 轮到玩家出牌时，玩家可能已经准备好要出的牌，因此轮到玩家出牌时，需要对此做一次更新 */
+	this->updateOutState();
 }
 
 Vector<Poker*> HolderPlayer::searchHintCard(OutCards* _lastOutcards){
@@ -213,7 +293,26 @@ Vector<Poker*> HolderPlayer::searchHintCard(OutCards* _lastOutcards){
 	return _pokers;
 }
 
-void HolderPlayer::updatePokerPos(){
+void HolderPlayer::pass(){
+	/* 播放点击按钮的音效 */
+	MusicController::getInstance()->playPassEffect();
+
+	passMenuItem->setVisible(false);		/* 不出按钮不可见 */
+	hintMenuItem->setVisible(false);		/* 提示按钮不可见 */
+	hintMenuItem->setEnabled(false);	/* 提示按钮不可按下 */
+	outMenuItem->setVisible(false);		/* 出牌按钮不可见 */
+	outMenuItem->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	passHintSprite->setVisible(false);
+
+	this->getPlayerOrder()->setPlayerOrderState(PASS);	/* 显示不出的状态 */
+	this->getPlayerOrder()->setVisible(true);
+
+	this->setLastOutCardNull();	/* 不出后置lastOutcard成员变量为nullptr */
+	this->updateOutOrder();	/* 更新出牌顺序 */
+}
+
+void HolderPlayer::updateCardPos(){
 	Vector<Poker*> _pokers = this->getPoker();
 	if (_pokers.size() == 0) return;	/* 如果没有扑克了，直接返回，一般不会运行这句的 */
 	float _displayCardMaxWidth = Director::getInstance()->getVisibleSize().width * 5.0 / 6;
@@ -237,25 +336,12 @@ void HolderPlayer::startCallback(Ref*){
 
 	this->getPlayerOrder()->setVisible(true);
 	startMenuItem->setVisible(false);
-	this->setReady(true);	/* 设置手动玩家已经准备好 */
+	Player::setReady(true);	/* 设置手动玩家已经准备好 */
 }
 
 void HolderPlayer::passCallback(Ref*){
-	/* 播放点击按钮的音效 */
-	MusicController::getInstance()->playPassEffect();
-
-	passMenuItem->setVisible(false);		/* 不出按钮不可见 */
-	hintMenuItem->setVisible(false);		/* 提示按钮不可见 */
-	hintMenuItem->setEnabled(false);	/* 提示按钮不可按下 */
-	outMenuItem->setVisible(false);		/* 出牌按钮不可见 */
-	outMenuItem->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
-
-	passHintSprite->setVisible(false);
-
-	this->getPlayerOrder()->setPlayerOrderState(PASS);	/* 显示不出的状态 */
-	this->getPlayerOrder()->setVisible(true);
-
-	NotificationCenter::getInstance()->postNotification("UpdateOutcardOrder");	/* 更新出牌的顺序 */
+	this->stopCountDown();
+	this->pass();
 }
 
 void HolderPlayer::hintCallback(Ref*){
@@ -271,40 +357,86 @@ void HolderPlayer::hintCallback(Ref*){
 	//this->arrWaitPlayOut.clear();	/* 清空待出按钮 */
 
 	/* 将提示的扑克上移，变成待出的状态 */
-	for (int i = 0; i < this->hintPokers.size(); ++i){
-		auto _poker = this->hintPokers.at(i);
+	for (int i = 0; i < this->hintCards.size(); ++i){
+		auto _poker = this->hintCards.at(i);
 		_poker->selectedCardOut();	/* 扑克变成待出状态 */
 	}
-	//this->arrWaitPlayOut = this->hintPokers;	/* 将待出扑克置为提示扑克 */
 	this->updateOutState();	/* 提示按钮后，更新出牌按钮的状态，这里直接调用updateOutState，而不是直接置出牌按钮可按 */
+}
+
+void HolderPlayer::outCallback(Ref*){
+	/* 播放点击按钮的音效 */
+	MusicController::getInstance()->playPressButtonEffect();
+
+	passMenuItem->setVisible(false);		/* 不出按钮不可见 */
+	hintMenuItem->setVisible(false);		/* 提示按钮不可见 */
+	hintMenuItem->setEnabled(false);	/* 提示按钮不可按下 */
+	outMenuItem->setVisible(false);		/* 出牌按钮不可见 */
+	outMenuItem->setEnabled(false);	/* 每次出牌或者pass后，将out按钮设为不可按 */
+
+	passHintSprite->setVisible(false);
+
+	auto _lastOutCard = OutCards::create(this, GameRules::getInstance()->analysePokerValueType(cardsForWaitOut),
+		cardsForWaitOut.size(), cardsForWaitOut.at(cardsForWaitOut.size() - 1));
+	_lastOutCard->retain();		/* 防止被内存管理器回收 */
+	CC_ASSERT(_lastOutCard != nullptr);
+	this->updateLastOutCards(_lastOutCard);
+
+	this->deleteOutcardInScene();	/* 在将cardInScene存放新的扑克时，先将以前的在Scene的扑克删除 */
+
+	this->setOutcardInScene(cardsForWaitOut);/* 将出的牌放到出牌的容器里，待在出牌区域显示 */
+
+	for (int i = 0; i < cardsForWaitOut.size(); ++i){
+		cardsForWaitOut.at(i)->removeFromParent();
+		this->removeCard(cardsForWaitOut.at(i));
+		this->updateCardPos();
+	}
+	cardsForWaitOut.clear();	/* 待出的牌出了，就要将待出牌容器清空，不然和下次的重复在一起会导致错误 */
+
+	this->showOutcardInScene();
+	this->playOutCardInSceneMusic();	/* 播放出牌音乐 */
+
+	/* 如果玩家已经出完牌，游戏结束 */
+	if (this->getPoker().size() == 0){
+		this->setGameOver();
+		return;
+	}
+
+	this->stopCountDown();
+	this->setLastOutCardNull();	/* 出牌后必须设置lastOutcard为空，不然游戏逻辑会出错 */
+	this->updateOutOrder();	/* 更新出牌顺序 */
 }
 
 void HolderPlayer::noCallCallback(Ref*){
 	this->setCallLandlordScore(0);
 	this->updateCallLandlordState();
-	NotificationCenter::getInstance()->postNotification("UpdateCallLandlordOrder");
+	this->updateCallLandlordOrder();
 	this->setCallLandLordMenuItemVisible(false);
 }
 
 void HolderPlayer::oneScoreCallback(Ref*){
 	this->setCallLandlordScore(1);
 	this->updateCallLandlordState();
-	NotificationCenter::getInstance()->postNotification("UpdateCallLandlordOrder");
+	this->updateCallLandlordOrder();
 	this->setCallLandLordMenuItemVisible(false);
 }
 
 void HolderPlayer::twoScoreCallback(Ref*){
 	this->setCallLandlordScore(2);
 	this->updateCallLandlordState();
-	NotificationCenter::getInstance()->postNotification("UpdateCallLandlordOrder");
+	this->updateCallLandlordOrder();
 	this->setCallLandLordMenuItemVisible(false);
 }
 
 void HolderPlayer::threeScoreCallback(Ref*){
 	this->setCallLandlordScore(3);
 	this->updateCallLandlordState();
-	NotificationCenter::getInstance()->postNotification("UpdateCallLandlordOrder");
 	this->setCallLandLordMenuItemVisible(false);
+	if (this->getCallLandlordScore() == MAXCALLLANDLORDSCORE){
+		this->setGameStateChooseLandlord();
+	}else{
+		this->updateCallLandlordOrder();
+	}
 }
 
 /************************************************************************/

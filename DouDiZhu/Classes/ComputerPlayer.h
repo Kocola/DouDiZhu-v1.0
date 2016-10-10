@@ -11,10 +11,15 @@ class OutCards;
 
 class ComputerPlayer : public Player{
 public:
-	void outCard(OutCards* _lastOutcards, 
-		std::function<void(OutCards*)>& _updateOutcardsCallback, std::function<void>& _updateOutcardOrderCallback);
+	static ComputerPlayer* create(PlayerPosType _playerPosType);
+	virtual bool init(PlayerPosType _playerPosType);
+public:
+	virtual void outCard(OutCards* _lastOutcards) override;
+	virtual void callLandlord() override;
 private:
 	Vector<Poker*> searchOutCard(OutCards* lastOutcards);
+	/* µçÄÔ¶Ë½Ð·Ö³ÌÐò */
+	int automaticCallLandlord();
 };
 
 #endif

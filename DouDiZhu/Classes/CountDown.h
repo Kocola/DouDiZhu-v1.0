@@ -10,12 +10,14 @@ public:
 	virtual bool init();
 	CREATE_FUNC(CountDown);
 public:
-	void startCountDown();
+	void startCountDown(const std::function<void(void)>& _callback = [](){});
 	void setCountDownUpper(float _countDownUpper){ this->countDownUpper = _countDownUpper; }
 	void setCountDownScale(float _scale);
 	void stopCountDown();	/* Í£Ö¹¼ÆÊ± */
 private:
 	void countDown(float delta);
+	void resetCallback();
+	void setCallback(const std::function<void(void)>& _callback) { this->callbackFunc = _callback; }
 private:
 	int curSpriteIndex;
 	int totalSpriteNum;
@@ -24,6 +26,8 @@ private:
 private:
 	Sprite* sprite;
 	LabelAtlas* labelAtlas;
+private:
+	std::function<void(void)> callbackFunc;
 };
 
 #endif

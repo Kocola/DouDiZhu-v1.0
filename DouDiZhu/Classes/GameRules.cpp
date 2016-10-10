@@ -450,11 +450,11 @@ Vector<Poker*> GameRules::searchPairInSplit(Vector<Poker*> _pokers, const Poker*
 	if (_pokers.size() < 2) return Vector<Poker*>();
 	
 	int _index = _pokers.size() - 1;
-	while (_index >= 0){
+	while (_index >= 1){
 		Vector<Poker*> _tmp;
 		_tmp.pushBack(_pokers.at(_index));
 		_tmp.pushBack(_pokers.at(_index - 1));
-		if (isPair(_tmp) || (_poker == nullptr || COMPARE_GREATER(_tmp.at(0), _poker))){
+		if (isPair(_tmp) && (_poker == nullptr || COMPARE_GREATER(_tmp.at(0), _poker))){
 			return _tmp; 
 		}
 		_tmp.clear();
@@ -467,12 +467,12 @@ Vector<Poker*> GameRules::searchTripleInSplit(Vector<Poker*> _pokers, const Poke
 	if (_pokers.size() < 3) return Vector<Poker*>();
 
 	int _index = _pokers.size() - 1;
-	while (_index >= 0){
+	while (_index >= 2){
 		Vector<Poker*> _tmp;
 		_tmp.pushBack(_pokers.at(_index));
 		_tmp.pushBack(_pokers.at(_index - 1));
 		_tmp.pushBack(_pokers.at(_index - 2));
-		if (isTriple(_tmp) || (_poker == nullptr || COMPARE_GREATER(_tmp.at(0), _poker))){
+		if (isTriple(_tmp) && (_poker == nullptr || COMPARE_GREATER(_tmp.at(0), _poker))){
 			return _tmp;
 		}
 		_tmp.clear();
