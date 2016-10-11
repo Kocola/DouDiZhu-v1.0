@@ -72,6 +72,7 @@ private:
 private:
 	Vector<Poker*> cardsForWaitOut;	/* 已点击准备出的牌 */
 	Vector<Poker*> hintCards;	/* 提示要出的牌 */
+	Vector<Poker*> clickedPokers;	/* 已经点击的牌，每次触摸事件结束需要初始化为空 */
 	OutCards* lastOutCard;		/* 上一手扑克，初始化为nullptr，轮到其出牌时获取，出完牌后必须置nullptr */
 };
 

@@ -22,6 +22,63 @@ bool HolderPlayer::init(PlayerPosType _playerPosType){
 
 	lastOutCard = nullptr;
 
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+
+	listener->onTouchBegan = [&](Touch* touch, Event* event){
+		CC_ASSERT(clickedPokers.size() == 0);
+		Vector<Poker*> _pokers = this->getPoker();
+		auto touchPos = this->convertToNodeSpace(touch->getLocation());
+		for (int i = _pokers.size() - 1; i >= 0; --i){
+			auto rect = _pokers.at(i)->getBoundingBox();
+			if (rect.containsPoint(touchPos) && _pokers.at(i)->getCanClick()){
+				MusicController::getInstance()->playTouchCardEffect();
+				clickedPokers.pushBack(_pokers.at(i));
+				if (!_pokers.at(i)->getSelect()){
+					/* 如果还未选择这张牌，那就将这张牌露出来 */
+					_pokers.at(i)->selectedCardOut();
+				}
+				else{
+					/* 否则这张牌已经被选择，将其放回 */
+					_pokers.at(i)->selectedCardBack();
+				}
+				/* 检测当前牌是否可以另出牌按钮可按 */
+				this->updateOutState();
+				return true;
+			}
+		}
+		return true;
+	};
+
+	listener->onTouchMoved = [=](Touch* touch, Event* event){
+		Vector<Poker*> _pokers = this->getPoker();
+		auto touchPos = this->convertToNodeSpace(touch->getLocation());
+		for (int i = _pokers.size() - 1; i >= 0; --i){
+			auto rect = _pokers.at(i)->getBoundingBox();
+			if (rect.containsPoint(touchPos) && _pokers.at(i)->getCanClick()){
+				if (clickedPokers.find(_pokers.at(i)) != clickedPokers.end()) break;
+				MusicController::getInstance()->playTouchCardEffect();
+				clickedPokers.pushBack(_pokers.at(i));
+				if (!_pokers.at(i)->getSelect()){
+					/* 如果还未选择这张牌，那就将这张牌露出来 */
+					_pokers.at(i)->selectedCardOut();
+				}else{
+					/* 否则这张牌已经被选择，将其放回 */
+					_pokers.at(i)->selectedCardBack();
+				}
+				/* 检测当前牌是否可以另出牌按钮可按 */
+				this->updateOutState();
+				break;
+			}
+		}
+	};
+
+	listener->onTouchEnded = [&](Touch* touch, Event* event){
+		clickedPokers.clear();		/* 触摸结束，清空clickedPokers */
+	};
+
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
 	return true;
 }
 

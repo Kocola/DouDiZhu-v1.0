@@ -47,38 +47,38 @@ void Poker::createSprite(){
 }
 
 bool Poker::init(){
-	auto listener = EventListenerTouchOneByOne::create();		/* 创建单点触摸监听器 */
-	listener->setSwallowTouches(true);	/* 禁止向下传递触摸 */
-	/* 触摸开始 */
-	listener->onTouchBegan = [&](Touch* touch, Event* event){
-		auto rect = this->getBoundingBox();
-		auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());
-		if (rect.containsPoint(touchPos) && canClick){
-			/*log("touch location : %f, %f", touch->getLocation().x, touch->getLocation().y);
-			log("touch Pos : %f, %f", touchPos.x, touchPos.y);*/
-			/* 播放触摸牌的音效 */
-			MusicController::getInstance()->playTouchCardEffect();
-			if (!isSelect){
-				/* 如果还未选择这张牌，那就将这张牌露出来 */
-				selectedCardOut();
-			}else{
-				/* 否则这张牌已经被选择，将其放回 */
-				selectedCardBack();
-			}
-			/* 检测当前牌是否可以另出牌按钮可按 */
-			this->updateOutState();
-			return true;
-		}
-		return false;		/* 这里返回false，触摸不会被吞掉 */
-	};
+	//auto listener = EventListenerTouchOneByOne::create();		/* 创建单点触摸监听器 */
+	//listener->setSwallowTouches(true);	/* 禁止向下传递触摸 */
+	///* 触摸开始 */
+	//listener->onTouchBegan = [&](Touch* touch, Event* event){
+	//	auto rect = this->getBoundingBox();
+	//	auto touchPos = this->getParent()->convertToNodeSpace(touch->getLocation());
+	//	if (rect.containsPoint(touchPos) && canClick){
+	//		/*log("touch location : %f, %f", touch->getLocation().x, touch->getLocation().y);
+	//		log("touch Pos : %f, %f", touchPos.x, touchPos.y);*/
+	//		/* 播放触摸牌的音效 */
+	//		MusicController::getInstance()->playTouchCardEffect();
+	//		if (!isSelect){
+	//			/* 如果还未选择这张牌，那就将这张牌露出来 */
+	//			selectedCardOut();
+	//		}else{
+	//			/* 否则这张牌已经被选择，将其放回 */
+	//			selectedCardBack();
+	//		}
+	//		/* 检测当前牌是否可以另出牌按钮可按 */
+	//		this->updateOutState();
+	//		return true;
+	//	}
+	//	return false;		/* 这里返回false，触摸不会被吞掉 */
+	//};
 
-	listener->onTouchMoved = [](Touch* touch, Event* event){
-	};
+	//listener->onTouchMoved = [](Touch* touch, Event* event){
+	//};
 
-	listener->onTouchEnded = [](Touch* touch, Event* event){
-	};
+	//listener->onTouchEnded = [](Touch* touch, Event* event){
+	//};
 
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	//_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	return true;
 }
