@@ -6,6 +6,8 @@ enum PokerValueType{
 	SINGLE, /* 单张 */
 	PAIR,	/* 对子 */
 	TRIPLE,	/* 三张 */
+	TRIPLEWITHSINGLE, /* 三带一 */
+	TRIPLEWITHPAIR, /* 三带二 */
 	BOMB,	/* 炸弹 */
 	KINGBOMB,	/* 王炸 */
 	STRAIGHT,	/* 顺子 */

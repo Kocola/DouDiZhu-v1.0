@@ -25,6 +25,7 @@ public:
 	PokerValueType analysePokerValueType(Vector<Poker*> _pokers);	/* 分析给定扑克的牌型 */
 	bool isPokerValueType(Vector<Poker*> _pokers);		/* 是否是扑克类型 */
 	bool isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType);	/* 给定的扑克是否是某种牌型 */
+	Poker* calcLowestPoker(Vector<Poker*> _pokers, PokerValueType _pokerValueType);	/* 计算扑克里最小的扑克值 */
 	/* 获取指定的类型的扑克，返回Vector为空时表示查找失败 
 		第一个参数是玩家拥有的扑克，第三个参数是返回的类型的扑克里最小的牌，如果是nullptr，表明可以出任意值的该类型扑克
 		第四个参数是针对顺子时的长度 */
@@ -59,12 +60,22 @@ private:
 	bool isSingle(Vector<Poker*> _pokers);	/* 是否是单张 */
 	bool isPair(Vector<Poker*> _pokers);	/* 是否是对子 */
 	bool isTriple(Vector<Poker*> _pokers);	/* 是否是三张 */
+
+	bool isTripleWithSingle(Vector<Poker*> _pokers);/* 是否是3带1 */
+	bool isTripleWithPair(Vector<Poker*> _pokers);	/* 是否是3带2 */
+
 	bool isSingleStraight(Vector<Poker*> _pokers);	/* 是否是单顺子 */
 	bool isPairStraight(Vector<Poker*> _pokers);	/* 是否是双顺 */
 	/* 这里只判断不带单张或者双张的三顺 */
 	bool isTripleStraight(Vector<Poker*> _pokers);	/* 是否是三顺 */
 	bool isBomb(Vector<Poker*> _pokers);		/* 是否是炸弹 */
 	bool isKingBomb(Vector<Poker*> _pokers);	/* 是否是王炸 */
+private:
+	Poker* calcTripleWithSingleLowestPoker(const Vector<Poker*>& _pokers);
+	Poker* calcTripleWithPairLowestPoker(const Vector<Poker*>& _pokers);
+private:
+	/* 闭开区间,通过索引区间获取子容器 */
+	Vector<Poker*> getVectorWithIndex(Vector<Poker*> _pokers, int startIndex, int endIndex);
 private:
 	static GameRules* gameRules;
 };

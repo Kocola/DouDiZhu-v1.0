@@ -47,10 +47,10 @@ bool HolderPlayer::init(PlayerPosType _playerPosType){
 				return true;
 			}
 		}
-		return true;
+		return false;	/* 如果点击下的位置不在扑克范围内，那么即使触摸移动后也不会有任何操作 */
 	};
 
-	listener->onTouchMoved = [=](Touch* touch, Event* event){
+	listener->onTouchMoved = [&](Touch* touch, Event* event){
 		Vector<Poker*> _pokers = this->getPoker();
 		auto touchPos = this->convertToNodeSpace(touch->getLocation());
 		for (int i = _pokers.size() - 1; i >= 0; --i){
@@ -433,9 +433,10 @@ void HolderPlayer::outCallback(Ref*){
 
 	passHintSprite->setVisible(false);
 
-	auto _lastOutCard = OutCards::create(this, GameRules::getInstance()->analysePokerValueType(cardsForWaitOut),
-		cardsForWaitOut.size(), cardsForWaitOut.at(cardsForWaitOut.size() - 1));
-	_lastOutCard->retain();		/* 防止被内存管理器回收 */
+	PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(cardsForWaitOut);
+	Poker* _lowestPoker = GameRules::getInstance()->calcLowestPoker(cardsForWaitOut, _pokerValueType);
+	auto _lastOutCard = OutCards::create(this, _pokerValueType, cardsForWaitOut.size(), _lowestPoker);
+	_lastOutCard->retain(); 		/* 防止被内存管理器回收 */
 	CC_ASSERT(_lastOutCard != nullptr);
 	this->updateLastOutCards(_lastOutCard);
 

@@ -82,8 +82,10 @@ PokerValueType GameRules::analysePokerValueType(Vector<Poker*> _pokers){
 		if (isKingBomb(_pokers) == true) return KINGBOMB;		/* 双王的value值是0，因此如果先判断对子会造成判断错误 */
 		if (isPair(_pokers) == true) return PAIR;
 		if (isTriple(_pokers) == true) return TRIPLE;
+		if (isTripleWithSingle(_pokers) == true) return TRIPLEWITHSINGLE;	/* 3带1判定是3张 */
 		if (isBomb(_pokers) == true) return BOMB;
 	}else{
+		if (isTripleWithPair(_pokers) == true) return TRIPLEWITHPAIR;	/* 3带2判定是3张 */
 		if (isSingleStraight(_pokers) == true) return STRAIGHT;
 		if (isPairStraight(_pokers) == true) return PAIRSRAIGHT;
 		if (isTripleStraight(_pokers) == true) return TRIPLESTRAIGHT;
@@ -97,22 +99,43 @@ bool GameRules::isPokerValueType(Vector<Poker*> _pokers){
 }
 
 bool GameRules::isSpecifiedPokerValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType){
-	/* 每次排序一次，防止乱序 */
-	GlobalFunc::sort(_pokers);
+	///* 每次排序一次，防止乱序 */
+	//GlobalFunc::sort(_pokers);
 
-	switch (pokerValueType){
-	case NONE: return false; break;
-	case SINGLE: return isSingle(_pokers); break;
-	case PAIR: return isPair(_pokers); break;
-	case TRIPLE: return isTriple(_pokers); break;
-	case BOMB: return isBomb(_pokers); break;
-	case KINGBOMB: return isKingBomb(_pokers); break;
-	case STRAIGHT: return isSingleStraight(_pokers); break;
-	case PAIRSRAIGHT: return isPairStraight(_pokers); break;
-	case TRIPLESTRAIGHT: return isTripleStraight(_pokers); break;
-	default: return false; break;
+	//switch (pokerValueType){
+	//case NONE: return false; break;
+	//case SINGLE: return isSingle(_pokers); break;
+	//case PAIR: return isPair(_pokers); break;
+	//case TRIPLE: return isTriple(_pokers); break;
+	//case BOMB: return isBomb(_pokers); break;
+	//case KINGBOMB: return isKingBomb(_pokers); break;
+	//case STRAIGHT: return isSingleStraight(_pokers); break;
+	//case PAIRSRAIGHT: return isPairStraight(_pokers); break;
+	//case TRIPLESTRAIGHT: return isTripleStraight(_pokers); break;
+	//default: return false; break;
+	//}
+	//return false;
+	PokerValueType _pokerValueType = analysePokerValueType(_pokers);
+	return _pokerValueType != NONE && _pokerValueType == pokerValueType;
+}
+
+Poker* GameRules::calcLowestPoker(Vector<Poker*> _pokers, PokerValueType _pokerValueType){
+	int _pokersSize = _pokers.size();
+	Poker* _lowestPoker = nullptr;
+	switch (_pokerValueType){
+	case SINGLE:
+	case PAIR:
+	case TRIPLE:
+	case STRAIGHT:
+	case PAIRSRAIGHT:
+	case TRIPLESTRAIGHT:
+	case BOMB:
+	case KINGBOMB: _lowestPoker = _pokers.at(_pokersSize - 1); break;
+	case TRIPLEWITHSINGLE:_lowestPoker = calcTripleWithSingleLowestPoker(_pokers); break;
+	case TRIPLEWITHPAIR:_lowestPoker = calcTripleWithPairLowestPoker(_pokers); break;
+	default: CC_ASSERT(0 != 0); break;
 	}
-	return false;
+	return _lowestPoker;
 }
 
 Vector<Poker*> GameRules::calcPokerWithValueType(Vector<Poker*> _pokers, PokerValueType pokerValueType, const Poker* _poker /* = nullptr */, int length /* = 0 */){
@@ -122,6 +145,8 @@ Vector<Poker*> GameRules::calcPokerWithValueType(Vector<Poker*> _pokers, PokerVa
 	switch (pokerValueType){
 	case SINGLE: return searchSingle(_pokers, _poker); break;
 	case PAIR: return searchPair(_pokers, _poker); break;
+	case TRIPLEWITHSINGLE:
+	case TRIPLEWITHPAIR:	/* 如果是3带1或者3带2，全部查找3张即可 */
 	case TRIPLE: return searchTriple(_pokers, _poker); break;
 	case BOMB: return searchBomb(_pokers, _poker); break;
 	case KINGBOMB: return searchKingBomb(_pokers); break;
@@ -497,6 +522,36 @@ bool GameRules::isTriple(Vector<Poker*> _pokers){
 		&& (_pokers.at(0)->getValue() == _pokers.at(2)->getValue());
 }
 
+bool GameRules::isTripleWithSingle(Vector<Poker*> _pokers){
+	if (_pokers.size() != 4) return false;
+	/* 两种情况，1-3或者3-1 */
+	/* 1-3 */
+	Vector<Poker*> _tmpPokers = this->getVectorWithIndex(_pokers, 1, _pokers.size());
+	if (_tmpPokers.at(0)->getValue() == _pokers.at(0)->getValue()) return false;/* 炸弹 */
+	if (isTriple(_tmpPokers) == true) return true; 
+	/* 3-1 */
+	_tmpPokers = this->getVectorWithIndex(_pokers, 0, 3);
+	if (_tmpPokers.at(0)->getValue() == _pokers.at(3)->getValue()) return false;/* 炸弹 */
+	if (isTriple(_tmpPokers) == true) return true;
+	/* 都不满足，返回False */
+	else return false;
+}
+
+bool GameRules::isTripleWithPair(Vector<Poker*> _pokers){
+	if (_pokers.size() != 5) return false;
+	/* 两种情况，2-3或者3-2 */
+	/* 2-3 */
+	Vector<Poker*> _tmpPokers_pair = this->getVectorWithIndex(_pokers, 0, 2);
+	Vector<Poker*> _tmpPokers_triple = this->getVectorWithIndex(_pokers, 2, 5);
+	if (isPair(_tmpPokers_pair) && isTriple(_tmpPokers_triple)) return true;
+	/* 3-2 */
+	_tmpPokers_pair = this->getVectorWithIndex(_pokers, 3, 5);
+	_tmpPokers_triple = this->getVectorWithIndex(_pokers, 0, 3);
+	if (isTriple(_tmpPokers_triple) && isPair(_tmpPokers_pair)) return true;
+	/* 都不满足，返回False */
+	else return false;
+}
+
 bool GameRules::isBomb(Vector<Poker*> _pokers){
 	if (_pokers.size() != 4) return false;
 	return(_pokers.at(0)->getValue() == _pokers.at(1)->getValue())
@@ -630,4 +685,25 @@ bool GameRules::isTripleStraight(Vector<Poker*> _pokers){
 		}
 		return true;
 	}
+}
+
+Poker* GameRules::calcTripleWithSingleLowestPoker(const Vector<Poker*>& _pokers){
+	CC_ASSERT(_pokers.size() == 4);
+	return _pokers.at(2);
+}
+
+Poker* GameRules::calcTripleWithPairLowestPoker(const Vector<Poker*>& _pokers){
+	CC_ASSERT(_pokers.size() == 5);
+	return _pokers.at(3);
+}
+
+Vector<Poker*> GameRules::getVectorWithIndex(Vector<Poker*> _pokers, int startIndex, int endIndex){
+	CC_ASSERT(startIndex >= 0 && startIndex < endIndex);
+	int _pokersSize = _pokers.size();
+	CC_ASSERT(endIndex <= _pokersSize);
+	Vector<Poker*> _tmpPokers;
+	for (int i = startIndex; i < endIndex; ++i){
+		_tmpPokers.pushBack(_pokers.at(i));
+	}
+	return _tmpPokers;
 }
