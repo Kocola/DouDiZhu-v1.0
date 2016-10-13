@@ -311,7 +311,7 @@ void HolderPlayer::outCard(OutCards* _lastOutcards){
 		passHintSprite->setVisible(true);	/* 如果没有可以出的牌，就显示"没有牌打得过上家" */
 	}
 
-	float _outCardDuration = 15.0f;
+	float _outCardDuration = 35.0f;
 	if (this->hintCards.size() == 0) _outCardDuration = 3.0f;
 
 	this->startCountDown(_outCardDuration, [&](){ this->pass(); });
@@ -433,10 +433,11 @@ void HolderPlayer::outCallback(Ref*){
 
 	passHintSprite->setVisible(false);
 
-	PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(cardsForWaitOut);
-	Poker* _lowestPoker = GameRules::getInstance()->calcLowestPoker(cardsForWaitOut, _pokerValueType);
-	auto _lastOutCard = OutCards::create(this, _pokerValueType, cardsForWaitOut.size(), _lowestPoker);
-	_lastOutCard->retain(); 		/* 防止被内存管理器回收 */
+	//PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(cardsForWaitOut);
+	//Poker* _lowestPoker = GameRules::getInstance()->calcLowestPoker(cardsForWaitOut, _pokerValueType);
+	//auto _lastOutCard = OutCards::create(this, _pokerValueType, cardsForWaitOut.size(), _lowestPoker);
+	//_lastOutCard->retain(); 		/* 防止被内存管理器回收 */
+	auto _lastOutCard = createLastOutCard(cardsForWaitOut);
 	CC_ASSERT(_lastOutCard != nullptr);
 	this->updateLastOutCards(_lastOutCard);
 

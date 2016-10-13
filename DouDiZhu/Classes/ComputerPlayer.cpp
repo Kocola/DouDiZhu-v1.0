@@ -58,10 +58,11 @@ void ComputerPlayer::outCard(OutCards* _lastOutcards){
 		}
 		else{
 			/* 以当前的牌更新游戏的上一手牌 */
-			PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(_pokers);
+			/*PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(_pokers);
 			Poker* _lowestPoker = GameRules::getInstance()->calcLowestPoker(_pokers, _pokerValueType);
 			_lastOutcards = OutCards::create(this, _pokerValueType, _pokers.size(), _lowestPoker);
-			_lastOutcards->retain();
+			_lastOutcards->retain();*/
+			_lastOutcards = createLastOutCard(_pokers);
 			this->updateLastOutCards(_lastOutcards);
 			/* 将出的牌从当前玩家的扑克中删除 */
 			for (int i = 0; i < _pokers.size(); ++i){

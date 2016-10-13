@@ -1,4 +1,5 @@
 ﻿#include "CountDown.h"
+#include "GameRules.h"
 #include "GlobalDefine.h"
 #include "GlobalFunc.h"
 #include "HeadImage.h"
@@ -310,6 +311,15 @@ void Player::updateLastOutCards(OutCards* lastOutcard){
 
 void Player::playOutCardInSceneMusic(){
 	NotificationCenter::getInstance()->postNotification(PLAYEROUTCARDINSCENEMUSIC);
+}
+
+OutCards* Player::createLastOutCard(Vector<Poker*> _pokers){
+	PokerValueType _pokerValueType = GameRules::getInstance()->analysePokerValueType(_pokers);
+	Poker* _lowestPoker = GameRules::getInstance()->calcLowestPoker(_pokers, _pokerValueType);
+	int _pokersSize = GameRules::getInstance()->filterAccessoryCards(_pokers).size();
+	auto _lastOutCard = OutCards::create(this, _pokerValueType, _pokersSize, _lowestPoker);
+	_lastOutCard->retain(); 		/* 防止被内存管理器回收 */
+	return _lastOutCard;
 }
 
 void Player::updateHeadImage(){

@@ -49,6 +49,7 @@ protected:
 	void setGameStateChooseLandlord();
 	void updateLastOutCards(OutCards* lastOutcard);
 	void playOutCardInSceneMusic();
+	OutCards* createLastOutCard(Vector<Poker*> _pokers);
 public:
 	void updateHeadImage();	/* 更新头像 */
 public:

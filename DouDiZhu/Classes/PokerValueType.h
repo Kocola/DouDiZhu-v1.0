@@ -12,7 +12,9 @@ enum PokerValueType{
 	KINGBOMB,	/* 王炸 */
 	STRAIGHT,	/* 顺子 */
 	PAIRSRAIGHT,	/* 双顺 */
-	TRIPLESTRAIGHT	/* 三顺 */
+	TRIPLESTRAIGHT,	/* 三顺 */
+	TRIPLESTRAIGHTWITHSINGLE,	/* 三顺带一 */
+	TRIPLESTRAIGHTWITHPAIR,	/* 三顺带二 */
 };
 
 #endif
